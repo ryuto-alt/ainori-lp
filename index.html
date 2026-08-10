@@ -6,6 +6,9 @@
 <title>あいのりごはん｜食の好みでつながり、みんなでごはんに行く。事前登録受付中</title>
 <meta name="description" content="あいのりごはんは、行ってみたいお店や食べたい料理をきっかけに、ごはん仲間を集めるための飲食特化型SNS。今夜、知らない誰かと、うまいもん。事前登録受付中。" />
 
+<!-- ============ progressive-enhancement flag (text never hidden if JS/observer fails) ============ -->
+<script>document.documentElement.classList.add('js');</script>
+
 <!-- ============ Google Fonts ============ -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -47,6 +50,7 @@
 </script>
 
 <style>
+  [hidden]{display:none!important}
   :root{
     --color-sumi:#160e09; --color-sumi2:#241710;
     --color-paper:#fffdf9; --color-cream:#fcf5ea; --color-soft:#f8e8d8;
@@ -60,12 +64,41 @@
   body{
     font-family:'Noto Sans JP',sans-serif; color:var(--color-ink);
     background:var(--color-paper); -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility; line-height:1.85; overflow-x:hidden;
+    text-rendering:optimizeLegibility; line-height:1.8; overflow-x:hidden;
   }
-  h1,h2,h3,.mincho{ font-family:'Shippori Mincho B1',serif; font-feature-settings:"palt"; }
-  .anton{ font-family:'Anton',sans-serif; letter-spacing:.01em; }
+  h1,h2,h3,.mincho{ font-family:'Shippori Mincho B1',serif; font-feature-settings:"palt"; letter-spacing:.012em; }
+  .anton{ font-family:'Anton',sans-serif; letter-spacing:.01em; font-feature-settings:normal; }
   .palt{ font-feature-settings:"palt"; }
   ::selection{ background:rgba(223,79,28,.22); }
+
+  /* ===== Japanese typography hardening: prevent 文字崩れ (mid-word wraps, lone-char orphans, clipping) ===== */
+  h1,h2,h3,h4{ word-break:keep-all; line-break:strict; overflow-wrap:normal; text-wrap:balance; }
+  p,li,figcaption,dd,dt,summary,label,legend,span{ line-break:strict; }
+  p,summary,li,legend{ text-wrap:pretty; }
+  /* never break inside a price / number token */
+  .anton,.big-num{ white-space:nowrap; }
+  /* legend は flex 行。折り返さないと「連絡先」が「連絡/先」に割れる */
+  legend{ flex-wrap:wrap; }
+  .chip > span{ word-break:keep-all; }
+
+  /* ===== のれんボタン: マスク形状の外に文字が溢れないよう1行固定 ===== */
+  .btn-noren > span{ white-space:nowrap; }
+  @media (max-width:639px){
+    .btn-noren{
+      width:100% !important;
+      padding-left:1rem !important; padding-right:1rem !important;
+      font-size:clamp(.85rem,3.9vw,1.06rem) !important;
+    }
+  }
+
+  /* ===== JS-disabled / observer-never-fires fail-safe: reveal everything, never leave text hidden ===== */
+  html:not(.js) .reveal,
+  html:not(.js) .reveal-l,
+  html:not(.js) .reveal-r,
+  html:not(.js) .reveal-scale{ opacity:1 !important; transform:none !important; }
+  html:not(.js) .reveal-clip{ clip-path:none !important; }
+  html:not(.js) .kin2 .w > span{ transform:none !important; }
+  html:not(.js) .gauge > i{ width:var(--fill,80%) !important; }
 
   /* premium fine grain (fixed, no repaint on scroll) */
   .grain-fixed{
@@ -225,7 +258,27 @@
   .field-input:hover{ border-color:#e6c1aa; }
   .field-input:focus{ outline:none; border-color:var(--color-terra); box-shadow:0 0 0 4px rgba(223,79,28,.14); }
 
+  /* ===== ドパガキ: 低文字量・高刺激パーツ ===== */
+  /* 横スワイプフィード（モバイルネイティブな指の動き） */
+  .feed-x{ display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding:4px 2px 12px; scroll-padding-left:20px; }
+  .feed-x::-webkit-scrollbar{ display:none; }
+  .feed-x > *{ scroll-snap-align:start; flex:0 0 auto; }
+  /* タップの押し込み */
+  .tap{ transition:transform .18s var(--ease), box-shadow .25s ease; }
+  .tap:active{ transform:scale(.975); }
+  /* 成立ゲージ（あと少し→ドーパミン） */
+  .gauge{ height:12px; border-radius:999px; background:rgba(255,255,255,.14); overflow:hidden; }
+  .gauge > i{ display:block; height:100%; width:6%; border-radius:999px; background:linear-gradient(90deg,#df4f1c,#ff7a3d,#c2913f); transition:width 1.2s var(--ease) var(--d,0s); }
+  .gauge.in > i{ width:var(--fill,80%); }
+  /* 点滅ドット（生きてる感） */
+  @keyframes blip{ 0%,100%{ opacity:1; transform:scale(1);} 50%{ opacity:.32; transform:scale(.62);} }
+  .blip{ animation:blip 1.1s ease-in-out infinite; }
+  /* どでか数字のテンポ */
+  .big-num{ font-family:'Anton',sans-serif; line-height:.9; letter-spacing:.005em; }
+
   @media (prefers-reduced-motion:reduce){
+    .gauge > i{ transition:none; }
+    .blip{ animation:none; }
     .reveal,.reveal-l,.reveal-r,.reveal-scale{ opacity:1; transform:none; transition:none; }
     .reveal-clip{ clip-path:none; transition:none; }
     .kin2 .w > span{ transform:none; transition:none; }
@@ -285,7 +338,7 @@
 <main id="top">
 
 <!-- ====================== 1. HERO ====================== -->
-<section class="relative min-h-[100svh] flex items-center text-cream overflow-hidden pt-28 pb-24">
+<section class="relative min-h-[100svh] flex items-center text-cream overflow-hidden pt-24 sm:pt-28 pb-16 sm:pb-24">
   <div class="absolute inset-0 overflow-hidden" aria-hidden="true"><div class="absolute inset-0 ph ph-steak par"></div></div>
   <div class="absolute inset-0" style="background:linear-gradient(100deg, rgba(18,11,7,.92) 0%, rgba(18,11,7,.8) 34%, rgba(22,14,9,.42) 66%, rgba(22,14,9,.28) 100%);"></div>
   <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(18,11,7,.5) 0%, transparent 24%, transparent 64%, rgba(18,11,7,.82) 100%);"></div>
@@ -305,8 +358,8 @@
 
       <h1 class="kin2 palt font-extrabold tracking-[0.005em]" style="font-size:clamp(1.9rem,6.2vw,5rem); line-height:1.22; text-shadow:0 2px 36px rgba(0,0,0,.4);"><span class="w" style="--wd:.05s"><span>今夜</span></span><br><span class="w" style="--wd:.16s"><span>知らない誰かと</span></span><br><span class="w" style="--wd:.3s"><span class="text-ember">うまいもん。</span></span></h1>
 
-      <p class="reveal mincho text-cream/95 mt-7 text-[1.2rem] sm:text-[1.45rem] leading-[1.7] max-w-[23em]" style="--d:.34s;">
-        食の好みでつながって、みんなでごはんへ。<br class="hidden sm:block" />出会いではなく、「食べたい」が主役の飲食特化型SNS。
+      <p class="reveal mincho text-cream/95 mt-7 text-[1.35rem] sm:text-[1.7rem] leading-[1.6] max-w-[20em]" style="--d:.34s;">
+        食の「好き」でつながって、<br class="hidden sm:block" />今夜、みんなでごはん。
       </p>
 
       <div class="reveal mt-10 flex flex-col sm:flex-row sm:items-center gap-5" style="--d:.42s;">
@@ -386,11 +439,11 @@
 <section class="relative bg-sumi text-cream overflow-hidden">
   <div class="max-w-[1200px] mx-auto px-5 sm:px-8 py-9 flex flex-wrap items-center justify-center sm:justify-between gap-x-10 gap-y-6 border-b border-white/8">
     <div class="flex items-center gap-9 sm:gap-14">
-      <div>
-        <span class="anton text-ember text-[2.1rem] leading-none"><span data-count="1800">1,800</span><span class="text-[1rem]">+</span></span>
+      <div class="reg-count" hidden>
+        <span class="anton text-ember text-[2.1rem] leading-none"><span data-count="1800" data-reg>1,800</span><span class="text-[1rem]">+</span></span>
         <span class="block text-cream/60 text-[0.74rem] tracking-wide mt-1">事前登録（先行枠）</span>
       </div>
-      <span class="w-px h-10 bg-cream/12"></span>
+      <span class="reg-count w-px h-10 bg-cream/12" hidden></span>
       <div>
         <span class="anton text-ember text-[2.1rem] leading-none"><span data-count="11">11</span><span class="text-[0.95rem]"> ジャンル</span></span>
         <span class="block text-cream/60 text-[0.74rem] tracking-wide mt-1">居酒屋・焼肉・バル ほか</span>
@@ -426,207 +479,202 @@
 </section>
 
 
-<!-- ====================== 2. PROBLEM (生成り地・editorial asymmetric) ====================== -->
-<section id="problem" class="relative bg-cream washi overflow-hidden" style="padding-top:140px; padding-bottom:140px;">
-  <div class="lantern-glow" style="top:-180px; left:-140px; opacity:.32;"></div>
+<!-- ====================== 2. PAINS (生成り地・横スワイプ：指で流す) ====================== -->
+<section id="problem" class="relative bg-cream washi overflow-hidden" style="padding-top:96px; padding-bottom:96px;">
+  <div class="lantern-glow" style="top:-180px; left:-140px; opacity:.3;"></div>
 
   <div class="relative z-10 max-w-[1200px] mx-auto px-5 sm:px-8">
-    <div class="max-w-[46rem]">
-      <h2 class="kin2 mincho font-extrabold palt" style="font-size:clamp(1.9rem,5vw,3.2rem); line-height:1.32;"><span class="w" style="--wd:0s"><span>気になる</span></span><span class="w" style="--wd:.08s"><span>あの店に、</span></span><br><span class="w" style="--wd:.18s"><span>一緒に行ける</span></span><span class="w" style="--wd:.26s"><span>人がいない</span></span></h2>
-      <p class="reveal text-muted mt-6 text-[1.06rem] leading-[2] max-w-[38em]" style="--d:.2s;">
-        食べたいものがあるのに、なかなか一歩を踏み出せない。そんな夜のために生まれたのが、あいのりごはんです。行ってみたいお店や料理をきっかけに、<strong class="text-ink font-bold">ごはん仲間を集める</strong>飲食特化型SNS。その小さなハードルを、そっとほどきます。
-      </p>
-    </div>
+    <h2 class="kin2 mincho font-extrabold palt" style="font-size:clamp(2.1rem,7vw,3.6rem); line-height:1.2;"><span class="w" style="--wd:0s"><span>こういう夜、</span></span><span class="w" style="--wd:.1s"><span class="text-cta">ない？</span></span></h2>
+  </div>
 
-    <div class="mt-16 grid lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
-      <!-- left: emotional reassurance card (photo + glass) -->
-      <article class="reveal-l lg:col-span-5 relative rounded-card overflow-hidden min-h-[420px] flex flex-col justify-end zoomwrap" style="--d:.05s;">
-        <div class="absolute inset-0 ph ph-yakiniku zoom"></div>
-        <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(18,11,7,.25) 0%, rgba(18,11,7,.55) 48%, rgba(18,11,7,.92) 100%);"></div>
-        <div class="relative p-8 sm:p-10 text-cream">
-          <span class="inline-flex w-12 h-12 rounded-full glass items-center justify-center mb-5">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffb38a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
+  <!-- 横スワイプ：1枚1メッセージ、読まずに伝わる -->
+  <div class="relative z-10 mt-9 feed-x px-5 sm:px-8 max-w-[1280px] mx-auto" role="region" aria-label="あるある">
+    <article class="tap relative w-[270px] sm:w-[320px] aspect-[4/5] rounded-card overflow-hidden zoomwrap shadow-xl">
+      <div class="absolute inset-0 ph ph-yakiniku zoom"></div>
+      <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(18,11,7,.1),rgba(18,11,7,.86));"></div>
+      <p class="absolute bottom-6 left-6 right-6 mincho font-bold text-cream palt" style="font-size:clamp(1.45rem,4.3vw,1.85rem); line-height:1.36;"><span style="display:block;white-space:nowrap">ひとりじゃ</span><span style="display:block;white-space:nowrap">入れない焼肉。</span></p>
+    </article>
+    <article class="tap relative w-[270px] sm:w-[320px] aspect-[4/5] rounded-card overflow-hidden zoomwrap shadow-xl">
+      <div class="absolute inset-0 ph ph-italian2 zoom"></div>
+      <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(18,11,7,.1),rgba(18,11,7,.86));"></div>
+      <p class="absolute bottom-6 left-6 right-6 mincho font-bold text-cream palt" style="font-size:clamp(1.45rem,4.3vw,1.85rem); line-height:1.36;"><span style="display:block;white-space:nowrap">バズった店、</span><span style="display:block;white-space:nowrap">誰と行く？</span></p>
+    </article>
+    <article class="tap relative w-[270px] sm:w-[320px] aspect-[4/5] rounded-card overflow-hidden zoomwrap shadow-xl">
+      <div class="absolute inset-0 ph ph-bar zoom"></div>
+      <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(18,11,7,.1),rgba(18,11,7,.86));"></div>
+      <p class="absolute bottom-6 left-6 right-6 mincho font-bold text-cream palt" style="font-size:clamp(1.45rem,4.3vw,1.85rem); line-height:1.36;"><span style="display:block;white-space:nowrap">誘うのって、</span><span style="display:block;white-space:nowrap">正直だるい。</span></p>
+    </article>
+    <article class="tap relative w-[270px] sm:w-[320px] aspect-[4/5] rounded-card overflow-hidden zoomwrap shadow-xl">
+      <div class="absolute inset-0 ph ph-izakaya zoom"></div>
+      <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(18,11,7,.1),rgba(18,11,7,.86));"></div>
+      <p class="absolute bottom-6 left-6 right-6 mincho font-bold text-cream palt" style="font-size:clamp(1.45rem,4.3vw,1.85rem); line-height:1.36;"><span style="display:block;white-space:nowrap">今日もヒマ、</span><span style="display:block;white-space:nowrap">相手がいない。</span></p>
+    </article>
+  </div>
+
+  <div class="relative z-10 max-w-[1200px] mx-auto px-5 sm:px-8 mt-10">
+    <p class="reveal mincho font-bold palt text-ink" style="font-size:clamp(1.4rem,4vw,2.1rem); line-height:1.4;">ぜんぶ、<span class="text-cta">あいのりごはん</span>で解決。</p>
+    <p class="reveal text-muted mt-2 text-[0.95rem]" style="--d:.08s;">指でスワイプ →</p>
+  </div>
+</section>
+
+
+<!-- ====================== 3. FEED（墨地・縦の募集フィード＝アプリの中身を即見せ） ====================== -->
+<section id="feed" class="relative bg-sumi text-cream overflow-hidden" style="padding-top:110px; padding-bottom:110px;">
+  <svg class="absolute top-0 inset-x-0 w-full" style="transform:translateY(-99%);" height="34" viewBox="0 0 1440 34" preserveAspectRatio="none" fill="#160e09" aria-hidden="true"><path d="M0 34 V14 C 120 0,240 0,360 14 C 480 28,600 28,720 14 C 840 0,960 0,1080 14 C 1200 28,1320 28,1440 14 V34 Z"/></svg>
+  <div class="lantern-glow" style="top:-120px; right:-120px; opacity:.42;"></div>
+
+  <div class="relative z-10 max-w-[760px] mx-auto px-5 sm:px-8">
+    <div class="flex items-center gap-2.5 mb-2">
+      <span class="w-2.5 h-2.5 rounded-full bg-ember blip"></span>
+      <span class="anton text-ember tracking-wide text-[0.86rem]">LIVE</span>
+    </div>
+    <h2 class="kin2 mincho font-extrabold palt" style="font-size:clamp(2.1rem,6.4vw,3.4rem); line-height:1.2;"><span class="w" style="--wd:0s"><span>今夜、</span></span><span class="w" style="--wd:.1s"><span class="text-ember">あと1人。</span></span></h2>
+    <p class="reveal text-cream/60 mt-3 text-[0.95rem]" style="--d:.1s;">埋まったら成立。あなたが最後のひとりかも。</p>
+
+    <div class="mt-9 space-y-5">
+      <!-- card 1 -->
+      <article class="reveal-scale tap rounded-card overflow-hidden border border-white/10 bg-white/[0.04]" style="--d:.02s;">
+        <div class="relative h-[150px] zoomwrap">
+          <div class="absolute inset-0 ph ph-steak-board zoom"></div>
+          <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(18,11,7,.15),rgba(18,11,7,.8));"></div>
+          <span class="absolute top-3 left-3 anton text-[0.62rem] tracking-wider px-2.5 py-1 rounded bg-cta text-cream">焼肉</span>
+          <span class="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3">
+            <span class="mincho font-bold text-cream text-[1.02rem] sm:text-[1.18rem] palt min-w-0">炭火焼肉で、いい夜を</span>
+            <span class="big-num text-ember text-[1.4rem] sm:text-[1.7rem] shrink-0">¥4,000<span class="text-cream/60 text-[0.7rem]">〜</span></span>
           </span>
-          <h3 class="mincho font-bold text-[1.5rem] leading-snug palt">知らない人と会うのは、<br/>正直、少し不安。</h3>
-          <p class="text-cream/85 mt-3 leading-[1.9] text-[0.97rem]">わかります。だから<strong class="text-white font-bold">性別の非表示、通報・ブロック、集合場所と時間の明示</strong>で、出会い目的に寄りすぎない設計にしています。</p>
-          <a href="#safety" class="mt-5 inline-flex items-center gap-1.5 text-[0.92rem] font-bold text-ember hover:gap-2.5 transition-all">安心設計を見る <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <div class="p-5">
+          <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[0.82rem] sm:text-[0.84rem] mb-2">
+            <span class="text-cream/70">恵比寿 ・ 今夜 19:00</span>
+            <span class="text-ember font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-ember blip"></span>あと1人で成立</span>
+          </div>
+          <div class="gauge" style="--fill:80%;"><i></i></div>
+          <button type="button" onclick="location.hash='#register'" class="tap mt-4 w-full h-[52px] rounded-pill bg-cta text-cream font-bold text-[1rem]">参加する</button>
         </div>
       </article>
 
-      <!-- right: the three pains as airy hairline rows (not equal cards) -->
-      <div class="reveal-r lg:col-span-7 rounded-card bg-paper border border-line px-7 sm:px-10 py-3 flex flex-col justify-center" style="--d:.12s; box-shadow:0 26px 60px -38px rgba(58,29,21,.45);">
-        <article class="reveal flex items-start gap-5 py-8 border-b border-line" style="--d:.1s;">
-          <span class="anton text-soft text-[2.3rem] leading-none mt-1" style="color:#eccbb2;">01</span>
-          <div><h3 class="mincho font-bold text-[1.28rem] palt">ひとりでは入りづらい店がある</h3>
-          <p class="text-muted mt-2 leading-[1.9] text-[0.97rem]">カウンターだけの焼肉、コース必須の割烹、複数人前提のお得な飲み放題。「行ってみたいけど、ひとりはちょっと」で諦めてきた店、ありませんか。</p></div>
-        </article>
-        <article class="reveal flex items-start gap-5 py-8 border-b border-line" style="--d:.16s;">
-          <span class="anton text-[2.3rem] leading-none mt-1" style="color:#eccbb2;">02</span>
-          <div><h3 class="mincho font-bold text-[1.28rem] palt">気になるメニューを誰かと</h3>
-          <p class="text-muted mt-2 leading-[1.9] text-[0.97rem]">SNSで見たあの一皿。せっかくなら、同じものに惹かれた人と一緒に味わいたい。</p></div>
-        </article>
-        <article class="reveal flex items-start gap-5 py-8" style="--d:.22s;">
-          <span class="anton text-[2.3rem] leading-none mt-1" style="color:#eccbb2;">03</span>
-          <div><h3 class="mincho font-bold text-[1.28rem] palt">毎回「誘う」のが面倒</h3>
-          <p class="text-muted mt-2 leading-[1.9] text-[0.97rem]">日程調整、人数集め、ドタキャン。幹事の負担なしで、行きたい店を起点にゆるく集まりたい。</p></div>
-        </article>
-      </div>
+      <!-- card 2 -->
+      <article class="reveal-scale tap rounded-card overflow-hidden border border-white/10 bg-white/[0.04]" style="--d:.06s;">
+        <div class="relative h-[150px] zoomwrap">
+          <div class="absolute inset-0 ph ph-italian zoom"></div>
+          <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(18,11,7,.15),rgba(18,11,7,.8));"></div>
+          <span class="absolute top-3 left-3 anton text-[0.62rem] tracking-wider px-2.5 py-1 rounded bg-cta text-cream">イタリアン</span>
+          <span class="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3">
+            <span class="mincho font-bold text-cream text-[1.02rem] sm:text-[1.18rem] palt min-w-0">名物パスタを4人で</span>
+            <span class="big-num text-ember text-[1.4rem] sm:text-[1.7rem] shrink-0">¥2,000<span class="text-cream/60 text-[0.7rem]">〜</span></span>
+          </span>
+        </div>
+        <div class="p-5">
+          <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[0.82rem] sm:text-[0.84rem] mb-2">
+            <span class="text-cream/70">渋谷 ・ 今夜 20:00</span>
+            <span class="text-ember font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-ember blip"></span>あと2人</span>
+          </div>
+          <div class="gauge" style="--fill:60%; --d:.1s;"><i></i></div>
+          <button type="button" onclick="location.hash='#register'" class="tap mt-4 w-full h-[52px] rounded-pill bg-cta text-cream font-bold text-[1rem]">参加する</button>
+        </div>
+      </article>
+
+      <!-- card 3 -->
+      <article class="reveal-scale tap rounded-card overflow-hidden border border-white/10 bg-white/[0.04]" style="--d:.1s;">
+        <div class="relative h-[150px] zoomwrap">
+          <div class="absolute inset-0 ph ph-bar zoom"></div>
+          <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(18,11,7,.15),rgba(18,11,7,.8));"></div>
+          <span class="absolute top-3 left-3 anton text-[0.62rem] tracking-wider px-2.5 py-1 rounded bg-cta text-cream">バル</span>
+          <span class="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3">
+            <span class="mincho font-bold text-cream text-[1.02rem] sm:text-[1.18rem] palt min-w-0">隠れ家バルで乾杯</span>
+            <span class="big-num text-ember text-[1.4rem] sm:text-[1.7rem] shrink-0">¥4,000<span class="text-cream/60 text-[0.7rem]">〜</span></span>
+          </span>
+        </div>
+        <div class="p-5">
+          <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[0.82rem] sm:text-[0.84rem] mb-2">
+            <span class="text-cream/70">新宿 ・ 今夜 19:30</span>
+            <span class="text-ember font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-ember blip"></span>あと1人で成立</span>
+          </div>
+          <div class="gauge" style="--fill:78%; --d:.16s;"><i></i></div>
+          <button type="button" onclick="location.hash='#register'" class="tap mt-4 w-full h-[52px] rounded-pill bg-cta text-cream font-bold text-[1rem]">参加する</button>
+        </div>
+      </article>
+    </div>
+
+    <p class="text-cream/40 text-[0.76rem] mt-6">※ 募集はイメージです。アプリ公開後に実際の募集が並びます。</p>
+  </div>
+</section>
+
+
+<!-- ====================== 4. HOW（生成り地・3タップ：超ミニマル） ====================== -->
+<section id="how" class="relative bg-cream washi overflow-hidden" style="padding-top:96px; padding-bottom:96px;">
+  <div class="relative z-10 max-w-[1200px] mx-auto px-5 sm:px-8">
+    <h2 class="kin2 mincho font-extrabold palt" style="font-size:clamp(2.1rem,6.4vw,3.4rem); line-height:1.2;"><span class="w" style="--wd:0s"><span>3タップで、</span></span><span class="w" style="--wd:.1s"><span class="text-cta">成立。</span></span></h2>
+
+    <div class="mt-12 grid sm:grid-cols-3 gap-5">
+      <article class="reveal tap rounded-card bg-paper border border-line p-7 relative overflow-hidden" style="--d:.02s; box-shadow:0 26px 60px -40px rgba(58,29,21,.45);">
+        <span class="big-num text-[3.6rem]" style="color:#eccbb2;">01</span>
+        <h3 class="mincho font-bold text-[1.5rem] palt mt-1">さがす</h3>
+        <p class="text-muted mt-1.5 text-[0.95rem]">ジャンルとエリアで募集を流し見。</p>
+      </article>
+      <article class="reveal tap rounded-card bg-paper border border-line p-7 relative overflow-hidden" style="--d:.08s; box-shadow:0 26px 60px -40px rgba(58,29,21,.45);">
+        <span class="big-num text-[3.6rem]" style="color:#eccbb2;">02</span>
+        <h3 class="mincho font-bold text-[1.5rem] palt mt-1">集まる</h3>
+        <p class="text-muted mt-1.5 text-[0.95rem]">人数が埋まったら成立。場所と時間も出る。</p>
+      </article>
+      <article class="reveal tap rounded-card bg-cta text-cream p-7 relative overflow-hidden" style="--d:.14s;">
+        <div class="lantern-glow" style="top:-140px; right:-110px; width:280px; height:280px; opacity:.4;"></div>
+        <span class="relative big-num text-[3.6rem] text-white/35">03</span>
+        <h3 class="relative mincho font-bold text-[1.5rem] palt mt-1">食べる</h3>
+        <p class="relative text-cream/90 mt-1.5 text-[0.95rem]">支払いは各自。お金で気をつかわない。</p>
+      </article>
     </div>
   </div>
 </section>
 
 
-<!-- ====================== 3. HOW IT WORKS (墨地・sticky scrollytelling) ====================== -->
-<section id="how" class="relative bg-sumi text-cream overflow-hidden" style="padding-top:150px; padding-bottom:150px;">
-  <!-- noren wave edge -->
+<!-- ====================== 5. VALUE（墨地・どでか数字＋写真の即パンチ） ====================== -->
+<section id="value" class="relative bg-sumi text-cream overflow-hidden" style="padding-top:110px; padding-bottom:110px;">
   <svg class="absolute top-0 inset-x-0 w-full" style="transform:translateY(-99%);" height="34" viewBox="0 0 1440 34" preserveAspectRatio="none" fill="#160e09" aria-hidden="true"><path d="M0 34 V14 C 120 0,240 0,360 14 C 480 28,600 28,720 14 C 840 0,960 0,1080 14 C 1200 28,1320 28,1440 14 V34 Z"/></svg>
-  <div class="lantern-glow" style="top:-140px; right:-120px; opacity:.4;"></div>
-
-  <div class="relative z-10 max-w-[1200px] mx-auto px-5 sm:px-8 grid lg:grid-cols-12 gap-10 lg:gap-12">
-    <!-- sticky rail -->
-    <div class="lg:col-span-4">
-      <div class="lg:sticky lg:top-28 reveal">
-        <h2 class="kin2 mincho font-extrabold palt" style="font-size:clamp(2rem,5vw,3.1rem); line-height:1.28;"><span class="w" style="--wd:0s"><span>集めて、</span></span><span class="w" style="--wd:.09s"><span>確かめて、</span></span><br><span class="w" style="--wd:.2s"><span class="text-ember">うまいもん。</span></span></h2>
-        <p class="text-cream/70 mt-5 leading-[1.95] text-[1.02rem] max-w-[30em]">予約も決済も、まだ自動ではありません。あいのりごはんが担うのは「ごはん仲間を集める」ところまで。だから、気軽にはじめられます。</p>
-        <ol class="mt-9 space-y-4 hidden lg:block">
-          <li class="rail-item active" data-rail="1"><span class="anton rail-num text-[0.9rem] mr-2">01</span>行きたい店を見つける</li>
-          <li class="rail-item" data-rail="2"><span class="anton rail-num text-[0.9rem] mr-2">02</span>人数が集まり成立</li>
-          <li class="rail-item" data-rail="3"><span class="anton rail-num text-[0.9rem] mr-2">03</span>支払いは各自で気軽</li>
-          <li class="rail-item" data-rail="4"><span class="anton rail-num text-[0.9rem] mr-2">04</span>LINE・SNSでシェア</li>
-        </ol>
-      </div>
-    </div>
-
-    <!-- steps -->
-    <div class="lg:col-span-8 space-y-6 md:space-y-7">
-      <article id="how-1" class="how-step reveal rounded-card border border-white/10 bg-white/[0.035] p-6 sm:p-8 grid sm:grid-cols-12 gap-6 items-center" data-step="1">
-        <div class="sm:col-span-7"><span class="anton text-ember text-[clamp(2.6rem,6vw,4rem)] leading-none">01</span>
-          <h3 class="mincho font-bold text-[1.45rem] palt mt-1">行きたい店・食事テーマを見つける</h3>
-          <p class="text-cream/70 mt-2.5 leading-[1.9] text-[0.98rem]">ジャンル、エリア、価格帯から募集を探す。気に入った店がなければ、自分で「この店に行きたい」と募集を立てるだけ。</p>
-        </div>
-        <div class="sm:col-span-5"><div class="rounded-2xl overflow-hidden h-40 relative zoomwrap"><div class="absolute inset-0 ph ph-yakiniku zoom"></div><div class="absolute inset-0" style="background:linear-gradient(180deg,transparent,rgba(18,11,7,.7));"></div><span class="absolute bottom-3 left-4 text-[0.8rem] text-cream/95 mincho font-bold">焼肉・恵比寿・4,000円〜</span></div></div>
-      </article>
-
-      <article id="how-2" class="how-step reveal rounded-card border border-white/10 bg-white/[0.035] p-6 sm:p-8 grid sm:grid-cols-12 gap-6 items-center" data-step="2">
-        <div class="sm:col-span-7"><span class="anton text-ember text-[clamp(2.6rem,6vw,4rem)] leading-none">02</span>
-          <h3 class="mincho font-bold text-[1.45rem] palt mt-1">必要人数が集まったら集合場所・日時を確認</h3>
-          <p class="text-cream/70 mt-2.5 leading-[1.9] text-[0.98rem]">「あと2人」で成立するコースも、人数が揃えば解放。集合場所と時間はアプリ上で明示されるので、当日も迷いません。</p>
-        </div>
-        <div class="sm:col-span-5"><div class="rounded-2xl border border-white/10 bg-white/[0.05] p-5">
-          <div class="flex items-center justify-between text-[0.82rem]"><span class="text-cream/70">募集人数</span><span class="anton text-ember text-[1.5rem]">5<span class="text-cream/50 text-[0.9rem]">名</span></span></div>
-          <div class="mt-2.5 h-2.5 rounded-full bg-white/10 overflow-hidden"><div class="h-full rounded-full" style="width:60%; background:linear-gradient(90deg,#df4f1c,#ff7a3d);"></div></div>
-          <p class="mt-2.5 text-[0.78rem] text-[#7fe0a8] font-bold flex items-center gap-1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7fe0a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>あと2人で成立</p>
-        </div></div>
-      </article>
-
-      <article id="how-3" class="how-step reveal rounded-card border border-white/10 bg-white/[0.035] p-6 sm:p-8 grid sm:grid-cols-12 gap-6 items-center" data-step="3">
-        <div class="sm:col-span-7"><span class="anton text-ember text-[clamp(2.6rem,6vw,4rem)] leading-none">03</span>
-          <h3 class="mincho font-bold text-[1.45rem] palt mt-1">支払いは各自。だから気軽</h3>
-          <p class="text-cream/70 mt-2.5 leading-[1.9] text-[0.98rem]">あいのりごはんは事前決済をしません。会計はお店でそれぞれ。お金のやり取りで気をつかわずに、まずは一度集まれます。</p>
-        </div>
-        <div class="sm:col-span-5"><div class="rounded-2xl border border-white/10 bg-white/[0.05] p-5 flex items-center gap-3">
-          <span class="w-11 h-11 rounded-full bg-white/10 flex items-center justify-center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff7a3d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg></span>
-          <div><p class="text-[0.86rem] font-bold">店頭で各自精算</p><p class="text-[0.74rem] text-cream/60">アプリ内決済なし・割り勘も自由</p></div>
-        </div></div>
-      </article>
-
-      <article id="how-4" class="how-step reveal rounded-card border border-white/10 bg-white/[0.035] p-6 sm:p-8 grid sm:grid-cols-12 gap-6 items-center" data-step="4">
-        <div class="sm:col-span-7"><span class="anton text-ember text-[clamp(2.6rem,6vw,4rem)] leading-none">04</span>
-          <h3 class="mincho font-bold text-[1.45rem] palt mt-1">LINE・SNSで、かんたんシェア</h3>
-          <p class="text-cream/70 mt-2.5 leading-[1.9] text-[0.98rem]">あと1人足りないときは、募集リンクをLINEやSNSにシェア。知り合いも巻き込んで、その場でサクッと人数集め。</p>
-        </div>
-        <div class="sm:col-span-5"><div class="flex flex-col gap-2.5">
-          <span class="rounded-xl border border-white/10 bg-white/[0.05] py-3.5 text-center text-[0.82rem] font-bold">LINEで送る</span>
-          <span class="rounded-xl border border-white/10 bg-white/[0.05] py-3.5 text-center text-[0.82rem] font-bold">リンクをコピー</span>
-        </div></div>
-      </article>
-    </div>
-  </div>
-</section>
-
-
-<!-- ====================== 4. VALUE (生成り地・bento) ====================== -->
-<section id="value" class="relative bg-cream washi overflow-hidden" style="padding-top:140px; padding-bottom:140px;">
-  <div class="lantern-glow" style="bottom:-180px; right:-140px; opacity:.3;"></div>
+  <div class="lantern-glow" style="bottom:-180px; left:-140px; opacity:.34;"></div>
 
   <div class="relative z-10 max-w-[1200px] mx-auto px-5 sm:px-8">
-    <div class="max-w-[46rem]">
-      <h2 class="kin2 mincho font-extrabold palt" style="font-size:clamp(1.9rem,5vw,3.2rem); line-height:1.3;"><span class="w" style="--wd:0s"><span>食体験を</span></span><span class="w" style="--wd:.08s"><span>主役に、</span></span><br><span class="w" style="--wd:.18s"><span>おいしい出会いを</span></span><span class="w" style="--wd:.26s"><span>もっと気軽に</span></span></h2>
-    </div>
-
-    <div class="mt-16 grid md:grid-cols-12 gap-6">
-      <!-- big feature tile (photo) -->
-      <article class="reveal-scale md:col-span-7 md:row-span-2 relative rounded-card overflow-hidden min-h-[360px] md:min-h-[480px] flex items-end zoomwrap" style="--d:.05s;">
+    <div class="grid md:grid-cols-12 gap-5">
+      <article class="reveal-scale md:col-span-7 relative rounded-card overflow-hidden min-h-[300px] flex items-end zoomwrap" style="--d:.02s;">
         <div class="absolute inset-0 ph ph-friends zoom"></div>
-        <div class="absolute inset-0" style="background:linear-gradient(180deg,transparent 28%,rgba(16,10,6,.92));"></div>
-        <div class="relative p-8 sm:p-10 text-cream">
-          <h3 class="mincho font-bold palt" style="font-size:clamp(1.5rem,3vw,2rem); line-height:1.35;">食の好みで、自然につながる</h3>
-          <p class="text-cream/85 mt-3 leading-[1.95] text-[1rem] max-w-[28em]">「激辛が好き」「純喫茶めぐりが趣味」。プロフィールではなく、好きな食べ物が会話のきっかけ。だから、初対面でも自然と話がはずむ。</p>
+        <div class="absolute inset-0" style="background:linear-gradient(180deg,transparent 30%,rgba(16,10,6,.92));"></div>
+        <div class="relative p-8 sm:p-10">
+          <p class="mincho font-bold palt text-cream" style="font-size:clamp(1.25rem,5.2vw,2.3rem); line-height:1.34;">「好き」が同じなら、<br/>初対面でも話せる。</p>
         </div>
       </article>
 
-      <article class="reveal md:col-span-5 rounded-card bg-paper border border-line p-8 flex flex-col" style="--d:.1s; box-shadow:0 26px 60px -40px rgba(58,29,21,.45);">
-        <span class="inline-flex w-12 h-12 rounded-full bg-soft items-center justify-center mb-5"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#df4f1c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/></svg></span>
-        <h3 class="mincho font-bold text-[1.3rem] palt">1人では入りづらい店に行ける</h3>
-        <p class="text-muted mt-2.5 leading-[1.9] text-[0.96rem]">複数人限定コース、飲み放題プラン、カウンター割烹。「人数のハードル」を仲間と一緒に超えられる。</p>
-      </article>
-
-      <article class="reveal md:col-span-5 rounded-card bg-cta text-cream p-8 flex flex-col relative overflow-hidden" style="--d:.16s;">
-        <div class="lantern-glow" style="top:-150px; right:-120px; width:300px; height:300px; opacity:.4;"></div>
-        <span class="relative inline-flex w-12 h-12 rounded-full bg-white/15 items-center justify-center mb-5"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff8f0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
-        <h3 class="relative mincho font-bold text-[1.3rem] palt">気になる店・メニューが集合の合図</h3>
-        <p class="relative text-cream/90 mt-2.5 leading-[1.9] text-[0.96rem]">「あの店に行きたい」がそのまま募集に。新しい店を開拓したい人どうしが、自然に集まれる。</p>
-      </article>
-
-      <article class="reveal md:col-span-12 rounded-card bg-paper border border-line p-8 flex flex-col sm:flex-row sm:items-center gap-6" style="--d:.22s; box-shadow:0 26px 60px -40px rgba(58,29,21,.45);">
-        <div class="flex-1"><h3 class="mincho font-bold text-[1.3rem] palt">幹事いらず。誘う負担からの解放</h3>
-        <p class="text-muted mt-2.5 leading-[1.9] text-[0.96rem] max-w-[44em]">日程も人数も、アプリが可視化。「あと1人」が見えるから、声をかけやすい。仲間を集めるところまで、アプリが引き受けます。</p></div>
-        <div class="flex items-center gap-2 shrink-0"><span class="flex -space-x-3">
-          <span class="w-11 h-11 rounded-full border-2 border-paper ph ph-yakiniku"></span>
-          <span class="w-11 h-11 rounded-full border-2 border-paper ph ph-bar"></span>
-          <span class="w-11 h-11 rounded-full border-2 border-paper ph ph-sushi"></span>
-          <span class="w-11 h-11 rounded-full border-2 border-paper bg-soft flex items-center justify-center text-[0.78rem] font-bold text-terra">+1</span>
-        </span></div>
-      </article>
+      <div class="md:col-span-5 grid grid-rows-2 gap-5">
+        <article class="reveal tap rounded-card border border-white/10 bg-white/[0.04] p-7 flex flex-col justify-center">
+          <span class="big-num text-ember text-[2.8rem]">¥0</span>
+          <p class="mt-1 text-[0.96rem] text-cream/80">登録も利用も、まず無料。アプリ内決済ナシ。</p>
+        </article>
+        <article class="reveal tap rounded-card border border-white/10 bg-white/[0.04] p-7 flex flex-col justify-center" style="--d:.08s;">
+          <span class="big-num text-ember text-[2.1rem] sm:text-[2.8rem]">幹事ゼロ</span>
+          <p class="mt-1 text-[0.96rem] text-cream/80">日程も人数集めもアプリ任せ。誘うストレスなし。</p>
+        </article>
+      </div>
     </div>
   </div>
 </section>
 
 
-<!-- ====================== 5. SAFETY (墨地・hairline panel) ====================== -->
-<section id="safety" class="relative bg-sumi text-cream overflow-hidden" style="padding-top:150px; padding-bottom:150px;">
-  <svg class="absolute top-0 inset-x-0 w-full" style="transform:translateY(-99%);" height="34" viewBox="0 0 1440 34" preserveAspectRatio="none" fill="#160e09" aria-hidden="true"><path d="M0 34 V14 C 120 0,240 0,360 14 C 480 28,600 28,720 14 C 840 0,960 0,1080 14 C 1200 28,1320 28,1440 14 V34 Z"/></svg>
-  <div class="lantern-glow" style="top:-140px; left:-120px; opacity:.36;"></div>
+<!-- ====================== 6. SAFETY（生成り地・1バーで即安心） ====================== -->
+<section id="safety" class="relative bg-cream washi overflow-hidden" style="padding-top:96px; padding-bottom:96px;">
+  <div class="relative z-10 max-w-[1100px] mx-auto px-5 sm:px-8">
+    <h2 class="kin2 mincho font-extrabold palt" style="font-size:clamp(1.9rem,5.6vw,3rem); line-height:1.24;"><span class="w" style="--wd:0s"><span>出会い系じゃない。</span></span><br><span class="w" style="--wd:.12s"><span>主役はずっと</span></span><span class="w" style="--wd:.2s"><span class="text-cta">「料理」。</span></span></h2>
 
-  <div class="relative z-10 max-w-[1200px] mx-auto px-5 sm:px-8">
-    <div class="max-w-[48rem]">
-      <h2 class="kin2 mincho font-extrabold palt" style="font-size:clamp(1.9rem,5vw,3.2rem); line-height:1.32;"><span class="w" style="--wd:0s"><span>主役は、</span></span><span class="w" style="--wd:.08s"><span>ずっと</span></span><span class="w" style="--wd:.16s"><span>「料理」。</span></span><br><span class="w" style="--wd:.28s"><span>だから、</span></span><span class="w" style="--wd:.36s"><span>安心して集まれる</span></span></h2>
-      <p class="reveal text-cream/70 mt-6 text-[1.04rem] leading-[2] max-w-[38em]" style="--d:.2s;">出会い目的に寄りすぎないために。あいのりごはんは、設計の段階から「食の場」であることを守ります。</p>
-    </div>
-
-    <div class="reveal mt-14 rounded-card glass overflow-hidden grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10" style="--d:.1s;">
-      <div class="p-8 sm:p-9">
-        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-5" style="background:rgba(47,143,91,.16); border:1px solid rgba(47,143,91,.45);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7fe0a8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="text-[0.72rem] text-[#bff0d2] font-bold">実装済みの方針</span></span>
-        <h3 class="mincho font-bold text-[1.24rem] palt">性別は非表示</h3>
-        <p class="text-cream/70 mt-2.5 leading-[1.9] text-[0.95rem]">プロフィールで性別を出しません。「異性と食事」ではなく「同じ店に行きたい人」として集まる設計です。</p>
+    <div class="reveal mt-9 grid sm:grid-cols-3 gap-4" style="--d:.1s;">
+      <div class="tap rounded-card bg-paper border border-line p-6 flex items-center gap-3" style="box-shadow:0 22px 50px -40px rgba(58,29,21,.45);">
+        <span class="inline-flex w-11 h-11 shrink-0 rounded-full bg-fresh/12 items-center justify-center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <span class="font-bold text-[1.02rem]">性別は非表示</span>
       </div>
-      <div class="p-8 sm:p-9">
-        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-5" style="background:rgba(47,143,91,.16); border:1px solid rgba(47,143,91,.45);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7fe0a8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="text-[0.72rem] text-[#bff0d2] font-bold">実装済みの方針</span></span>
-        <h3 class="mincho font-bold text-[1.24rem] palt">通報・ブロック・参加ルール</h3>
-        <p class="text-cream/70 mt-2.5 leading-[1.9] text-[0.95rem]">不快な相手はワンタップで通報・ブロック。参加ルールに沿わない募集は運営が確認します。</p>
+      <div class="tap rounded-card bg-paper border border-line p-6 flex items-center gap-3" style="box-shadow:0 22px 50px -40px rgba(58,29,21,.45);">
+        <span class="inline-flex w-11 h-11 shrink-0 rounded-full bg-fresh/12 items-center justify-center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <span class="font-bold text-[1.02rem]">通報・ブロック</span>
       </div>
-      <div class="p-8 sm:p-9">
-        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-pill mb-5" style="background:rgba(47,143,91,.16); border:1px solid rgba(47,143,91,.45);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7fe0a8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="text-[0.72rem] text-[#bff0d2] font-bold">実装済みの方針</span></span>
-        <h3 class="mincho font-bold text-[1.24rem] palt">集合場所と時間を明示</h3>
-        <p class="text-cream/70 mt-2.5 leading-[1.9] text-[0.95rem]">どこに、何時に集まるかをアプリ上で明確に。お店という公の場で、人数を揃えて会います。</p>
-      </div>
-    </div>
-
-    <div class="reveal mt-8 rounded-card border border-brass/30 p-7 sm:p-9" style="--d:.16s; background:rgba(194,145,63,.06);">
-      <div class="flex items-start gap-4">
-        <span class="inline-flex w-12 h-12 shrink-0 rounded-full items-center justify-center" style="background:rgba(194,145,63,.18);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#c2913f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
-        <div><h3 class="mincho font-bold text-[1.2rem] palt">将来的に強化していく安心</h3>
-        <p class="text-cream/70 mt-2.5 leading-[1.9] text-[0.95rem]">ドタキャンを防ぐ<strong class="text-cream">事前決済</strong>、運営が確認した<strong class="text-cream">審査済み掲載店</strong>、複数人ならではの<strong class="text-cream">限定クーポン</strong>。需要が見えた段階で、順に追加していきます。</p></div>
+      <div class="tap rounded-card bg-paper border border-line p-6 flex items-center gap-3" style="box-shadow:0 22px 50px -40px rgba(58,29,21,.45);">
+        <span class="inline-flex w-11 h-11 shrink-0 rounded-full bg-fresh/12 items-center justify-center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+        <span class="font-bold text-[1.02rem]">集合場所も明示</span>
       </div>
     </div>
   </div>
@@ -645,13 +693,13 @@
       <p class="text-muted mt-6 leading-[2] text-[1.04rem] max-w-[34em]">まだアプリは公開前。だからいまは、あなたの「行きたい」を聞かせてください。ローンチ時に、希望エリア・ジャンルの募集を優先してご案内します。</p>
 
       <ul class="mt-8 space-y-3.5">
-        <li class="flex items-center gap-3 text-[0.99rem]"><span class="inline-flex w-6 h-6 rounded-full bg-fresh/15 items-center justify-center shrink-0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>登録は<strong class="text-ink font-bold">完全無料</strong>・約60秒</li>
-        <li class="flex items-center gap-3 text-[0.99rem]"><span class="inline-flex w-6 h-6 rounded-full bg-fresh/15 items-center justify-center shrink-0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>先行ユーザー枠を<strong class="text-ink font-bold">優先ご案内</strong></li>
-        <li class="flex items-center gap-3 text-[0.99rem]"><span class="inline-flex w-6 h-6 rounded-full bg-fresh/15 items-center justify-center shrink-0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>いつでも配信停止OK・<strong class="text-ink font-bold">勧誘しません</strong></li>
+        <li class="flex items-center gap-3 text-[0.99rem]"><span class="inline-flex w-6 h-6 rounded-full bg-fresh/15 items-center justify-center shrink-0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="min-w-0">登録は<strong class="text-ink font-bold whitespace-nowrap">完全無料</strong>・約60秒</span></li>
+        <li class="flex items-center gap-3 text-[0.99rem]"><span class="inline-flex w-6 h-6 rounded-full bg-fresh/15 items-center justify-center shrink-0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="min-w-0">先行ユーザー枠を<strong class="text-ink font-bold whitespace-nowrap">優先ご案内</strong></span></li>
+        <li class="flex items-center gap-3 text-[0.99rem]"><span class="inline-flex w-6 h-6 rounded-full bg-fresh/15 items-center justify-center shrink-0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="min-w-0">いつでも配信停止OK・<strong class="text-ink font-bold whitespace-nowrap">勧誘しません</strong></span></li>
       </ul>
 
-      <div class="mt-9 inline-flex items-center gap-3 rounded-card bg-paper border border-line px-6 py-5" style="box-shadow:0 26px 60px -40px rgba(58,29,21,.45);">
-        <span class="anton text-cta text-[2.4rem] leading-none"><span data-count="1800">1,800</span><span class="text-[1.1rem]">+</span></span>
+      <div class="reg-count mt-9 inline-flex items-center gap-3 rounded-card bg-paper border border-line px-6 py-5" hidden style="box-shadow:0 26px 60px -40px rgba(58,29,21,.45);">
+        <span class="anton text-cta text-[2.4rem] leading-none"><span data-count="1800" data-reg>1,800</span><span class="text-[1.1rem]">+</span></span>
         <span class="text-[0.86rem] text-muted leading-snug">人が<br/>すでに登録済み</span>
       </div>
     </div>
@@ -667,7 +715,7 @@
           <legend class="flex items-center gap-2.5 text-[0.96rem] font-bold mb-3"><span class="anton text-terra text-[0.95rem]">01</span>連絡先 <span class="text-terra">*</span> <span class="font-normal text-muted text-[0.8rem]">（メール または LINE のどちらか）</span></legend>
           <div class="grid sm:grid-cols-2 gap-3">
             <label class="block"><span class="sr-only">メールアドレス</span><input type="email" class="field-input" placeholder="you@example.com" aria-label="メールアドレス" autocomplete="email" /></label>
-            <label class="block"><span class="sr-only">LINE ID</span><input type="text" class="field-input" placeholder="LINE ID（任意でこちらでも可）" aria-label="LINE ID" /></label>
+            <label class="block"><span class="sr-only">LINE ID</span><input type="text" class="field-input" placeholder="LINE ID（任意）" aria-label="LINE ID" /></label>
           </div>
         </fieldset>
 
@@ -830,7 +878,7 @@
 
   // reveal + kinetic headlines
   (function(){
-    var els=document.querySelectorAll('.reveal, .reveal-l, .reveal-r, .reveal-scale, .reveal-clip, .kin2');
+    var els=document.querySelectorAll('.reveal, .reveal-l, .reveal-r, .reveal-scale, .reveal-clip, .kin2, .gauge');
     if(!('IntersectionObserver' in window)){ els.forEach(function(el){ el.classList.add('in'); }); return; }
     var io=new IntersectionObserver(function(entries){
       entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
@@ -900,6 +948,17 @@
       cta.style.transform='translate('+(x*0.12)+'px,'+(y*0.18-2)+'px)';
     });
     cta.addEventListener('pointerleave', function(){ cta.style.transform=''; });
+  })();
+
+  // ponytail: 事前登録者数の表示制御。広告で100人超えたら REGISTERED を実数に更新するだけ。
+  (function(){
+    var REGISTERED = 0; // 実際の登録者数。100以上で表示される。
+    if (REGISTERED < 100) return; // 非表示のまま
+    document.querySelectorAll('.reg-count').forEach(function(el){ el.hidden = false; });
+    document.querySelectorAll('[data-reg]').forEach(function(el){
+      el.setAttribute('data-count', REGISTERED);
+      el.textContent = REGISTERED.toLocaleString();
+    });
   })();
 </script>
 </body>
