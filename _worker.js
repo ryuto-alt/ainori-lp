@@ -395,6 +395,12 @@ ${broke ? `<p class="note bad">⚠ ${broke} 本のクエリが失敗した。上
    事前登録
    ============================================================ */
 
+/* Discord のチャンネルは本人以外も見るし、スクショも流れる。生のメアドを出す理由が無いので
+   ローカル部は頭2文字だけ残す。ドメインは重複や捨てアドの判断に使うので残す。
+   元の値は D1 の waitlist にあるので、必要なら /dash から引ける。 */
+export const maskEmail = (e) =>
+  String(e).replace(/^([^@]{1,2})[^@]*(@.+)$/, (_, head, domain) => `${head}****${domain}`);
+
 /* Discord通知。area は "渋谷,新宿|ref:t.co" の形なので '|' で流入元を切り出す。
    実ユーザーの通し番号を添える — 「今何人目か」を見るためだけに /dash を開くのは無駄なので。 */
 async function notify(env, email, area, areaFree) {
@@ -415,7 +421,7 @@ async function notify(env, email, area, areaFree) {
 
   const lines = [
     `🍚 **事前登録${nth}**`,
-    `　${email}`,
+    `　${maskEmail(email)}`,
     where ? `　${where}` : '',
     areaFree ? `　その他の希望地: **${areaFree}**` : '',
     `　流入元: ${src || '不明（直リンク / アプリ内ブラウザ）'}`,
