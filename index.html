@@ -3,963 +3,1264 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>あいのりごはん｜食の好みでつながり、みんなでごはんに行く。事前登録受付中</title>
-<meta name="description" content="あいのりごはんは、行ってみたいお店や食べたい料理をきっかけに、ごはん仲間を集めるための飲食特化型SNS。今夜、知らない誰かと、うまいもん。事前登録受付中。" />
+<title>あいのりごはん｜腹が減った ─ ごはん仲間を集めるSNS・事前登録受付中</title>
+<meta name="description" content="スクロールで進む、今夜の物語。あいのりごはんは「食べたい」でつながる飲食特化型SNS。事前登録受付中。" />
 
-<!-- ============ progressive-enhancement flag (text never hidden if JS/observer fails) ============ -->
-<script>document.documentElement.classList.add('js');</script>
+<!--
+  proto-d: スクロール体験型・シネマティックLP
+  章構成: 序(ズームヒーロー) → 壱(縦書き視差) → 弐(横スクロール棚) → 参(ピン留めスマホ) → 肆(安心の作法) → 伍(登録) → 終(フィル文字)
+  スタック: Lenis + GSAP ScrollTrigger / reduced-motion & no-JS では静的に全文が読める
+-->
 
-<!-- ============ Google Fonts ============ -->
+<link rel="canonical" href="https://ainorigohan.com/" />
+<meta name="theme-color" content="#0a0605" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0605'/%3E%3Cpath d='M14 30h36a18 18 0 0 1-36 0z' fill='%23ff6b2c'/%3E%3Crect x='10' y='50' width='44' height='5' rx='2.5' fill='%23c2913f'/%3E%3C/svg%3E" />
+
+<!-- OGP: これが無いとDM/ストーリーズ/LINEでURLを転送したときカードが出ない。
+     og:image は暫定でヒーロー写真そのもの(文字なし)。クローラにWebPを返されると
+     出ないことがあるので auto=format は使わず fm=jpg を明示する。
+     ⚠️ 差し替えたら Meta の Sharing Debugger で再スクレイプしないと反映されない -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="あいのりごはん" />
+<meta property="og:locale" content="ja_JP" />
+<meta property="og:url" content="https://ainorigohan.com/" />
+<meta property="og:title" content="腹が減った ─ あいのりごはん" />
+<meta property="og:description" content="行きたい店はある。相手がいない。ごはん仲間を集めるSNS。目的は、飯。事前登録は30秒・無料。" />
+<meta property="og:image" content="https://images.unsplash.com/photo-1558030006-450675393462?fit=crop&w=1200&h=630&q=75&fm=jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="あいのりごはん ─ ごはん仲間を集めるSNS" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="腹が減った ─ あいのりごはん" />
+<meta name="twitter:description" content="行きたい店はある。相手がいない。ごはん仲間を集めるSNS。事前登録受付中。" />
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1558030006-450675393462?fit=crop&w=1200&h=630&q=75&fm=jpg" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Shippori+Mincho+B1:wght@500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet" />
-
-<!-- ============ Hero image preload (LCP) ============ -->
-<link rel="preload" as="image" href="https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=1700&q=72" />
-
-<!-- ============ Tailwind ============ -->
-<script src="https://cdn.tailwindcss.com"></script>
+<!-- LCP(ヒーロー写真)はフォントCSSより先に、明示的に最優先で取りに行かせる。
+     preload は fetchpriority が無いと Low 扱いで、他の写真7枚と同列に並ぶ -->
+<link rel="preload" as="image" fetchpriority="high" media="(min-width:769px)" href="https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=1700&q=72" />
+<link rel="preload" as="image" fetchpriority="high" media="(max-width:768px)" href="https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=68" />
+<!-- 要求するのは実際に指定しているウェイトだけ。和文は1ウェイトごとに
+     unicode-range 分割の @font-face が100個以上増え、そのままレンダーブロッキングCSSの重さになる -->
+<!-- 計測はフォントCSSより前に置く。
+     保留中のスタイルシートがあるとインラインscriptの実行はブロックされるので、
+     body 側に置いていたときは Google Fonts の 121KB(gzip後・レンダーブロッキング)が
+     届くまで __ev('view') が撃てなかった。タップして1秒で戻った人がLP到達に入らない。 -->
+<!-- ============ ファネル計測 ============
+     /dash が読む生データ。Meta ピクセルは PageView と Lead しか撃たないので、
+     「9画面のどこで落ちたか」はこちらでしか取れない。
+     計測が落ちても LP は動く: __ev は例外を出さず、戻り値も見ていない。 -->
 <script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          sumi:    '#160e09',   /* 温墨 base dark (deepened) */
-          sumi2:   '#241710',   /* 濃赤茶 dark2 */
-          paper:   '#fffdf9',   /* 生成り */
-          cream:   '#fcf5ea',   /* クリーム */
-          soft:    '#f8e8d8',   /* ソフト面 */
-          terra:   '#df4f1c',   /* テラコッタ accent */
-          ember:   '#ff7a3d',   /* 炭オレンジ */
-          cta:     '#b8331a',   /* 深いCTA面 */
-          ink:     '#271c15',   /* 墨色 文字 */
-          muted:   '#7c6c61',   /* ティントグレー */
-          line:    '#ecd8c6',   /* 罫線 */
-          brass:   '#c2913f',   /* 燻し金 */
-          fresh:   '#2f8f5b',   /* 成立グリーン */
-        },
-        fontFamily: {
-          mincho: ['"Shippori Mincho B1"', 'serif'],
-          sans:   ['"Noto Sans JP"', 'sans-serif'],
-          anton:  ['Anton', 'sans-serif'],
-        },
-        borderRadius: { card: '26px', pill: '999px' },
+(function(){
+  'use strict';
+  var sid;
+  try{
+    sid = sessionStorage.getItem('_sid');
+    if(!sid){ sid = Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+              sessionStorage.setItem('_sid', sid); }
+  }catch(_){ /* プライベートモード等。1回きりのIDにして段だけ拾う */ sid = 'x' + Math.random().toString(36).slice(2,10); }
+
+  /* 流入元。フォームの trafficSrc() と同じ形('ig/aug/reels_a' か 'ref:t.co')にして
+     登録データ側の area と突き合わせられるようにする。
+     ただしリファラは遷移すると消えるので、初回に握って sessionStorage に置く */
+  var src = '';
+  try{
+    src = sessionStorage.getItem('_src');
+    if(src === null){
+      var q = new URLSearchParams(location.search);
+      src = ['utm_source','utm_campaign','utm_content']
+              .map(function(k){ return q.get(k); }).filter(Boolean).join('/');
+      if(!src && document.referrer){
+        var h = new URL(document.referrer).hostname;
+        if(h && h !== location.hostname) src = 'ref:' + h;
       }
+      src = src.replace(/[|\s]/g,'').slice(0,60);
+      sessionStorage.setItem('_src', src);
     }
-  }
+  }catch(_){ src = ''; }
+
+  window.__sid = sid;
+
+  var sent = {};
+  window.__ev = function(n){
+    if(sent[n]) return;   /* サーバ側も PRIMARY KEY(sid,name) で弾くが、無駄な往復を先に止める */
+    sent[n] = 1;
+    var b = JSON.stringify({ n:n, sid:sid, src:src });
+    try{
+      if(navigator.sendBeacon){ navigator.sendBeacon('/api/ev', new Blob([b],{type:'application/json'})); }
+      else{ fetch('/api/ev',{ method:'POST', keepalive:true,
+              headers:{'content-type':'application/json'}, body:b }).catch(function(){}); }
+    }catch(_){}
+  };
+
+  __ev('view');
+
+  document.addEventListener('DOMContentLoaded', function(){
+    if(!window.IntersectionObserver) return;
+    /* 章は画面より高いことがある(序は280%ピン)。面積比の threshold では永久に閾値へ届かないので、
+       rootMargin で監視領域を画面中央の1本線に潰して「中央線を越えたら到達」とする */
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting) __ev('sec:' + e.target.id); });
+    }, { rootMargin: '-50% 0px -50% 0px' });
+    Array.prototype.forEach.call(document.querySelectorAll('section[data-chapter]'), function(s){
+      if(s.id) io.observe(s);
+    });
+
+    var f = document.getElementById('regForm');
+    if(f) f.addEventListener('focusin', function(){ __ev('form_focus'); }, { once:true });
+
+    /* sec:register は伍章が中央線を越えた時点で、メール欄はまだ1画面ぶん下にある。
+       「章に入った」と「入力欄を見た」を混ぜると、フォームが悪いのか届いていないのかが分からない */
+    var mail = document.getElementById('regEmail');
+    if(mail){
+      var mio = new IntersectionObserver(function(es){
+        if(es.some(function(e){ return e.isIntersecting; })){ __ev('form_view'); mio.disconnect(); }
+      });
+      mio.observe(mail);
+    }
+
+    /* CTAで章を飛ばした人。ファネルの「離脱」が負になる理由がこれ */
+    Array.prototype.forEach.call(document.querySelectorAll('a[href="#register"]'), function(a){
+      a.addEventListener('click', function(){ __ev('cta_click'); });
+    });
+  });
+})();
 </script>
 
+<!-- Noto Sans JP は読まない。日本語フォントは unicode-range で495分割されるため、
+     宣言するだけで CSS が肥大する(Noto Sans JP 単体で非圧縮229KB)。この link は
+     レンダーブロッキングなので、本文用に1書体足すコストが初回表示に直撃する。
+     本文はOS標準(Hiragino / Noto Sans CJK)に任せ、見出しの Shippori Mincho だけ残す。 -->
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Shippori+Mincho+B1:wght@700;800&display=swap" rel="stylesheet" />
+
+<!-- Meta Pixel (dataset "ainorigohan.com" / 2245754156225598)
+     PageView はここで1回。登録成功時の Lead はフォーム側から発火させる。
+     reduced-motion 等とは無関係に常時読み込む。fbq が落ちても本体が壊れないよう
+     以降の呼び出しは必ず window.fbq の存在確認をしてから行うこと。 -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','2245754156225598');
+fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" alt=""
+src="https://www.facebook.com/tr?id=2245754156225598&ev=PageView&noscript=1" /></noscript>
+<!-- End Meta Pixel -->
+
 <style>
-  [hidden]{display:none!important}
   :root{
-    --color-sumi:#160e09; --color-sumi2:#241710;
-    --color-paper:#fffdf9; --color-cream:#fcf5ea; --color-soft:#f8e8d8;
-    --color-terra:#df4f1c; --color-ember:#ff7a3d; --color-cta:#b8331a;
-    --color-ink:#271c15; --color-muted:#7c6c61; --color-line:#ecd8c6;
-    --color-brass:#c2913f; --color-fresh:#2f8f5b;
+    --bg:#0a0605; --bg2:#150c07; --paper:#f6ecdd; --cream:#fcf5ea;
+    --ember:#ff6b2c; --terra:#e14e17; --brass:#c2913f; --mute:#93816f;
     --ease:cubic-bezier(.16,1,.3,1);
+    /* display=swap なのでモバイル回線では必ず差し替えが起きる。素の serif/sans-serif だと
+       和文の字幅が本フォントと大きく違い、切り替わった瞬間に文字が動く。iOSはHiraginoが当たる */
+    --jp-sans:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+    --jp-serif:'Shippori Mincho B1',"Hiragino Mincho ProN","Yu Mincho",YuMincho,serif;
   }
-
-  html{ scroll-behavior:smooth; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; overflow-x:clip; }
   body{
-    font-family:'Noto Sans JP',sans-serif; color:var(--color-ink);
-    background:var(--color-paper); -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility; line-height:1.8; overflow-x:hidden;
+    background:var(--bg); color:var(--paper);
+    font-family:var(--jp-sans); line-height:1.9;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
   }
-  h1,h2,h3,.mincho{ font-family:'Shippori Mincho B1',serif; font-feature-settings:"palt"; letter-spacing:.012em; }
-  .anton{ font-family:'Anton',sans-serif; letter-spacing:.01em; font-feature-settings:normal; }
-  .palt{ font-feature-settings:"palt"; }
-  ::selection{ background:rgba(223,79,28,.22); }
+  ::selection{ background:rgba(255,107,44,.35); }
+  a{ color:inherit; }
+  img{ max-width:100%; display:block; }
+  /* font-weight は明示する。Shippori は 700/800 しか読み込んでいないので、
+     未指定(=400)だとブラウザ任せの代替になる */
+  .mincho{ font-family:var(--jp-serif); font-weight:700; font-feature-settings:"palt"; }
+  .anton{ font-family:Anton,sans-serif; letter-spacing:.02em; }
+  section[id]{ scroll-margin-top:20px; }
 
-  /* ===== Japanese typography hardening: prevent 文字崩れ (mid-word wraps, lone-char orphans, clipping) ===== */
-  h1,h2,h3,h4{ word-break:keep-all; line-break:strict; overflow-wrap:normal; text-wrap:balance; }
-  p,li,figcaption,dd,dt,summary,label,legend,span{ line-break:strict; }
-  p,summary,li,legend{ text-wrap:pretty; }
-  /* never break inside a price / number token */
-  .anton,.big-num{ white-space:nowrap; }
-  /* legend は flex 行。折り返さないと「連絡先」が「連絡/先」に割れる */
-  legend{ flex-wrap:wrap; }
-  .chip > span{ word-break:keep-all; }
+  /* 改行制御: 見出しは文節単位でしか折り返さない。.nb=絶対に割らない語句 */
+  h1,h2,h3,.sc2-punch,.vtx{ word-break:keep-all; line-break:strict; }
+  .nb{ white-space:nowrap; display:inline-block; }
+  p{ text-wrap:pretty; }
 
-  /* ===== のれんボタン: マスク形状の外に文字が溢れないよう1行固定 ===== */
-  .btn-noren > span{ white-space:nowrap; }
-  @media (max-width:639px){
-    .btn-noren{
-      width:100% !important;
-      padding-left:1rem !important; padding-right:1rem !important;
-      font-size:clamp(.85rem,3.9vw,1.06rem) !important;
-    }
+  a:focus-visible, button:focus-visible, input:focus-visible, label:focus-visible{
+    outline:3px solid var(--ember); outline-offset:3px; border-radius:6px;
   }
 
-  /* ===== JS-disabled / observer-never-fires fail-safe: reveal everything, never leave text hidden ===== */
-  html:not(.js) .reveal,
-  html:not(.js) .reveal-l,
-  html:not(.js) .reveal-r,
-  html:not(.js) .reveal-scale{ opacity:1 !important; transform:none !important; }
-  html:not(.js) .reveal-clip{ clip-path:none !important; }
-  html:not(.js) .kin2 .w > span{ transform:none !important; }
-  html:not(.js) .gauge > i{ width:var(--fill,80%) !important; }
+  /* ---------- 粒子 / プログレス ---------- */
+  .grain{ position:fixed; inset:0; z-index:70; pointer-events:none; opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .progress{ position:fixed; top:0; left:0; height:3px; width:100%; z-index:75;
+    transform:scaleX(0); transform-origin:0 50%;
+    background:linear-gradient(90deg,var(--terra),var(--ember),var(--brass)); }
 
-  /* premium fine grain (fixed, no repaint on scroll) */
-  .grain-fixed{
-    position:fixed; inset:0; z-index:55; pointer-events:none; opacity:.045;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  /* lantern radial glow */
-  .lantern-glow{
-    position:absolute; pointer-events:none; z-index:0;
-    width:560px; height:560px; border-radius:50%;
-    background:radial-gradient(circle at center,
-      rgba(255,122,61,.46) 0%, rgba(223,79,28,.22) 34%, rgba(184,51,26,.06) 60%, rgba(184,51,26,0) 74%);
-    filter:blur(12px); mix-blend-mode:screen;
-  }
-
-  /* glass (premium consumer) + reduced-transparency fallback */
-  .glass{
-    background:linear-gradient(135deg, rgba(255,255,255,.15), rgba(255,255,255,.04));
-    backdrop-filter:blur(20px) saturate(160%); -webkit-backdrop-filter:blur(20px) saturate(160%);
-    border:1px solid rgba(255,255,255,.22);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 30px 70px -34px rgba(0,0,0,.6);
-  }
-  .glass-light{
-    background:linear-gradient(135deg, rgba(255,255,255,.72), rgba(255,255,255,.5));
-    backdrop-filter:blur(16px) saturate(150%); -webkit-backdrop-filter:blur(16px) saturate(150%);
-    border:1px solid rgba(255,255,255,.6);
-  }
-  @media (prefers-reduced-transparency: reduce){
-    .glass{ background:rgba(22,14,9,.9); backdrop-filter:none; -webkit-backdrop-filter:none; }
-    .glass-light{ background:rgba(255,253,249,.97); backdrop-filter:none; -webkit-backdrop-filter:none; }
-    .nav-glass{ background:rgba(255,253,249,.98) !important; backdrop-filter:none !important; }
-  }
-
-  /* noren button (signature shape) */
-  .btn-noren{
-    position:relative;
-    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='66' viewBox='0 0 240 66' preserveAspectRatio='none'%3E%3Cpath d='M0 14 C 20 2, 40 2, 60 14 C 80 26, 100 26, 120 14 C 140 2, 160 2, 180 14 C 200 26, 220 26, 240 14 L 240 54 Q 240 66 228 66 L 12 66 Q 0 66 0 54 Z' fill='%23000'/%3E%3C/svg%3E") no-repeat center/100% 100%;
-    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='66' viewBox='0 0 240 66' preserveAspectRatio='none'%3E%3Cpath d='M0 14 C 20 2, 40 2, 60 14 C 80 26, 100 26, 120 14 C 140 2, 160 2, 180 14 C 200 26, 220 26, 240 14 L 240 54 Q 240 66 228 66 L 12 66 Q 0 66 0 54 Z' fill='%23000'/%3E%3C/svg%3E") no-repeat center/100% 100%;
-    transition:transform .25s var(--ease), filter .25s ease;
-  }
-  .btn-noren:hover{ filter:brightness(1.08); transform:translateY(-3px); }
-  .btn-noren:active{ transform:translateY(-1px); }
-
-  @keyframes pulseOnce{
-    0%{ box-shadow:0 0 0 0 rgba(223,79,28,.5); } 70%{ box-shadow:0 0 0 26px rgba(223,79,28,0); } 100%{ box-shadow:0 0 0 0 rgba(223,79,28,0); }
-  }
-  .pulse-once{ animation:pulseOnce 1.8s ease-out 1s 1; }
-
-  /* washi paper texture */
-  .washi{
-    background-image:radial-gradient(rgba(194,145,63,.04) 1px, transparent 1px), radial-gradient(rgba(194,145,63,.03) 1px, transparent 1px);
-    background-size:26px 26px, 26px 26px; background-position:0 0, 13px 13px;
-  }
-
-  /* ===== REAL FOOD PHOTOGRAPHY (Unsplash CDN; warm fallback if offline) ===== */
+  /* ---------- 写真 ---------- */
   .ph{ background-size:cover; background-position:center; background-repeat:no-repeat; }
-  .ph-steak{ background-color:#1f0e06; background-image:url("https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=1700&q=72"); }
-  .ph-steak-board{ background-color:#3a1709; background-image:url("https://images.unsplash.com/photo-1546964124-0cce460f38ef?auto=format&fit=crop&w=900&q=72"); }
-  .ph-yakiniku{ background-color:#5a2410; background-image:url("https://images.unsplash.com/photo-1663569820326-fece03afdf1c?auto=format&fit=crop&w=1000&q=72"); }
-  .ph-yakiniku2{ background-color:#5a2a12; background-image:url("https://images.unsplash.com/photo-1606188629504-fb9c89e61ccc?auto=format&fit=crop&w=900&q=72"); }
-  .ph-izakaya{ background-color:#3a1d12; background-image:url("https://images.unsplash.com/photo-1571480024489-56576988482f?auto=format&fit=crop&w=1000&q=72"); }
-  .ph-italian{ background-color:#6a3a14; background-image:url("https://images.unsplash.com/photo-1516100882582-96c3a05fe590?auto=format&fit=crop&w=900&q=72"); }
-  .ph-italian2{ background-color:#5a3210; background-image:url("https://images.unsplash.com/photo-1473093226795-af9932fe5856?auto=format&fit=crop&w=900&q=72"); }
-  .ph-sushi{ background-color:#532718; background-image:url("https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?auto=format&fit=crop&w=900&q=72"); }
-  .ph-bar{ background-color:#2c160d; background-image:url("https://images.unsplash.com/photo-1568644396922-5c3bfae12521?auto=format&fit=crop&w=900&q=72"); }
-  .ph-friends{ background-color:#3a1d15; background-image:url("https://images.unsplash.com/photo-1567102322755-77e538662806?auto=format&fit=crop&w=1300&q=74"); }
+  .ph-steak   { background-color:#1f0e06; background-image:url("https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=1700&q=72"); }
+  .ph-board   { background-color:#3a1709; background-image:url("https://images.unsplash.com/photo-1546964124-0cce460f38ef?auto=format&fit=crop&w=900&q=72"); }
+  .ph-yakiniku{ background-color:#5a2410; background-image:url("https://images.unsplash.com/photo-1663569820326-fece03afdf1c?auto=format&fit=crop&w=1100&q=72"); }
+  .ph-izakaya { background-color:#3a1d12; background-image:url("https://images.unsplash.com/photo-1571480024489-56576988482f?auto=format&fit=crop&w=1100&q=72"); }
+  .ph-pasta{ background-color:#5a3210; background-image:url("https://images.unsplash.com/photo-1473093226795-af9932fe5856?auto=format&fit=crop&w=900&q=72"); }
+  .ph-sushi   { background-color:#532718; background-image:url("https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?auto=format&fit=crop&w=900&q=72"); }
+  .ph-bar     { background-color:#2c160d; background-image:url("https://images.unsplash.com/photo-1568644396922-5c3bfae12521?auto=format&fit=crop&w=900&q=72"); }
+  .ph-friends { background-color:#3a1d15; background-image:url("https://images.unsplash.com/photo-1567102322755-77e538662806?auto=format&fit=crop&w=1300&q=74"); }
 
-  /* image hover zoom */
-  .zoomwrap{ overflow:hidden; }
-  .zoomwrap .zoom{ transition:transform .9s var(--ease); will-change:transform; }
-  .zoomwrap:hover .zoom{ transform:scale(1.06); }
+  /* ---------- ローダー / カーソル (JS生成) ---------- */
+  #loader{ position:fixed; inset:0; z-index:99; background:var(--bg);
+    display:flex; align-items:flex-end; justify-content:space-between;
+    padding:clamp(20px,4vw,48px); }
+  #loader .ld-brand{ font-size:.85rem; letter-spacing:.35em; color:var(--mute); }
+  #loader .ld-num{ font-family:Anton,sans-serif; font-size:clamp(4rem,14vw,10rem); line-height:1; color:var(--paper); }
+  #cursor{ position:fixed; left:0; top:0; z-index:95; pointer-events:none; opacity:0; transition:opacity .4s; }
+  #cursor .dot{ display:block; width:12px; height:12px; margin:-6px 0 0 -6px; border-radius:50%;
+    background:var(--ember); box-shadow:0 0 16px rgba(255,107,44,.8); transition:transform .3s var(--ease); }
+  #cursor.big .dot{ transform:scale(2.6); opacity:.5; }
 
-  /* steam */
-  @keyframes steamRise{ 0%{ transform:translateY(6px) scale(1); opacity:0;} 30%{ opacity:.45;} 100%{ transform:translateY(-28px) scale(1.4); opacity:0;} }
-  .steam path{ animation:steamRise 4.6s ease-in-out infinite; transform-origin:center; }
-  .steam path:nth-child(2){ animation-delay:1.6s; } .steam path:nth-child(3){ animation-delay:3s; }
+  /* ---------- 章ナビ ---------- */
+  .chapters{ position:fixed; right:clamp(10px,2.4vw,30px); top:50%; transform:translateY(-50%);
+    z-index:80; display:flex; flex-direction:column; gap:14px; }
+  .chap-dot{ display:flex; align-items:center; gap:8px; text-decoration:none; }
+  .chap-dot i{ width:8px; height:8px; border-radius:50%; background:rgba(246,236,221,.25);
+    transition:background .3s, transform .3s; }
+  .chap-dot span{ font-family:var(--jp-serif); font-weight:700; font-size:.72rem; color:rgba(246,236,221,0);
+    transition:color .3s; }
+  .chap-dot.on i{ background:var(--ember); transform:scale(1.5); }
+  .chap-dot.on span{ color:var(--paper); }
+  .chap-dot:hover span{ color:var(--paper); }
+  /* モバイルでは章名が出せず「意味の分からない点」が本文に重なるだけ。進捗はバーで足りる */
+  @media (max-width:767px){ .chapters{ display:none; } }
 
-  /* ===== scroll reveal (directional variants) ===== */
-  .reveal,.reveal-l,.reveal-r,.reveal-scale{ opacity:0; }
-  .reveal{ transform:translateY(42px); }
-  .reveal-l{ transform:translateX(-52px); }
-  .reveal-r{ transform:translateX(52px); }
-  .reveal-scale{ transform:scale(.92); }
-  .reveal.in,.reveal-l.in,.reveal-r.in,.reveal-scale.in{ opacity:1; transform:none;
-    transition:opacity .9s var(--ease) var(--d,0s), transform 1s var(--ease) var(--d,0s); }
-  .reveal-clip{ clip-path:inset(0 100% 0 0); transition:clip-path 1.15s var(--ease) var(--d,0s); }
-  .reveal-clip.in{ clip-path:inset(0 0 0 0); }
+  /* ---------- 固定ブランド ---------- */
+  /* blend はロゴだけに掛ける。バー全体に掛けると、下のCTAを塗ったときに
+     その色まで背景と反転して濁る */
+  .brandbar{ position:fixed; top:0; left:0; right:0; z-index:80;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px clamp(16px,3vw,36px); pointer-events:none; }
+  .brandbar > *{ pointer-events:auto; }
+  .brandbar .bb-logo{ font-family:var(--jp-serif); font-weight:800; font-size:1rem;
+    letter-spacing:.1em; text-decoration:none; color:#fff; mix-blend-mode:difference; }
+  /* 登録フォームまで9画面ある。その間ずっと画面に出ている唯一のCTAなので、
+     輪郭だけのピル(11.5px/36px高)ではなく押せる見た目と44pxを確保する */
+  .brandbar .bb-cta{ display:inline-flex; align-items:center; min-height:44px; padding:0 20px;
+    font-size:.82rem; font-weight:700; letter-spacing:.08em; text-decoration:none;
+    color:#170b05; background:var(--ember); border-radius:999px;
+    box-shadow:0 10px 26px -10px rgba(255,107,44,.9); transition:filter .2s, transform .2s var(--ease); }
+  .brandbar .bb-cta:hover{ filter:brightness(1.08); transform:translateY(-1px); }
 
-  /* ===== kinetic headline: phrase chunks rise in sequence.
-     keep-all + nowrap chunks => NEVER breaks mid-word; wraps only at phrase boundaries ===== */
-  .kin2{ word-break:keep-all; line-break:strict; overflow-wrap:normal; }
-  .kin2 .w{ display:inline-block; overflow:hidden; vertical-align:top; padding-bottom:.14em; }
-  .kin2 .w > span{ display:inline-block; white-space:nowrap; transform:translateY(135%); transition:transform 1s var(--ease); transition-delay:var(--wd,0s); }
-  .kin2.in .w > span{ transform:none; }
+  /* ファーストビューのCTA。広告から来た人が最初の1画面で押せるようにする */
+  .hero-cta{ display:inline-block; margin-top:26px; text-decoration:none;
+    background:var(--ember); color:#170b05; font-weight:700; letter-spacing:.05em;
+    padding:16px 34px; border-radius:14px;
+    box-shadow:0 22px 44px -16px rgba(255,107,44,.85); transition:filter .2s, transform .25s var(--ease); }
+  .hero-cta:hover{ filter:brightness(1.08); transform:translateY(-2px); }
+  .hero-fine{ margin-top:14px; font-size:.72rem; letter-spacing:.08em; color:rgba(246,236,221,.65); }
 
-  /* ===== scroll progress bar ===== */
-  .scroll-progress{ position:fixed; top:0; left:0; height:3px; width:100%; transform:scaleX(0); transform-origin:0 50%; z-index:60; background:linear-gradient(90deg,#df4f1c,#ff7a3d,#c2913f); box-shadow:0 0 12px rgba(223,79,28,.5); }
-  @supports (animation-timeline: scroll()){
-    @media (prefers-reduced-motion:no-preference){
-      .scroll-progress{ animation:spx linear both; animation-timeline:scroll(root); }
-      @keyframes spx{ from{transform:scaleX(0);} to{transform:scaleX(1);} }
-    }
+  /* ============ 序: ズームヒーロー ============ */
+  .sc1{ position:relative; height:100vh; overflow:hidden; }
+  .sc1-media{ position:absolute; inset:0; }
+  .sc1-img{ position:absolute; inset:0; }
+  .sc1-shade{ position:absolute; inset:0; background:rgba(10,6,5,.45); }
+  .sc1-inner{ position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:0 20px; }
+  .sc1-title{ font-family:var(--jp-serif); font-weight:800;
+    font-size:clamp(3rem,12.5vw,11rem); line-height:1.1; white-space:nowrap;
+    text-shadow:0 4px 60px rgba(0,0,0,.6); }
+  .sc1-title .t{ display:inline-block; }
+  .sc1-what{ display:inline-block; margin-top:10px; font-size:.85em; color:rgba(246,236,221,.6); }
+  .sc1-sub{ margin-top:22px; color:rgba(246,236,221,.85); font-size:clamp(.9rem,1.6vw,1.15rem); letter-spacing:.12em; }
+  .sc1-end{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; text-align:center; padding:0 20px; opacity:0; pointer-events:none; }
+  .sc1-end .l2{ font-family:var(--jp-serif); font-weight:800;
+    font-size:clamp(1.8rem,6vw,4.6rem); line-height:1.35; }
+  .sc1-end .l2 em{ font-style:normal; color:var(--ember); }
+  .sc1-end .l3{ margin-top:18px; color:rgba(246,236,221,.8); font-size:clamp(.85rem,1.5vw,1.05rem); letter-spacing:.15em; }
+  .sc1-floats{ position:absolute; inset:0; pointer-events:none; }
+  .sc1-floats .f{ position:absolute; border-radius:16px; box-shadow:0 30px 60px -20px rgba(0,0,0,.7); }
+  .f1{ width:clamp(84px,10.5vw,150px); height:clamp(112px,14vw,200px); top:12%; left:8%; }
+  .f2{ width:clamp(100px,12.5vw,180px); height:clamp(74px,9vw,130px); top:16%; right:9%; }
+  .f3{ width:clamp(74px,9vw,130px); height:clamp(96px,12vw,170px); bottom:14%; left:14%; }
+  .f4{ width:clamp(110px,14vw,200px); height:clamp(80px,10vw,140px); bottom:12%; right:12%; }
+  .f5{ width:clamp(64px,7.6vw,110px); height:clamp(64px,7.6vw,110px); top:46%; left:3%; }
+  .f6{ width:clamp(70px,8.4vw,120px); height:clamp(70px,8.4vw,120px); top:52%; right:4%; }
+  .scroll-hint{ position:absolute; bottom:26px; left:50%; transform:translateX(-50%);
+    font-size:.7rem; letter-spacing:.4em; color:rgba(246,236,221,.6); }
+  .scroll-hint::after{ content:""; display:block; width:1px; height:34px; margin:10px auto 0;
+    background:linear-gradient(180deg,var(--ember),transparent); animation:hint 1.8s ease-in-out infinite; }
+  @keyframes hint{ 0%{ transform:scaleY(0); transform-origin:top; } 50%{ transform:scaleY(1); transform-origin:top; }
+    51%{ transform-origin:bottom; } 100%{ transform:scaleY(0); transform-origin:bottom; } }
+
+  /* JS未実行時のヒーロー静的表示: end面は下に流す */
+  /* position:relative は必須。static にすると絶対配置の .sc1-media より下に描かれて見出しが消える */
+  html:not(.gsap-on) .sc1-end{ position:relative; z-index:2; opacity:1; pointer-events:auto; padding:60px 20px; }
+  html:not(.gsap-on) .sc1{ height:auto; min-height:100vh; padding:120px 0 80px; }
+  html:not(.gsap-on) .sc1-inner{ position:relative; z-index:2; padding-top:10vh; }
+  html:not(.gsap-on) .sc1-floats{ display:none; }
+
+  /* ============ 壱: 縦書き視差 ============ */
+  .sc2{ position:relative; padding:22vh 6vw 20vh; overflow:hidden; background:var(--bg); }
+  .sc2-label{ font-size:.75rem; letter-spacing:.5em; color:var(--brass); margin-bottom:8vh; }
+  .sc2-cols{ display:flex; flex-direction:row-reverse; justify-content:center; gap:clamp(26px,6vw,90px); min-height:62vh; }
+  .vtx{ writing-mode:vertical-rl; font-family:var(--jp-serif); font-weight:700;
+    font-size:clamp(1.15rem,2.6vw,2.1rem); line-height:2.4; letter-spacing:.14em; }
+  .vtx strong{ color:var(--ember); font-weight:800; }
+  .vtx small{ display:block; font-size:.6em; color:var(--mute); margin-top:1em; }
+  .sc2-punch{ margin-top:14vh; text-align:center; font-family:var(--jp-serif); font-weight:800;
+    font-size:clamp(2rem,7vw,5.4rem); line-height:1.3; }
+  .sc2-punch strong{ color:var(--ember); }
+  /* モバイルは縦書きをやめて横組みに（3列は幅が足りず崩れるため） */
+  @media (max-width:640px){
+    .sc2-cols{ flex-direction:column; gap:38px; min-height:0; }
+    .vtx{ writing-mode:horizontal-tb; line-height:2; max-width:22em; }
+    .vtx br{ display:none; }
+    .vtx small{ margin-top:.4em; }
   }
 
-  /* ===== marquee ===== */
-  .marquee{ display:flex; width:max-content; animation:marq 46s linear infinite; }
-  .marquee-wrap:hover .marquee{ animation-play-state:paused; }
-  @keyframes marq{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+  /* ============ 弐: 横スクロール棚 ============ */
+  .sc3{ position:relative; background:var(--bg2); overflow:hidden; }
+  .sc3-track{ display:flex; align-items:center; gap:clamp(20px,4vw,60px);
+    padding:0 clamp(20px,6vw,80px); height:100vh; width:max-content; }
+  html:not(.gsap-on) .sc3-track{ width:auto; overflow-x:auto; }
+  .sc3-head{ flex-shrink:0; width:min(78vw,760px); }
+  .sc3-head h2{ font-family:var(--jp-serif); font-weight:800;
+    font-size:clamp(2.4rem,7.5vw,6rem); line-height:1.25; }
+  .sc3-head h2 em{ font-style:normal; color:var(--ember); }
+  .sc3-head p{ margin-top:24px; color:var(--mute); max-width:30em; }
+  .hcard{ flex-shrink:0; position:relative; width:clamp(280px,38vw,480px); }
+  .hcard .himg-wrap{ height:clamp(340px,56vh,540px); overflow:hidden; border-radius:22px; }
+  .hcard .himg{ width:120%; height:100%; margin-left:-10%; }
+  .hcard .hnum{ position:absolute; top:-38px; left:-14px; z-index:2;
+    font-family:Anton,sans-serif; font-size:clamp(4rem,8vw,7rem); line-height:1; color:transparent;
+    -webkit-text-stroke:2px rgba(246,236,221,.5); }
+  .hcard figcaption{ margin-top:16px; }
+  .hcard figcaption b{ display:block; font-family:var(--jp-serif); font-weight:700;
+    font-size:clamp(1.1rem,1.9vw,1.5rem); }
+  .hcard figcaption span{ color:var(--mute); font-size:.88rem; }
+  .sc3-tail{ flex-shrink:0; width:min(70vw,560px); text-align:left; }
+  .sc3-tail p{ font-family:var(--jp-serif); font-weight:800;
+    font-size:clamp(1.6rem,4.4vw,3.2rem); line-height:1.4; }
+  .sc3-tail p em{ font-style:normal; color:var(--ember); }
 
-  /* ===== how rail active state ===== */
-  .rail-item{ color:rgba(252,245,234,.4); transition:color .4s ease, padding .4s ease; border-left:2px solid rgba(252,245,234,.12); padding-left:18px; }
-  .rail-item .rail-num{ color:rgba(252,245,234,.3); transition:color .4s ease; }
-  .rail-item.active{ color:#fcf5ea; border-left-color:var(--color-ember); padding-left:24px; }
-  .rail-item.active .rail-num{ color:var(--color-ember); }
-
-  /* parallax via scroll-driven animations (graceful no-JS / no-support fallback = static) */
-  @supports (animation-timeline: view()){
-    @media (prefers-reduced-motion: no-preference){
-      .par{ animation:parY linear both; animation-timeline:view(); animation-range:cover; }
-      @keyframes parY{ from{ transform:translateY(-6%) scale(1.12);} to{ transform:translateY(6%) scale(1.12);} }
-    }
+  /* ============ 参: ピン留めスマホ ============ */
+  .sc4{ position:relative; background:var(--bg); overflow:hidden; }
+  .sc4-stage{ height:100vh; display:flex; align-items:center; justify-content:center; position:relative; }
+  .sc4-bignum{ position:absolute; right:-2vw; top:50%; transform:translateY(-50%);
+    font-family:Anton,sans-serif; font-size:clamp(14rem,38vw,34rem); line-height:1;
+    color:transparent; -webkit-text-stroke:2px rgba(246,236,221,.12); pointer-events:none; }
+  .sc4-bignum span{ position:absolute; right:0; top:50%; transform:translateY(-50%); opacity:0; }
+  .sc4-bignum span:first-child{ opacity:.9; }
+  .sc4-grid{ position:relative; z-index:2; display:flex; align-items:center;
+    gap:clamp(30px,7vw,110px); padding:0 clamp(20px,5vw,60px); width:100%; max-width:1150px; }
+  .sc4-copy{ flex:1; min-width:0; }
+  .sc4-copy .sec-label{ font-size:.75rem; letter-spacing:.5em; color:var(--brass); }
+  .sc4-copy h2{ margin-top:14px; font-family:var(--jp-serif); font-weight:800;
+    font-size:clamp(1.7rem,4vw,3.2rem); line-height:1.35; }
+  .sc4-steps{ position:relative; margin-top:38px; min-height:190px; }
+  html.gsap-on .step{ position:absolute; top:0; left:0; right:0; opacity:0; }
+  html:not(.gsap-on) .step{ margin-bottom:34px; }
+  /* ピン留めするのは gsap-on だけ。lite / reduced-motion / JS不達では4ステップが縦積みになり、
+     height:100vh のままだと .sc4{overflow:hidden} に上下を刈られて見出しとSTEP04が消える。
+     900px以下のMQにも height:auto はあるが、901px以上のタッチ端末(iPad横)には当たらない */
+  html:not(.gsap-on) .sc4-stage{ height:auto; }
+  .step .s-num{ font-family:Anton,sans-serif; color:var(--ember); font-size:1rem; letter-spacing:.2em; }
+  .step h3{ font-family:var(--jp-serif); font-weight:800; font-size:clamp(1.3rem,2.4vw,1.9rem); margin-top:6px; }
+  .step p{ color:var(--mute); margin-top:10px; max-width:26em; }
+  .phone{ flex-shrink:0; width:min(300px,74vw); aspect-ratio:9/18.6; border-radius:42px;
+    border:8px solid #241812; background:#0e0806; position:relative; overflow:hidden;
+    box-shadow:0 60px 120px -30px rgba(0,0,0,.85); }
+  /* タブレット以下: 縦積み。スマホ画面はビューポート高さ基準でサイズを決めて収める */
+  @media (max-width:900px){
+    .sc4-stage{ height:auto; min-height:100svh; padding:86px 0 44px; align-items:flex-start; }
+    .sc4-grid{ flex-direction:column; align-items:center; gap:30px; }
+    .sc4-copy{ width:100%; max-width:520px; }
+    .sc4-copy h2{ font-size:clamp(1.5rem,6vw,2.2rem); }
+    .sc4-steps{ margin-top:24px; min-height:150px; }
+    .step p{ font-size:.92rem; }
+    /* 900px以下は常に軽量版=ピン留めなし。高さで潰す理由がないので幅基準のまま(中身が読める) */
+    .sc4-bignum{ font-size:clamp(9rem,42vw,16rem); right:-6vw; }
   }
+  .phone::before{ content:""; position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    width:84px; height:20px; border-radius:999px; background:#241812; z-index:5; }
+  .scr{ position:absolute; inset:0; padding:52px 18px 18px; display:flex; flex-direction:column; gap:12px; opacity:0; }
+  .scr-1{ opacity:1; }
+  .scr .sc-h{ font-family:var(--jp-serif); font-weight:700; font-size:.95rem; }
+  .scr .card{ border-radius:16px; overflow:hidden; border:1px solid rgba(246,236,221,.12); background:#171009; }
+  .scr .card .cph{ height:86px; }
+  .scr .card .ct{ padding:10px 12px; font-size:.72rem; line-height:1.5; }
+  .scr .card .ct b{ display:block; font-size:.8rem; }
+  .scr .card .ct span{ color:var(--mute); }
+  .scr .meter{ border-radius:16px; border:1px solid rgba(246,236,221,.12); padding:14px; background:#171009; }
+  .scr .meter .m-row{ display:flex; justify-content:space-between; font-size:.72rem; color:var(--mute); }
+  .scr .meter .m-row b{ font-family:Anton,sans-serif; font-size:1.3rem; color:var(--ember); }
+  .scr .meter .bar{ margin-top:8px; height:8px; border-radius:99px; background:rgba(246,236,221,.1); overflow:hidden; }
+  .scr .meter .bar i{ display:block; height:100%; width:60%; border-radius:99px;
+    background:linear-gradient(90deg,var(--terra),var(--ember)); }
+  .scr .meter .ok{ margin-top:8px; font-size:.7rem; color:#7fe0a8; font-weight:700; }
+  .scr .payrow{ display:flex; align-items:center; gap:10px; border-radius:16px; padding:14px;
+    border:1px solid rgba(246,236,221,.12); background:#171009; font-size:.75rem; }
+  .scr .payrow i{ width:34px; height:34px; border-radius:50%; background:rgba(255,107,44,.16);
+    display:flex; align-items:center; justify-content:center; font-style:normal; }
+  .scr .sharebtn{ border-radius:14px; padding:12px; text-align:center; font-size:.78rem; font-weight:700;
+    border:1px solid rgba(246,236,221,.14); background:#171009; }
+  .scr .sharebtn.line{ background:#12351d; border-color:#2f8f5b; color:#bff0d2; }
 
-  /* focus-visible */
-  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible, label:focus-visible{
-    outline:3px solid var(--color-ember); outline-offset:3px; border-radius:8px;
-  }
+  /* ============ 帯: マーキー ============ */
+  .band{ position:relative; padding:9vh 0; background:var(--bg2); overflow:hidden; }
+  .band .row{ display:flex; width:max-content; white-space:nowrap; will-change:transform; }
+  .band .row + .row{ margin-top:14px; }
+  .band .row span{ font-family:var(--jp-serif); font-weight:800;
+    font-size:clamp(2.6rem,8vw,6.6rem); line-height:1.15; padding-right:.6em; }
+  .band .row.ghost span{ color:transparent; -webkit-text-stroke:1.5px rgba(246,236,221,.4); }
+  .band .row em{ font-style:normal; color:var(--ember); }
 
-  /* form chips */
+  /* ============ 肆: 安心の作法 ============ */
+  .sc6{ position:relative; background:var(--bg); padding:22vh 6vw; }
+  .sc6-head{ max-width:1150px; margin:0 auto; }
+  .sc6-head .sec-label{ font-size:.75rem; letter-spacing:.5em; color:var(--brass); }
+  .sc6-head h2{ margin-top:14px; font-family:var(--jp-serif); font-weight:800;
+    font-size:clamp(1.9rem,5.4vw,4rem); line-height:1.35; }
+  .sc6-head h2 em{ font-style:normal; color:var(--ember); }
+  .fan{ max-width:1150px; margin:9vh auto 0; display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(14px,2.4vw,28px); }
+  @media (max-width:767px){ .fan{ grid-template-columns:1fr; } }
+  .fan-card{ border-radius:22px; border:1px solid rgba(246,236,221,.14); background:#130c08;
+    padding:clamp(22px,3vw,36px); min-height:270px; display:flex; flex-direction:column; }
+  .fan-card .fc-tag{ align-self:flex-start; font-size:.68rem; letter-spacing:.14em; color:#bff0d2;
+    border:1px solid rgba(47,143,91,.55); background:rgba(47,143,91,.14); border-radius:999px; padding:5px 12px; }
+  .fan-card h3{ margin-top:auto; font-family:var(--jp-serif); font-weight:800; font-size:clamp(1.25rem,2vw,1.6rem); }
+  .fan-card p{ margin-top:10px; color:var(--mute); font-size:.92rem; }
+  .sc6-note{ max-width:1150px; margin:26px auto 0; color:var(--mute); font-size:.82rem; }
+
+  /* ============ 伍: 登録 (紙面反転) ============ */
+  /* 伍章は1011pxあって、中央線を越えた時点ではメール欄がまだ画面外だった。
+     間延びしている縦の余白だけを詰めて、見出しからメール欄までを1画面に寄せる */
+  .sc7{ position:relative; background:var(--paper); color:#241812; padding:11vh 6vw; }
+  .sc7-in{ max-width:900px; margin:0 auto; text-align:center; }
+  .sc7 .sec-label{ font-size:.75rem; letter-spacing:.5em; color:var(--terra); }
+  .sc7 h2{ margin-top:16px; font-family:var(--jp-serif); font-weight:800;
+    font-size:clamp(2rem,6.4vw,4.6rem); line-height:1.3; }
+  .sc7 h2 em{ font-style:normal; color:var(--terra); }
+  .sc7 .lead{ margin-top:16px; color:#6d5c4d; }
+  .sc7 form{ margin-top:28px; }
+  .sc7 .chips-label{ margin-bottom:14px; font-size:.85rem; color:#6d5c4d; }
+  .sc7 .chips + .chips-label{ margin-top:18px; }
+  .sc7 .chips-label span{ margin-left:8px; font-size:.72rem; color:#a08e7e; }
+  .sc7 .chips{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
   .chip input{ position:absolute; opacity:0; width:0; height:0; }
-  .chip > span{
-    display:inline-flex; align-items:center; gap:7px; min-height:46px; padding:9px 18px; border-radius:999px;
-    border:1.5px solid var(--color-line); background:#fff; color:var(--color-ink); font-size:.93rem; cursor:pointer;
-    transition:transform .16s var(--ease), border-color .18s ease, background-color .18s ease, color .18s ease, box-shadow .18s ease; user-select:none;
-  }
-  .chip > span::before{
-    content:""; width:0; height:0; opacity:0; border-radius:999px; background:rgba(255,255,255,.9);
-    transition:width .16s var(--ease), height .16s var(--ease), opacity .16s ease;
-  }
-  .chip:hover > span{ border-color:var(--color-terra); background:var(--color-soft); transform:translateY(-1px); }
-  .chip input:checked + span{
-    background:var(--color-cta); border-color:var(--color-cta); color:#fff8f0; font-weight:700;
-    box-shadow:0 10px 24px -12px rgba(184,51,26,.8);
-  }
-  .chip input:checked + span::before{ width:15px; height:15px; opacity:1;
-    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat;
-    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat;
-  }
-  .chip input:focus-visible + span{ outline:3px solid var(--color-ember); outline-offset:2px; }
+  /* チェックボックスは全部がタブ対象になる。見た目を span に逃がしている以上、輪郭は自前で出す */
+  .chip input:focus-visible + span{ outline:2px solid var(--terra); outline-offset:2px; }
+  .chip span{ display:inline-flex; align-items:center; min-height:44px; padding:8px 18px; border-radius:999px;
+    border:1.5px solid #d9c5ac; background:#fff; font-size:.9rem; cursor:pointer;
+    transition:all .2s var(--ease); user-select:none; }
+  .chip:hover span{ border-color:var(--terra); transform:translateY(-1px); }
+  .chip input:checked + span{ background:var(--terra); border-color:var(--terra); color:#fff6ec; font-weight:700;
+    animation:chipPop .35s var(--ease); }
+  @keyframes chipPop{ 0%{ transform:scale(.94); } 55%{ transform:scale(1.06); } 100%{ transform:scale(1); } }
+  /* 「その他」を押したときだけ出す場所の入力。閉じている間は hidden なので高さを持たない */
+  .otherwrap{ margin-top:16px; display:flex; flex-direction:column; align-items:center; gap:6px;
+    animation:otherIn .28s var(--ease); }
+  .otherwrap[hidden]{ display:none; }
+  @keyframes otherIn{ from{ opacity:0; transform:translateY(-6px); } to{ opacity:1; transform:none; } }
+  .otherlabel{ font-size:.82rem; color:#6d5c4d; }
+  .otherlabel span{ margin-left:6px; font-size:.72rem; color:#a08e7e; }
+  .sc7 #areaFree{ width:min(340px,100%); min-height:48px; padding:11px 16px; font-size:.95rem;
+    font-family:inherit; text-align:center;
+    border:1.5px solid #d9c5ac; border-radius:14px; background:#fff;
+    transition:border-color .2s, box-shadow .2s; }
+  .sc7 #areaFree:focus{ outline:none; border-color:var(--terra); box-shadow:0 0 0 4px rgba(225,78,23,.15); }
+  .othernote{ font-size:.72rem; color:#a08e7e; }
+  @media (prefers-reduced-motion:reduce){ .otherwrap{ animation:none; } }
 
-  .field-input{
-    width:100%; min-height:50px; padding:13px 15px; border:1.5px solid var(--color-line); border-radius:14px; background:#fff;
-    color:var(--color-ink); font-size:1rem; transition:border-color .18s ease, box-shadow .18s ease;
+  .sc7 .mailrow{ margin-top:22px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .sc7 input[type=email]{ width:min(420px,100%); min-height:60px; padding:14px 20px; font-size:1rem;
+    border:1.5px solid #d9c5ac; border-radius:16px; background:#fff; transition:border-color .2s, box-shadow .2s; }
+  .sc7 input[type=email]:focus{ outline:none; border-color:var(--terra); box-shadow:0 0 0 4px rgba(225,78,23,.15); }
+  .bigcta{ min-height:60px; padding:14px 38px; border:none; border-radius:16px; cursor:pointer;
+    background:var(--terra); color:#fff6ec; font-weight:700; font-size:1.02rem; font-family:inherit;
+    box-shadow:0 22px 44px -16px rgba(225,78,23,.8); transition:transform .25s var(--ease), filter .25s; }
+  .bigcta:hover{ transform:translateY(-3px); filter:brightness(1.07); }
+  .sc7 .fine{ margin-top:18px; font-size:.76rem; color:#8a7a6c; }
+  .sc7 .fine a{ color:var(--terra); text-decoration:underline; text-underline-offset:3px; }
+  .sc7 #regStatus{ margin-top:14px; font-weight:700; color:#2f8f5b; }
+  .puff{ position:absolute; bottom:96%; width:10px; height:26px; border-radius:999px; pointer-events:none;
+    background:linear-gradient(180deg,rgba(225,78,23,0),rgba(225,78,23,.5)); filter:blur(2px);
+    animation:puffUp 1.2s ease-out forwards; }
+  @keyframes puffUp{ 0%{ transform:translateY(12px) scale(.8); opacity:0; } 30%{ opacity:.9; }
+    100%{ transform:translateY(-40px) scale(1.35); opacity:0; } }
+
+  /* ============ 終: フッター ============ */
+  .sc8{ position:relative; background:var(--bg); padding:20vh 6vw 6vh; overflow:hidden; }
+  .sc8-giant{ position:relative; text-align:center; font-family:var(--jp-serif); font-weight:800;
+    font-size:clamp(2.6rem,10.5vw,9rem); line-height:1.2; white-space:nowrap; }
+  .sc8-giant .base{ color:transparent; -webkit-text-stroke:1.5px rgba(246,236,221,.4); }
+  .sc8-giant .fill-top{ position:absolute; inset:0; color:var(--ember); clip-path:inset(0 100% 0 0); }
+  html:not(.gsap-on) .sc8-giant .fill-top{ clip-path:none; }
+  .sc8-cta{ text-align:center; margin-top:40px; }
+  .sc8-cta a{ display:inline-block; text-decoration:none; border:1px solid rgba(246,236,221,.4);
+    border-radius:999px; padding:16px 42px; font-weight:700; letter-spacing:.1em;
+    transition:background .3s, color .3s, border-color .3s; }
+  .sc8-cta a:hover{ background:var(--ember); border-color:var(--ember); color:#170b05; }
+  .sc8-notes{ max-width:900px; margin:12vh auto 0; color:rgba(246,236,221,.5); font-size:.8rem; line-height:2; }
+  .sc8-notes li{ list-style:none; }
+  .sc8-foot{ max-width:1150px; margin:60px auto 0; padding-top:26px; border-top:1px solid rgba(246,236,221,.12);
+    display:flex; flex-wrap:wrap; gap:14px 30px; justify-content:space-between; align-items:center;
+    font-size:.8rem; color:rgba(246,236,221,.55); }
+  .sc8-foot nav{ display:flex; gap:22px; flex-wrap:wrap; }
+  .sc8-foot a{ text-decoration:none; }
+  .sc8-foot a:hover{ color:var(--ember); }
+
+  /* ---------- モバイル整形: 余白の間延びと固定ヘッダーとの衝突を抑える ---------- */
+  @media (max-width:640px){
+    .brandbar{ padding:12px 16px; }
+    .brandbar .bb-logo{ font-size:.88rem; }
+    .brandbar .bb-cta{ font-size:.72rem; padding:6px 14px; letter-spacing:.12em; }
+
+    /* 22vh/20vh は縦長画面だと空白が巨大になる */
+    .sc2{ padding:14vh 6vw 12vh; }
+    .sc2-label{ margin-bottom:5vh; }
+    .sc2-punch{ margin-top:8vh; }
+    .sc6{ padding:14vh 6vw; }
+    .fan{ margin-top:5vh; }
+    .sc7{ padding:8vh 6vw; }
+    .sc8{ padding:13vh 6vw 6vh; }
+    .sc8-notes{ margin-top:7vh; }
+    .band{ padding:6vh 0; }
+
+    /* 見出しが固定ヘッダーの真下で止まると読めなくなる */
+    .sc6-head h2, .sc7 h2{ padding-top:8px; }
+    .fan-card{ min-height:0; }
   }
-  .field-input::placeholder{ color:#ab9d92; }
-  .field-input:hover{ border-color:#e6c1aa; }
-  .field-input:focus{ outline:none; border-color:var(--color-terra); box-shadow:0 0 0 4px rgba(223,79,28,.14); }
+  /* 旧: 画面高に応じてモック内を段階的に縮める3ブロックがここにあった。
+     ピン留めをやめた時点で「1画面に収める」制約が消え、文字を潰す理由もなくなったので削除。 */
 
-  /* ===== ドパガキ: 低文字量・高刺激パーツ ===== */
-  /* 横スワイプフィード（モバイルネイティブな指の動き） */
-  .feed-x{ display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding:4px 2px 12px; scroll-padding-left:20px; }
-  .feed-x::-webkit-scrollbar{ display:none; }
-  .feed-x > *{ scroll-snap-align:start; flex:0 0 auto; }
-  /* タップの押し込み */
-  .tap{ transition:transform .18s var(--ease), box-shadow .25s ease; }
-  .tap:active{ transform:scale(.975); }
-  /* 成立ゲージ（あと少し→ドーパミン） */
-  .gauge{ height:12px; border-radius:999px; background:rgba(255,255,255,.14); overflow:hidden; }
-  .gauge > i{ display:block; height:100%; width:6%; border-radius:999px; background:linear-gradient(90deg,#df4f1c,#ff7a3d,#c2913f); transition:width 1.2s var(--ease) var(--d,0s); }
-  .gauge.in > i{ width:var(--fill,80%); }
-  /* 点滅ドット（生きてる感） */
-  @keyframes blip{ 0%,100%{ opacity:1; transform:scale(1);} 50%{ opacity:.32; transform:scale(.62);} }
-  .blip{ animation:blip 1.1s ease-in-out infinite; }
-  /* どでか数字のテンポ */
-  .big-num{ font-family:'Anton',sans-serif; line-height:.9; letter-spacing:.005em; }
+  /* ---------- 軽量版(スマホ/タッチ端末) ----------
+     html.lite = ピン留め/スクラブを一切行わないモード。
+     レイアウトは JS未実行時の html:not(.gsap-on) をそのまま流用し、ここでは差分だけ当てる。 */
+  html.lite .sc1{ min-height:100svh; }
+  html.lite .grain, html.lite .scroll-hint{ display:none; }
 
+  /* 弐: 横スワイプは縦スクロールと喧嘩する(斜めフリックを奪う・戻れない)ので、
+     モバイルは横方向の操作を一切なくして素直な2列グリッドにする */
+  html.lite .sc3-track{ display:grid; grid-template-columns:1fr 1fr; align-items:start;
+    gap:28px clamp(10px,3vw,18px); width:auto; height:auto; overflow:visible;
+    padding:13vh clamp(16px,5vw,40px); }
+  html.lite .sc3-head, html.lite .sc3-tail{ grid-column:1 / -1; width:auto; }
+  html.lite .sc3-tail{ margin-top:2vh; }
+  html.lite .hcard{ width:auto; }
+  html.lite .hcard .himg-wrap{ height:auto; aspect-ratio:3/4; border-radius:14px; }
+  html.lite .hcard .himg{ width:100%; margin-left:0; }
+  html.lite .hcard .hnum{ top:6px; left:8px; font-size:2rem; -webkit-text-stroke-width:1.5px; }
+  html.lite .hcard figcaption{ margin-top:10px; }
+  html.lite .hcard figcaption b{ font-size:1rem; line-height:1.5; }
+  html.lite .hcard figcaption span{ font-size:.76rem; }
+  html.lite .yoko{ display:none; } /* 横スクロールをやめたので「横へ」は嘘になる */
+  html.lite .vtx br{ display:block; }
+
+  /* 参: ピンをやめたので4ステップは素直に縦積み。画面高に潰される必要がない */
+  html.lite .sc4-stage{ min-height:0; padding:13vh 0 10vh; }
+  html.lite .sc4-bignum{ display:none; }
+  html.lite .sc4-copy h2{ font-size:clamp(1.5rem,6vw,2.2rem); }
+  html.lite .sc4-steps{ min-height:0; margin-top:26px; }
+  html.lite .step h3{ font-size:1.15rem; }
+  html.lite .step p{ font-size:.92rem; }
+  /* 幅基準(base の 74vw)で中の文字が読める大きさを優先。
+     さらに切替アニメがない=1画面しか出ないので、9/18.6 の空白を抱えずに中身の高さに合わせる */
+  html.lite .phone{ margin-top:8px; aspect-ratio:auto; }
+  html.lite .scr-1{ position:relative; }
+  html.lite .scr:not(.scr-1){ display:none; }
+
+  /* 帯: 流れないと文字が両端で切れた意味不明の帯になる。装飾(aria-hidden)なので落とす。
+     止まるのは lite だけでなく reduced-motion / GSAP不達も同じなので :not(.gsap-on) で括る */
+  html:not(.gsap-on) .band{ display:none; }
+  /* 章ナビの同期は ScrollTrigger 頼み。lite / reduced-motion / GSAP不達では
+     「序」で固まった点が残るだけなので出さない(position:fixed なのでCLSにもならない) */
+  html:not(.gsap-on) .chapters{ display:none; }
+
+  /* 画像はモバイル用に小さいものへ差し替える(初回表示の待ち時間と通信量を削る) */
+  @media (max-width:768px){
+    .ph-steak   { background-image:url("https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=68"); }
+    .ph-board   { background-image:url("https://images.unsplash.com/photo-1546964124-0cce460f38ef?auto=format&fit=crop&w=560&q=68"); }
+    .ph-yakiniku{ background-image:url("https://images.unsplash.com/photo-1663569820326-fece03afdf1c?auto=format&fit=crop&w=560&q=68"); }
+    .ph-izakaya { background-image:url("https://images.unsplash.com/photo-1571480024489-56576988482f?auto=format&fit=crop&w=560&q=68"); }
+    .ph-pasta{ background-image:url("https://images.unsplash.com/photo-1473093226795-af9932fe5856?auto=format&fit=crop&w=560&q=68"); }
+    .ph-sushi   { background-image:url("https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?auto=format&fit=crop&w=560&q=68"); }
+    .ph-bar     { background-image:url("https://images.unsplash.com/photo-1568644396922-5c3bfae12521?auto=format&fit=crop&w=560&q=68"); }
+    .ph-friends { background-image:url("https://images.unsplash.com/photo-1567102322755-77e538662806?auto=format&fit=crop&w=760&q=68"); }
+  }
+
+  /* ---------- reduced motion ---------- */
+  /* ローダー・カーソル・puff は JS 側が reduced-motion では生成しないのでここに書く必要がない */
   @media (prefers-reduced-motion:reduce){
-    .gauge > i{ transition:none; }
-    .blip{ animation:none; }
-    .reveal,.reveal-l,.reveal-r,.reveal-scale{ opacity:1; transform:none; transition:none; }
-    .reveal-clip{ clip-path:none; transition:none; }
-    .kin2 .w > span{ transform:none; transition:none; }
-    .scroll-progress{ display:none; }
-    .steam path{ animation:none; } .pulse-once{ animation:none; }
-    .marquee{ animation:none; } .zoomwrap:hover .zoom{ transform:none; }
+    .progress, .scroll-hint{ display:none !important; }
+    .chip input:checked + span{ animation:none; }
     html{ scroll-behavior:auto; }
   }
 </style>
+
+<script>
+/* 端末判定はここで確定させる。lite が JS 読み込み後に付くと、
+   .sc1 の 100vh→100svh・帯の消滅・弐の flex→grid が「読み始めた後」に起きて、
+   そのままレイアウトシフトになる。
+   ・lite は reduced-motion でも付ける(中身は全部ただの静的CSSなので、
+     付けないと止まったマーキーや横スクロール棚がそのまま出る)
+   ・gsap-on はここでは付けない。GSAPが落ちたとき静的表示に戻れなくなる */
+(function(){
+  var m = window.matchMedia;
+  window.__REDUCE = m('(prefers-reduced-motion: reduce)').matches;
+  window.__LITE   = m('(max-width:900px), (hover:none) and (pointer:coarse)').matches;
+  if(window.__LITE) document.documentElement.classList.add('lite');
+})();
+</script>
 </head>
 
-<body class="bg-paper text-ink">
-<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
-<div class="grain-fixed" aria-hidden="true"></div>
-<span id="top-sentinel" class="absolute top-0 left-0 w-px h-px" aria-hidden="true"></span>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
 
-<!-- ====================== HEADER / NAV ====================== -->
-<header class="fixed top-0 inset-x-0 z-50 px-3 sm:px-5 pt-3">
-  <div id="navbar" class="max-w-[1200px] mx-auto rounded-pill transition-all duration-500 px-4 sm:px-6">
-    <nav class="h-14 flex items-center justify-between" aria-label="メインナビゲーション">
-      <a href="#top" class="flex items-center gap-2.5 group" aria-label="あいのりごはん トップへ">
-        <span class="relative inline-flex items-center justify-center w-9 h-9 rounded-full shadow-sm"
-              style="background:radial-gradient(circle at 32% 28%,#ff9a66,#df4f1c 55%,#b8331a);">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff8f0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19 C 9 11, 15 8, 19 6"/><path d="M6 16 C 11 15, 15 12, 18 8"/></svg>
-        </span>
-        <span class="leading-tight">
-          <span class="block mincho font-bold text-[1.04rem] tracking-tight nav-brand text-cream">あいのりごはん</span>
-          <span class="block anton text-[0.58rem] tracking-[0.24em] nav-sub" style="color:var(--color-brass)">AINORI GOHAN</span>
-        </span>
-      </a>
-
-      <div class="hidden md:flex items-center gap-7 text-[0.9rem] nav-links text-cream/90">
-        <a href="#problem" class="hover:text-ember transition-colors">こんな夜に</a>
-        <a href="#how" class="hover:text-ember transition-colors">使い方</a>
-        <a href="#value" class="hover:text-ember transition-colors">体験価値</a>
-        <a href="#safety" class="hover:text-ember transition-colors">安心設計</a>
-        <a href="#register" class="ml-1 inline-flex items-center h-10 px-5 rounded-pill bg-cta text-cream font-bold hover:bg-terra transition-colors">事前登録</a>
-      </div>
-
-      <button id="menuBtn" class="md:hidden inline-flex items-center justify-center w-11 h-11 -mr-2 rounded-lg nav-burger text-cream" aria-label="メニューを開く" aria-expanded="false" aria-controls="mobileMenu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
-    </nav>
-
-    <div id="mobileMenu" class="md:hidden hidden pb-3">
-      <div class="rounded-3xl glass px-5 py-4 flex flex-col gap-1 text-cream mt-1">
-        <a href="#problem" class="py-3 border-b border-white/10">こんな夜に</a>
-        <a href="#how" class="py-3 border-b border-white/10">使い方</a>
-        <a href="#value" class="py-3 border-b border-white/10">体験価値</a>
-        <a href="#safety" class="py-3 border-b border-white/10">安心設計</a>
-        <a href="#register" class="mt-3 inline-flex items-center justify-center h-12 rounded-pill bg-terra text-cream font-bold">事前登録する</a>
-      </div>
-    </div>
-  </div>
+<header class="brandbar">
+  <a class="bb-logo" href="#top">あいのりごはん</a>
+  <a class="bb-cta" href="#register">事前登録</a>
 </header>
 
-<main id="top">
+<nav class="chapters" aria-label="章ナビゲーション">
+  <a class="chap-dot on" data-for="top"      href="#top"><i></i><span>序</span></a>
+  <a class="chap-dot" data-for="yoru"     href="#yoru"><i></i><span>壱</span></a>
+  <a class="chap-dot" data-for="tana"     href="#tana"><i></i><span>弐</span></a>
+  <a class="chap-dot" data-for="tsukai"   href="#tsukai"><i></i><span>参</span></a>
+  <a class="chap-dot" data-for="anshin"   href="#anshin"><i></i><span>肆</span></a>
+  <a class="chap-dot" data-for="register" href="#register"><i></i><span>伍</span></a>
+</nav>
 
-<!-- ====================== 1. HERO ====================== -->
-<section class="relative min-h-[100svh] flex items-center text-cream overflow-hidden pt-24 sm:pt-28 pb-16 sm:pb-24">
-  <div class="absolute inset-0 overflow-hidden" aria-hidden="true"><div class="absolute inset-0 ph ph-steak par"></div></div>
-  <div class="absolute inset-0" style="background:linear-gradient(100deg, rgba(18,11,7,.92) 0%, rgba(18,11,7,.8) 34%, rgba(22,14,9,.42) 66%, rgba(22,14,9,.28) 100%);"></div>
-  <div class="absolute inset-0" style="background:linear-gradient(180deg, rgba(18,11,7,.5) 0%, transparent 24%, transparent 64%, rgba(18,11,7,.82) 100%);"></div>
-  <div class="lantern-glow" style="top:-140px; right:-40px;"></div>
+<main>
 
-  <svg class="steam absolute left-[6%] top-[22%] opacity-50 hidden lg:block" width="64" height="96" viewBox="0 0 60 90" fill="none" stroke="#ffd9b0" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
-    <path d="M18 80 C 8 64, 30 56, 20 40 C 12 26, 30 18, 22 6"/><path d="M34 80 C 26 66, 44 58, 36 42 C 28 28, 44 20, 38 8"/><path d="M48 80 C 42 68, 56 60, 50 46"/>
-  </svg>
+<!-- ============ 序: 腹が、減った。(ズームヒーロー) ============ -->
+<section class="sc1" id="top" data-chapter>
+  <div class="sc1-media">
+    <div class="sc1-img ph ph-steak" role="img" aria-label="炭火焼ステーキ"></div>
+    <div class="sc1-shade"></div>
+  </div>
 
-  <div class="relative z-10 max-w-[1200px] mx-auto px-5 sm:px-8 w-full grid lg:grid-cols-12 gap-10 lg:gap-6 items-center">
+  <div class="sc1-floats" aria-hidden="true">
+    <div class="f f1 ph ph-sushi"></div>
+    <div class="f f2 ph ph-izakaya"></div>
+    <div class="f f3 ph ph-pasta"></div>
+    <div class="f f4 ph ph-yakiniku"></div>
+    <div class="f f5 ph ph-bar"></div>
+    <div class="f f6 ph ph-board"></div>
+  </div>
 
-    <div class="lg:col-span-7">
-      <div class="reveal inline-flex items-center gap-2 px-4 py-2 rounded-pill mb-8 glass" style="--d:.05s;">
-        <span class="w-1.5 h-1.5 rounded-full bg-ember animate-pulse"></span>
-        <span class="text-[0.8rem] tracking-wide text-cream/95">アプリ公開前・事前登録 受付中</span>
-      </div>
+  <div class="sc1-inner">
+    <h1 class="sc1-title"><span class="t t-l">腹が</span><span class="t t-r">減った</span></h1>
+    <p class="sc1-sub">今夜、何食べよう<br /><span class="sc1-what">ごはん仲間を集めるSNS ─ 事前登録受付中</span></p>
+  </div>
 
-      <h1 class="kin2 palt font-extrabold tracking-[0.005em]" style="font-size:clamp(1.9rem,6.2vw,5rem); line-height:1.22; text-shadow:0 2px 36px rgba(0,0,0,.4);"><span class="w" style="--wd:.05s"><span>今夜</span></span><br><span class="w" style="--wd:.16s"><span>知らない誰かと</span></span><br><span class="w" style="--wd:.3s"><span class="text-ember">うまいもん。</span></span></h1>
+  <div class="sc1-end">
+    <p class="l2 split-chars"><span class="nb">誰かと食うと</span><span class="nb"><em>うまい</em></span></p>
+    <p class="l3"><span class="nb">ごはん仲間を集めるSNS</span> <span class="nb">─ あいのりごはん</span></p>
+    <a class="hero-cta" href="#register">無料で事前登録する（30秒）</a>
+    <p class="hero-fine"><span class="nb">性別欄なし</span> ・ <span class="nb">会計は各自</span> ・ <span class="nb">恋活/婚活ではありません</span></p>
+  </div>
 
-      <p class="reveal mincho text-cream/95 mt-7 text-[1.35rem] sm:text-[1.7rem] leading-[1.6] max-w-[20em]" style="--d:.34s;">
-        食の「好き」でつながって、<br class="hidden sm:block" />今夜、みんなでごはん。
-      </p>
+  <p class="scroll-hint" aria-hidden="true">SCROLL</p>
+</section>
 
-      <div class="reveal mt-10 flex flex-col sm:flex-row sm:items-center gap-5" style="--d:.42s;">
-        <a href="#register" id="heroCta" class="btn-noren pulse-once group inline-flex items-center justify-center h-[68px] px-10 bg-cta text-cream font-bold text-[1.06rem]" style="background-color:var(--color-cta); box-shadow:0 24px 50px -18px rgba(184,51,26,.95);">
-          <span class="inline-flex items-center gap-2.5 pt-1">無料で事前登録する
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-1" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </span>
-        </a>
-        <span class="text-cream/75 text-[0.84rem]">登録は約60秒。費用は一切かかりません</span>
-      </div>
+<!-- ============ 壱: 縦書きの夜 ============ -->
+<section class="sc2" id="yoru" data-chapter>
+  <p class="sc2-label">第壱夜 ── 覚えのある夜</p>
+  <div class="sc2-cols">
+    <p class="vtx v1">行きたい店はある<br /><strong>相手がいない</strong><small>― 保存リストだけが増えていく</small></p>
+    <p class="vtx v2">カウンターの焼肉<br />コースの割烹<small>― ひとりでは入れない店</small></p>
+    <p class="vtx v3">今夜もまた<br /><strong>「コンビニでいいか」</strong><small>― ほんとは、よくない</small></p>
+  </div>
+  <p class="sc2-punch split-chars"><span class="nb">行きたい人は</span><strong class="nb">ほかにもいる</strong></p>
+</section>
+
+<!-- ============ 弐: 横スクロールの棚 ============ -->
+<section class="sc3" id="tana" data-chapter>
+  <div class="sc3-track">
+    <header class="sc3-head">
+      <h2>あの店に<br /><em>入れる夜</em></h2>
+      <p><span class="nb">募集を出す。</span><span class="nb">集まる。</span><span class="nb">行く。</span><span class="yoko">──横へ</span></p>
+    </header>
+    <figure class="hcard"><span class="hnum anton">01</span><div class="himg-wrap"><div class="himg ph ph-yakiniku"></div></div>
+      <figcaption><b>炭火焼肉</b><span>人数がいれば入れる</span></figcaption></figure>
+    <figure class="hcard"><span class="hnum anton">02</span><div class="himg-wrap"><div class="himg ph ph-izakaya"></div></div>
+      <figcaption><b>赤ちょうちんの居酒屋</b><span>飲み放題は複数人から</span></figcaption></figure>
+    <figure class="hcard"><span class="hnum anton">03</span><div class="himg-wrap"><div class="himg ph ph-pasta"></div></div>
+      <figcaption><b>名物パスタ</b><span>大皿はみんなで</span></figcaption></figure>
+    <figure class="hcard"><span class="hnum anton">04</span><div class="himg-wrap"><div class="himg ph ph-sushi"></div></div>
+      <figcaption><b>カウンター寿司</b><span>「おまかせで」が言える</span></figcaption></figure>
+    <figure class="hcard"><span class="hnum anton">05</span><div class="himg-wrap"><div class="himg ph ph-bar"></div></div>
+      <figcaption><b>隠れ家バル</b><span>2軒目合流もあり</span></figcaption></figure>
+    <figure class="hcard"><span class="hnum anton">06</span><div class="himg-wrap"><div class="himg ph ph-friends"></div></div>
+      <figcaption><b>はじめましての乾杯</b><span>話題は料理だけでいい</span></figcaption></figure>
+    <div class="sc3-tail">
+      <p>目的は<br /><em>飯</em></p>
     </div>
+  </div>
+</section>
 
-    <!-- floating app mock -->
-    <div class="lg:col-span-5 reveal flex justify-center lg:justify-end" style="--d:.5s;">
-      <div class="relative">
-        <div class="lantern-glow" style="top:20px; left:-40px; width:380px; height:380px; opacity:.5;"></div>
-        <div class="relative w-[262px] sm:w-[290px] rounded-[44px] bg-sumi p-2.5 border border-white/10" style="box-shadow:0 60px 110px -30px rgba(0,0,0,.78);">
-          <div class="absolute top-3.5 left-1/2 -translate-x-1/2 w-20 h-5 rounded-full bg-sumi z-20"></div>
-          <div class="rounded-[36px] overflow-hidden bg-paper text-ink relative" style="aspect-ratio:9/19.4;">
-            <div class="flex items-center justify-between px-5 pt-3 pb-1 text-[0.6rem] text-ink/70">
-              <span class="font-bold">9:41</span>
-              <span class="flex items-center gap-1"><svg width="14" height="10" viewBox="0 0 18 12" fill="currentColor" aria-hidden="true"><rect x="0" y="6" width="3" height="6" rx="1"/><rect x="5" y="3" width="3" height="9" rx="1"/><rect x="10" y="0" width="3" height="12" rx="1"/></svg><span>100%</span></span>
-            </div>
-            <div class="flex items-center justify-between px-4 py-2">
-              <span class="flex items-center gap-1.5"><span class="w-5 h-5 rounded-full" style="background:radial-gradient(circle at 30% 30%,#ff9a66,#df4f1c 60%,#b8331a);"></span><span class="mincho font-bold text-[0.78rem]">あいのりごはん</span></span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7c6c61" stroke-width="2" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-            </div>
-            <div class="px-3">
-              <div class="relative rounded-card overflow-hidden h-[122px] zoomwrap">
-                <div class="absolute inset-0 ph ph-steak-board zoom"></div>
-                <div class="absolute inset-0" style="background:linear-gradient(180deg,transparent 28%,rgba(18,11,7,.88));"></div>
-                <span class="absolute top-2 left-2 anton text-[0.55rem] tracking-wider px-2 py-0.5 rounded bg-cta text-cream">本日の募集</span>
-                <div class="absolute bottom-2 left-2.5 right-2.5 text-cream">
-                  <p class="mincho font-bold text-[0.82rem] leading-tight">炭火焼ステーキで<br/>おいしい夜を</p>
-                  <p class="text-[0.55rem] text-cream/85 mt-1">恵比寿 Bistro Mu ／ 19:00〜21:30 ・ あと2人/5人</p>
-                </div>
-              </div>
-            </div>
-            <div class="flex justify-between px-4 py-3">
-              <span class="flex flex-col items-center gap-1"><span class="w-9 h-9 rounded-full ph ph-yakiniku border border-line"></span><span class="text-[0.48rem] text-muted">焼肉</span></span>
-              <span class="flex flex-col items-center gap-1"><span class="w-9 h-9 rounded-full ph ph-izakaya border border-line"></span><span class="text-[0.48rem] text-muted">居酒屋</span></span>
-              <span class="flex flex-col items-center gap-1"><span class="w-9 h-9 rounded-full ph ph-italian border border-line"></span><span class="text-[0.48rem] text-muted">イタリアン</span></span>
-              <span class="flex flex-col items-center gap-1"><span class="w-9 h-9 rounded-full ph ph-sushi border border-line"></span><span class="text-[0.48rem] text-muted">寿司</span></span>
-              <span class="flex flex-col items-center gap-1"><span class="w-9 h-9 rounded-full bg-soft flex items-center justify-center text-terra text-[0.7rem]">···</span><span class="text-[0.48rem] text-muted">すべて</span></span>
-            </div>
-            <div class="px-3">
-              <p class="text-[0.6rem] font-bold mb-1.5 px-1">いま気になる募集</p>
-              <div class="grid grid-cols-2 gap-2">
-                <div class="rounded-xl overflow-hidden border border-line"><div class="ph ph-bar h-[52px]"></div><div class="p-1.5"><p class="text-[0.55rem] font-bold leading-tight">渋谷の隠れ家バル</p><p class="text-[0.48rem] text-muted mt-0.5">あと1人 ・ 4,000円〜</p></div></div>
-                <div class="rounded-xl overflow-hidden border border-line"><div class="ph ph-italian2 h-[52px]"></div><div class="p-1.5"><p class="text-[0.55rem] font-bold leading-tight">名物パスタを4人で</p><p class="text-[0.48rem] text-muted mt-0.5">あと2人 ・ 2,000円〜</p></div></div>
-              </div>
-            </div>
-            <div class="px-3 mt-2.5">
-              <div class="flex items-center gap-2 rounded-xl bg-soft px-2.5 py-2">
-                <span class="w-6 h-6 rounded-full bg-terra/15 flex items-center justify-center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#df4f1c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
-                <span class="text-[0.6rem] font-bold flex-1">地図から探す</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7c6c61" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-              </div>
-            </div>
-            <div class="absolute bottom-0 inset-x-0 bg-paper border-t border-line flex justify-around py-2">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#df4f1c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ab9d92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ab9d92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ab9d92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ab9d92" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
-            </div>
-          </div>
+<!-- ============ 参: 使い方 (ピン留めスマホ) ============ -->
+<section class="sc4" id="tsukai" data-chapter>
+  <div class="sc4-stage">
+    <div class="sc4-bignum anton" aria-hidden="true">
+      <span class="num n1">01</span><span class="num n2">02</span><span class="num n3">03</span><span class="num n4">04</span>
+    </div>
+    <div class="sc4-grid">
+      <div class="sc4-copy">
+        <p class="sec-label">第参夜 ── 使い方</p>
+        <h2>やることは<br />4つだけ</h2>
+        <div class="sc4-steps">
+          <div class="step st1"><span class="s-num">STEP 01</span><h3>見つける</h3>
+            <p>募集を探す。なければ立てる。</p></div>
+          <div class="step st2"><span class="s-num">STEP 02</span><h3>集まる</h3>
+            <p>人数が揃えば成立。場所も時間もアプリで。</p></div>
+          <div class="step st3"><span class="s-num">STEP 03</span><h3>食べる</h3>
+            <p>決済なし。会計は店で各自。</p></div>
+          <div class="step st4"><span class="s-num">STEP 04</span><h3>ひろがる</h3>
+            <p>足りない1人は、LINEで呼ぶ。</p></div>
         </div>
-        <span class="absolute -bottom-7 left-1/2 -translate-x-1/2 text-[0.66rem] tracking-wide text-cream/55 whitespace-nowrap">実際のアプリ画面イメージ</span>
+      </div>
+      <div class="phone" role="img" aria-label="アプリ画面のイメージ">
+        <div class="scr scr-1">
+          <p class="sc-h">🔍 今夜の募集をさがす</p>
+          <div class="card"><div class="cph ph ph-yakiniku"></div>
+            <div class="ct"><b>炭火焼肉を5人で</b><span>恵比寿 ・ 19:00 ・ あと2人</span></div></div>
+          <div class="card"><div class="cph ph ph-bar"></div>
+            <div class="ct"><b>隠れ家バルで乾杯</b><span>渋谷 ・ 20:00 ・ あと1人</span></div></div>
+        </div>
+        <div class="scr scr-2">
+          <p class="sc-h">🎉 まもなく成立</p>
+          <div class="meter">
+            <div class="m-row"><span>募集人数</span><b>5名</b></div>
+            <div class="bar"><i></i></div>
+            <p class="ok">✓ あと2人で成立 ・ 集合 19:00 恵比寿駅西口</p>
+          </div>
+          <div class="card"><div class="cph ph ph-board"></div>
+            <div class="ct"><b>本日のコース</b><span>炭火ステーキ 4,000円〜</span></div></div>
+        </div>
+        <div class="scr scr-3">
+          <p class="sc-h">🧾 会計は、各自で</p>
+          <div class="payrow"><i>💴</i><span><b>店頭で各自精算</b><br />アプリ内決済なし・割り勘も自由</span></div>
+          <div class="card"><div class="cph ph ph-friends"></div>
+            <div class="ct"><b>ごちそうさまでした</b><span>気をつかわない夜、成立。</span></div></div>
+        </div>
+        <div class="scr scr-4">
+          <p class="sc-h">📣 あと1人、呼ぼう</p>
+          <div class="sharebtn line">LINEで募集リンクを送る</div>
+          <div class="sharebtn">リンクをコピー</div>
+          <div class="card"><div class="cph ph ph-izakaya"></div>
+            <div class="ct"><b>金曜の居酒屋部</b><span>シェアから2人参加しました</span></div></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-
-<!-- ====================== TRUST STRIP + MARQUEE ====================== -->
-<section class="relative bg-sumi text-cream overflow-hidden">
-  <div class="max-w-[1200px] mx-auto px-5 sm:px-8 py-9 flex flex-wrap items-center justify-center sm:justify-between gap-x-10 gap-y-6 border-b border-white/8">
-    <div class="flex items-center gap-9 sm:gap-14">
-      <div class="reg-count" hidden>
-        <span class="anton text-ember text-[2.1rem] leading-none"><span data-count="1800" data-reg>1,800</span><span class="text-[1rem]">+</span></span>
-        <span class="block text-cream/60 text-[0.74rem] tracking-wide mt-1">事前登録（先行枠）</span>
-      </div>
-      <span class="reg-count w-px h-10 bg-cream/12" hidden></span>
-      <div>
-        <span class="anton text-ember text-[2.1rem] leading-none"><span data-count="11">11</span><span class="text-[0.95rem]"> ジャンル</span></span>
-        <span class="block text-cream/60 text-[0.74rem] tracking-wide mt-1">居酒屋・焼肉・バル ほか</span>
-      </div>
-    </div>
-    <div class="inline-flex items-center gap-2 px-4 py-2.5 rounded-pill" style="background:rgba(47,143,91,.15); border:1px solid rgba(47,143,91,.5);">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7fe0a8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
-      <span class="text-[0.84rem] text-[#bff0d2]">性別は非表示。料理が主役の設計</span>
-    </div>
+<!-- ============ 帯: マーキー ============ -->
+<section class="band" aria-hidden="true">
+  <div class="row r1">
+    <span>今夜　知らない誰かと　<em>うまいもん</em>　　</span><span>今夜　知らない誰かと　<em>うまいもん</em>　　</span>
+    <span>今夜　知らない誰かと　<em>うまいもん</em>　　</span><span>今夜　知らない誰かと　<em>うまいもん</em>　　</span>
   </div>
-
-  <!-- food marquee (single, motivated: shows the breadth of scenes) -->
-  <div class="marquee-wrap relative py-8 overflow-hidden" role="region" aria-label="楽しめるジャンルの例">
-    <div class="marquee gap-4 px-2">
-      <!-- set A -->
-      <figure class="shrink-0 w-[230px]"><div class="h-[150px] rounded-card ph ph-yakiniku2"></div><figcaption class="mt-2.5 text-[0.82rem] text-cream/75">炭火の焼肉を、囲んで。</figcaption></figure>
-      <figure class="shrink-0 w-[230px]"><div class="h-[150px] rounded-card ph ph-izakaya"></div><figcaption class="mt-2.5 text-[0.82rem] text-cream/75">のれんをくぐる、居酒屋の夜。</figcaption></figure>
-      <figure class="shrink-0 w-[230px]"><div class="h-[150px] rounded-card ph ph-italian"></div><figcaption class="mt-2.5 text-[0.82rem] text-cream/75">名物パスタを、みんなで。</figcaption></figure>
-      <figure class="shrink-0 w-[230px]"><div class="h-[150px] rounded-card ph ph-sushi"></div><figcaption class="mt-2.5 text-[0.82rem] text-cream/75">カウンター寿司も、気軽に。</figcaption></figure>
-      <figure class="shrink-0 w-[230px]"><div class="h-[150px] rounded-card ph ph-bar"></div><figcaption class="mt-2.5 text-[0.82rem] text-cream/75">隠れ家バルで、乾杯を。</figcaption></figure>
-      <figure class="shrink-0 w-[230px]"><div class="h-[150px] rounded-card ph ph-friends"></div><figcaption class="mt-2.5 text-[0.82rem] text-cream/75">はじめましてを、おいしく。</figcaption></figure>
-      <!-- set B (duplicate for seamless loop) -->
-      <figure class="shrink-0 w-[230px]" aria-hidden="true"><div class="h-[150px] rounded-card ph ph-yakiniku2"></div><figcaption class="mt-2.5 text-[0.82rem] text-cream/75">炭火の焼肉を、囲んで。</figcaption></figure>
-      <figure class="shrink-0 w-[230px]" aria-hidden="true"><div class="h-[150px] rounded-card ph ph-izakaya"></div><figcaption class="mt-2.5 text-[0.82rem] text-cream/75">のれんをくぐる、居酒屋の夜。</figcaption></figure>
-      <figure class="shrink-0 w-[230px]" aria-hidden="true"><div class="h-[150px] rounded-card ph ph-italian"></div><figcaption class="mt-2.5 text-[0.82rem] text-cream/75">名物パスタを、みんなで。</figcaption></figure>
-      <figure class="shrink-0 w-[230px]" aria-hidden="true"><div class="h-[150px] rounded-card ph ph-sushi"></div><figcaption class="mt-2.5 text-[0.82rem] text-cream/75">カウンター寿司も、気軽に。</figcaption></figure>
-      <figure class="shrink-0 w-[230px]" aria-hidden="true"><div class="h-[150px] rounded-card ph ph-bar"></div><figcaption class="mt-2.5 text-[0.82rem] text-cream/75">隠れ家バルで、乾杯を。</figcaption></figure>
-      <figure class="shrink-0 w-[230px]" aria-hidden="true"><div class="h-[150px] rounded-card ph ph-friends"></div><figcaption class="mt-2.5 text-[0.82rem] text-cream/75">はじめましてを、おいしく。</figcaption></figure>
-    </div>
-    <div class="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-sumi to-transparent"></div>
-    <div class="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-sumi to-transparent"></div>
+  <div class="row ghost r2">
+    <span>集まれば　入れる店がある　　</span><span>集まれば　入れる店がある　　</span>
+    <span>集まれば　入れる店がある　　</span><span>集まれば　入れる店がある　　</span>
   </div>
 </section>
 
-
-<!-- ====================== 2. PAINS (生成り地・横スワイプ：指で流す) ====================== -->
-<section id="problem" class="relative bg-cream washi overflow-hidden" style="padding-top:96px; padding-bottom:96px;">
-  <div class="lantern-glow" style="top:-180px; left:-140px; opacity:.3;"></div>
-
-  <div class="relative z-10 max-w-[1200px] mx-auto px-5 sm:px-8">
-    <h2 class="kin2 mincho font-extrabold palt" style="font-size:clamp(2.1rem,7vw,3.6rem); line-height:1.2;"><span class="w" style="--wd:0s"><span>こういう夜、</span></span><span class="w" style="--wd:.1s"><span class="text-cta">ない？</span></span></h2>
+<!-- ============ 肆: 安心の作法 ============ -->
+<section class="sc6" id="anshin" data-chapter>
+  <div class="sc6-head">
+    <p class="sec-label">第肆夜 ── 安心の作法</p>
+    <h2>知らない人と会うから<br /><em>ここまでやる</em></h2>
   </div>
-
-  <!-- 横スワイプ：1枚1メッセージ、読まずに伝わる -->
-  <div class="relative z-10 mt-9 feed-x px-5 sm:px-8 max-w-[1280px] mx-auto" role="region" aria-label="あるある">
-    <article class="tap relative w-[270px] sm:w-[320px] aspect-[4/5] rounded-card overflow-hidden zoomwrap shadow-xl">
-      <div class="absolute inset-0 ph ph-yakiniku zoom"></div>
-      <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(18,11,7,.1),rgba(18,11,7,.86));"></div>
-      <p class="absolute bottom-6 left-6 right-6 mincho font-bold text-cream palt" style="font-size:clamp(1.45rem,4.3vw,1.85rem); line-height:1.36;"><span style="display:block;white-space:nowrap">ひとりじゃ</span><span style="display:block;white-space:nowrap">入れない焼肉。</span></p>
-    </article>
-    <article class="tap relative w-[270px] sm:w-[320px] aspect-[4/5] rounded-card overflow-hidden zoomwrap shadow-xl">
-      <div class="absolute inset-0 ph ph-italian2 zoom"></div>
-      <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(18,11,7,.1),rgba(18,11,7,.86));"></div>
-      <p class="absolute bottom-6 left-6 right-6 mincho font-bold text-cream palt" style="font-size:clamp(1.45rem,4.3vw,1.85rem); line-height:1.36;"><span style="display:block;white-space:nowrap">バズった店、</span><span style="display:block;white-space:nowrap">誰と行く？</span></p>
-    </article>
-    <article class="tap relative w-[270px] sm:w-[320px] aspect-[4/5] rounded-card overflow-hidden zoomwrap shadow-xl">
-      <div class="absolute inset-0 ph ph-bar zoom"></div>
-      <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(18,11,7,.1),rgba(18,11,7,.86));"></div>
-      <p class="absolute bottom-6 left-6 right-6 mincho font-bold text-cream palt" style="font-size:clamp(1.45rem,4.3vw,1.85rem); line-height:1.36;"><span style="display:block;white-space:nowrap">誘うのって、</span><span style="display:block;white-space:nowrap">正直だるい。</span></p>
-    </article>
-    <article class="tap relative w-[270px] sm:w-[320px] aspect-[4/5] rounded-card overflow-hidden zoomwrap shadow-xl">
-      <div class="absolute inset-0 ph ph-izakaya zoom"></div>
-      <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(18,11,7,.1),rgba(18,11,7,.86));"></div>
-      <p class="absolute bottom-6 left-6 right-6 mincho font-bold text-cream palt" style="font-size:clamp(1.45rem,4.3vw,1.85rem); line-height:1.36;"><span style="display:block;white-space:nowrap">今日もヒマ、</span><span style="display:block;white-space:nowrap">相手がいない。</span></p>
-    </article>
+  <div class="fan">
+    <article class="fan-card fc1"><span class="fc-tag">✓ 実装済みの方針</span>
+      <h3>性別は出ない</h3><p>性別欄が、そもそもない。あるのは食の好みだけ。</p></article>
+    <article class="fan-card fc2"><span class="fc-tag">✓ 実装済みの方針</span>
+      <h3>通報はワンタップ</h3><p>不快なら即ブロック。運営も確認します。</p></article>
+    <article class="fan-card fc3"><span class="fc-tag">✓ 実装済みの方針</span>
+      <h3>集合はお店で</h3><p>会うのは店で、人数が揃ってから。</p></article>
   </div>
-
-  <div class="relative z-10 max-w-[1200px] mx-auto px-5 sm:px-8 mt-10">
-    <p class="reveal mincho font-bold palt text-ink" style="font-size:clamp(1.4rem,4vw,2.1rem); line-height:1.4;">ぜんぶ、<span class="text-cta">あいのりごはん</span>で解決。</p>
-    <p class="reveal text-muted mt-2 text-[0.95rem]" style="--d:.08s;">指でスワイプ →</p>
-  </div>
+  <p class="sc6-note">※ 事前決済・審査済み掲載店・複数人限定クーポンなどは、需要が見えた段階で順次追加予定です。</p>
 </section>
 
-
-<!-- ====================== 3. FEED（墨地・縦の募集フィード＝アプリの中身を即見せ） ====================== -->
-<section id="feed" class="relative bg-sumi text-cream overflow-hidden" style="padding-top:110px; padding-bottom:110px;">
-  <svg class="absolute top-0 inset-x-0 w-full" style="transform:translateY(-99%);" height="34" viewBox="0 0 1440 34" preserveAspectRatio="none" fill="#160e09" aria-hidden="true"><path d="M0 34 V14 C 120 0,240 0,360 14 C 480 28,600 28,720 14 C 840 0,960 0,1080 14 C 1200 28,1320 28,1440 14 V34 Z"/></svg>
-  <div class="lantern-glow" style="top:-120px; right:-120px; opacity:.42;"></div>
-
-  <div class="relative z-10 max-w-[760px] mx-auto px-5 sm:px-8">
-    <div class="flex items-center gap-2.5 mb-2">
-      <span class="w-2.5 h-2.5 rounded-full bg-ember blip"></span>
-      <span class="anton text-ember tracking-wide text-[0.86rem]">LIVE</span>
-    </div>
-    <h2 class="kin2 mincho font-extrabold palt" style="font-size:clamp(2.1rem,6.4vw,3.4rem); line-height:1.2;"><span class="w" style="--wd:0s"><span>今夜、</span></span><span class="w" style="--wd:.1s"><span class="text-ember">あと1人。</span></span></h2>
-    <p class="reveal text-cream/60 mt-3 text-[0.95rem]" style="--d:.1s;">埋まったら成立。あなたが最後のひとりかも。</p>
-
-    <div class="mt-9 space-y-5">
-      <!-- card 1 -->
-      <article class="reveal-scale tap rounded-card overflow-hidden border border-white/10 bg-white/[0.04]" style="--d:.02s;">
-        <div class="relative h-[150px] zoomwrap">
-          <div class="absolute inset-0 ph ph-steak-board zoom"></div>
-          <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(18,11,7,.15),rgba(18,11,7,.8));"></div>
-          <span class="absolute top-3 left-3 anton text-[0.62rem] tracking-wider px-2.5 py-1 rounded bg-cta text-cream">焼肉</span>
-          <span class="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3">
-            <span class="mincho font-bold text-cream text-[1.02rem] sm:text-[1.18rem] palt min-w-0">炭火焼肉で、いい夜を</span>
-            <span class="big-num text-ember text-[1.4rem] sm:text-[1.7rem] shrink-0">¥4,000<span class="text-cream/60 text-[0.7rem]">〜</span></span>
-          </span>
-        </div>
-        <div class="p-5">
-          <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[0.82rem] sm:text-[0.84rem] mb-2">
-            <span class="text-cream/70">恵比寿 ・ 今夜 19:00</span>
-            <span class="text-ember font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-ember blip"></span>あと1人で成立</span>
-          </div>
-          <div class="gauge" style="--fill:80%;"><i></i></div>
-          <button type="button" onclick="location.hash='#register'" class="tap mt-4 w-full h-[52px] rounded-pill bg-cta text-cream font-bold text-[1rem]">参加する</button>
-        </div>
-      </article>
-
-      <!-- card 2 -->
-      <article class="reveal-scale tap rounded-card overflow-hidden border border-white/10 bg-white/[0.04]" style="--d:.06s;">
-        <div class="relative h-[150px] zoomwrap">
-          <div class="absolute inset-0 ph ph-italian zoom"></div>
-          <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(18,11,7,.15),rgba(18,11,7,.8));"></div>
-          <span class="absolute top-3 left-3 anton text-[0.62rem] tracking-wider px-2.5 py-1 rounded bg-cta text-cream">イタリアン</span>
-          <span class="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3">
-            <span class="mincho font-bold text-cream text-[1.02rem] sm:text-[1.18rem] palt min-w-0">名物パスタを4人で</span>
-            <span class="big-num text-ember text-[1.4rem] sm:text-[1.7rem] shrink-0">¥2,000<span class="text-cream/60 text-[0.7rem]">〜</span></span>
-          </span>
-        </div>
-        <div class="p-5">
-          <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[0.82rem] sm:text-[0.84rem] mb-2">
-            <span class="text-cream/70">渋谷 ・ 今夜 20:00</span>
-            <span class="text-ember font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-ember blip"></span>あと2人</span>
-          </div>
-          <div class="gauge" style="--fill:60%; --d:.1s;"><i></i></div>
-          <button type="button" onclick="location.hash='#register'" class="tap mt-4 w-full h-[52px] rounded-pill bg-cta text-cream font-bold text-[1rem]">参加する</button>
-        </div>
-      </article>
-
-      <!-- card 3 -->
-      <article class="reveal-scale tap rounded-card overflow-hidden border border-white/10 bg-white/[0.04]" style="--d:.1s;">
-        <div class="relative h-[150px] zoomwrap">
-          <div class="absolute inset-0 ph ph-bar zoom"></div>
-          <div class="absolute inset-0" style="background:linear-gradient(180deg,rgba(18,11,7,.15),rgba(18,11,7,.8));"></div>
-          <span class="absolute top-3 left-3 anton text-[0.62rem] tracking-wider px-2.5 py-1 rounded bg-cta text-cream">バル</span>
-          <span class="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3">
-            <span class="mincho font-bold text-cream text-[1.02rem] sm:text-[1.18rem] palt min-w-0">隠れ家バルで乾杯</span>
-            <span class="big-num text-ember text-[1.4rem] sm:text-[1.7rem] shrink-0">¥4,000<span class="text-cream/60 text-[0.7rem]">〜</span></span>
-          </span>
-        </div>
-        <div class="p-5">
-          <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-[0.82rem] sm:text-[0.84rem] mb-2">
-            <span class="text-cream/70">新宿 ・ 今夜 19:30</span>
-            <span class="text-ember font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-ember blip"></span>あと1人で成立</span>
-          </div>
-          <div class="gauge" style="--fill:78%; --d:.16s;"><i></i></div>
-          <button type="button" onclick="location.hash='#register'" class="tap mt-4 w-full h-[52px] rounded-pill bg-cta text-cream font-bold text-[1rem]">参加する</button>
-        </div>
-      </article>
-    </div>
-
-    <p class="text-cream/40 text-[0.76rem] mt-6">※ 募集はイメージです。アプリ公開後に実際の募集が並びます。</p>
-  </div>
-</section>
-
-
-<!-- ====================== 4. HOW（生成り地・3タップ：超ミニマル） ====================== -->
-<section id="how" class="relative bg-cream washi overflow-hidden" style="padding-top:96px; padding-bottom:96px;">
-  <div class="relative z-10 max-w-[1200px] mx-auto px-5 sm:px-8">
-    <h2 class="kin2 mincho font-extrabold palt" style="font-size:clamp(2.1rem,6.4vw,3.4rem); line-height:1.2;"><span class="w" style="--wd:0s"><span>3タップで、</span></span><span class="w" style="--wd:.1s"><span class="text-cta">成立。</span></span></h2>
-
-    <div class="mt-12 grid sm:grid-cols-3 gap-5">
-      <article class="reveal tap rounded-card bg-paper border border-line p-7 relative overflow-hidden" style="--d:.02s; box-shadow:0 26px 60px -40px rgba(58,29,21,.45);">
-        <span class="big-num text-[3.6rem]" style="color:#eccbb2;">01</span>
-        <h3 class="mincho font-bold text-[1.5rem] palt mt-1">さがす</h3>
-        <p class="text-muted mt-1.5 text-[0.95rem]">ジャンルとエリアで募集を流し見。</p>
-      </article>
-      <article class="reveal tap rounded-card bg-paper border border-line p-7 relative overflow-hidden" style="--d:.08s; box-shadow:0 26px 60px -40px rgba(58,29,21,.45);">
-        <span class="big-num text-[3.6rem]" style="color:#eccbb2;">02</span>
-        <h3 class="mincho font-bold text-[1.5rem] palt mt-1">集まる</h3>
-        <p class="text-muted mt-1.5 text-[0.95rem]">人数が埋まったら成立。場所と時間も出る。</p>
-      </article>
-      <article class="reveal tap rounded-card bg-cta text-cream p-7 relative overflow-hidden" style="--d:.14s;">
-        <div class="lantern-glow" style="top:-140px; right:-110px; width:280px; height:280px; opacity:.4;"></div>
-        <span class="relative big-num text-[3.6rem] text-white/35">03</span>
-        <h3 class="relative mincho font-bold text-[1.5rem] palt mt-1">食べる</h3>
-        <p class="relative text-cream/90 mt-1.5 text-[0.95rem]">支払いは各自。お金で気をつかわない。</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-
-<!-- ====================== 5. VALUE（墨地・どでか数字＋写真の即パンチ） ====================== -->
-<section id="value" class="relative bg-sumi text-cream overflow-hidden" style="padding-top:110px; padding-bottom:110px;">
-  <svg class="absolute top-0 inset-x-0 w-full" style="transform:translateY(-99%);" height="34" viewBox="0 0 1440 34" preserveAspectRatio="none" fill="#160e09" aria-hidden="true"><path d="M0 34 V14 C 120 0,240 0,360 14 C 480 28,600 28,720 14 C 840 0,960 0,1080 14 C 1200 28,1320 28,1440 14 V34 Z"/></svg>
-  <div class="lantern-glow" style="bottom:-180px; left:-140px; opacity:.34;"></div>
-
-  <div class="relative z-10 max-w-[1200px] mx-auto px-5 sm:px-8">
-    <div class="grid md:grid-cols-12 gap-5">
-      <article class="reveal-scale md:col-span-7 relative rounded-card overflow-hidden min-h-[300px] flex items-end zoomwrap" style="--d:.02s;">
-        <div class="absolute inset-0 ph ph-friends zoom"></div>
-        <div class="absolute inset-0" style="background:linear-gradient(180deg,transparent 30%,rgba(16,10,6,.92));"></div>
-        <div class="relative p-8 sm:p-10">
-          <p class="mincho font-bold palt text-cream" style="font-size:clamp(1.25rem,5.2vw,2.3rem); line-height:1.34;">「好き」が同じなら、<br/>初対面でも話せる。</p>
-        </div>
-      </article>
-
-      <div class="md:col-span-5 grid grid-rows-2 gap-5">
-        <article class="reveal tap rounded-card border border-white/10 bg-white/[0.04] p-7 flex flex-col justify-center">
-          <span class="big-num text-ember text-[2.8rem]">¥0</span>
-          <p class="mt-1 text-[0.96rem] text-cream/80">登録も利用も、まず無料。アプリ内決済ナシ。</p>
-        </article>
-        <article class="reveal tap rounded-card border border-white/10 bg-white/[0.04] p-7 flex flex-col justify-center" style="--d:.08s;">
-          <span class="big-num text-ember text-[2.1rem] sm:text-[2.8rem]">幹事ゼロ</span>
-          <p class="mt-1 text-[0.96rem] text-cream/80">日程も人数集めもアプリ任せ。誘うストレスなし。</p>
-        </article>
+<!-- ============ 伍: 事前登録 ============ -->
+<section class="sc7" id="register" data-chapter>
+  <div class="sc7-in">
+    <p class="sec-label">第伍夜 ── 今夜のうちに</p>
+    <h2>登録だけ<br /><em>済ませとく</em></h2>
+    <p class="lead"><span class="nb">いまはアプリ製作中。</span><span class="nb">登録すると、公開時に先に案内。</span><br /><span class="nb">30秒・無料。</span></p>
+    <form id="regForm" novalidate>
+      <p class="chips-label" id="areaLabel">行けるエリア <span>複数選択OK・任意</span></p>
+      <div class="chips" role="group" aria-labelledby="areaLabel">
+        <label class="chip"><input type="checkbox" name="area" value="渋谷" /><span>渋谷</span></label>
+        <label class="chip"><input type="checkbox" name="area" value="新宿" /><span>新宿</span></label>
+        <label class="chip"><input type="checkbox" name="area" value="池袋" /><span>池袋</span></label>
+        <label class="chip"><input type="checkbox" name="area" value="恵比寿" /><span>恵比寿</span></label>
+        <label class="chip"><input type="checkbox" name="area" value="横浜" /><span>横浜</span></label>
+        <label class="chip"><input type="checkbox" name="area" value="大阪" /><span>大阪</span></label>
+        <label class="chip"><input type="checkbox" name="area" value="その他" id="areaOther" /><span>その他</span></label>
       </div>
-    </div>
+      <!-- 「その他」は登録者の4割が押しているのに、どこかが一切分からない箱だった。
+           密度が分からないと最初にどこで始めるかを決められないので、押したときだけ場所を聞く。
+           選択肢を増やさないのは、フォーム到達51人のうち入力を始めるのが11人しかいないため。
+           同じ地名が溜まったら、そのときチップに昇格させる。 -->
+      <div class="otherwrap" id="otherWrap" hidden>
+        <label class="otherlabel" for="areaFree">どのあたり？ <span>任意</span></label>
+        <input type="text" id="areaFree" name="area_free" maxlength="60" autocomplete="off"
+               placeholder="例：錦糸町、北千住、吉祥寺、札幌" />
+        <p class="othernote">声の多い場所から順に対応していきます。</p>
+      </div>
+      <!-- 時間帯も name="area" に相乗りさせる。値の頭に t: を付けてエリアと区別する。
+           エリアだけでは「恵比寿に10人」が分かっても、平日夜に空いているのが2人なら会は開けない。
+           集計は | で切った先頭を , で split し、t: で始まるものを時間帯として扱う -->
+      <p class="chips-label" id="timeLabel">行きやすい時間帯 <span>複数選択OK・任意</span></p>
+      <div class="chips" role="group" aria-labelledby="timeLabel">
+        <label class="chip"><input type="checkbox" name="area" value="t:平日夜" /><span>平日の夜</span></label>
+        <label class="chip"><input type="checkbox" name="area" value="t:週末昼" /><span>週末の昼</span></label>
+        <label class="chip"><input type="checkbox" name="area" value="t:週末夜" /><span>週末の夜</span></label>
+      </div>
+      <div class="mailrow">
+        <input type="email" id="regEmail" required placeholder="you@example.com" aria-label="メールアドレス" autocomplete="email" />
+        <input type="text" name="company" id="regHoneypot" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;" />
+        <span id="submitWrap" style="position:relative; display:inline-block;">
+          <button type="submit" class="bigcta"><span id="submitLabel">無料で事前登録する →</span></button>
+        </span>
+      </div>
+      <p id="regStatus" role="status" hidden></p>
+      <p class="fine">送るのはメールアドレスだけです。公開のお知らせ以外には使いません。第三者に渡しません。いつでも配信停止できます。<br /><a href="/privacy">プライバシーポリシー</a></p>
+    </form>
   </div>
 </section>
 
+<!-- ============ 終 ============ -->
+<footer class="sc8" id="footer">
+  <h2 class="sc8-giant" aria-label="また腹が減る">
+    <span class="base" aria-hidden="true">また腹が減る</span>
+    <span class="fill-top" aria-hidden="true">また腹が減る</span>
+  </h2>
+  <div class="sc8-cta"><a href="#register">その夜も あいのりごはんで</a></div>
 
-<!-- ====================== 6. SAFETY（生成り地・1バーで即安心） ====================== -->
-<section id="safety" class="relative bg-cream washi overflow-hidden" style="padding-top:96px; padding-bottom:96px;">
-  <div class="relative z-10 max-w-[1100px] mx-auto px-5 sm:px-8">
-    <h2 class="kin2 mincho font-extrabold palt" style="font-size:clamp(1.9rem,5.6vw,3rem); line-height:1.24;"><span class="w" style="--wd:0s"><span>出会い系じゃない。</span></span><br><span class="w" style="--wd:.12s"><span>主役はずっと</span></span><span class="w" style="--wd:.2s"><span class="text-cta">「料理」。</span></span></h2>
+  <ul class="sc8-notes">
+    <li>・ あいのりごはんは初期段階では「ごはん仲間を集めるサービス」です。予約・決済の代行は行いません（支払いは各自お店で）。</li>
+    <li>・ 本ページはローンチ前の需要確認を目的とした事前登録ページです。掲載中の数値・募集内容はイメージを含みます。</li>
+    <li>・ 性別非表示・通報/ブロックなど、食体験を主役にした場づくりを行います。</li>
+  </ul>
 
-    <div class="reveal mt-9 grid sm:grid-cols-3 gap-4" style="--d:.1s;">
-      <div class="tap rounded-card bg-paper border border-line p-6 flex items-center gap-3" style="box-shadow:0 22px 50px -40px rgba(58,29,21,.45);">
-        <span class="inline-flex w-11 h-11 shrink-0 rounded-full bg-fresh/12 items-center justify-center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
-        <span class="font-bold text-[1.02rem]">性別は非表示</span>
-      </div>
-      <div class="tap rounded-card bg-paper border border-line p-6 flex items-center gap-3" style="box-shadow:0 22px 50px -40px rgba(58,29,21,.45);">
-        <span class="inline-flex w-11 h-11 shrink-0 rounded-full bg-fresh/12 items-center justify-center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
-        <span class="font-bold text-[1.02rem]">通報・ブロック</span>
-      </div>
-      <div class="tap rounded-card bg-paper border border-line p-6 flex items-center gap-3" style="box-shadow:0 22px 50px -40px rgba(58,29,21,.45);">
-        <span class="inline-flex w-11 h-11 shrink-0 rounded-full bg-fresh/12 items-center justify-center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
-        <span class="font-bold text-[1.02rem]">集合場所も明示</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- ====================== 6. REGISTER FORM (生成り地・主役) ====================== -->
-<section id="register" class="relative bg-cream washi overflow-hidden" style="padding-top:140px; padding-bottom:120px;">
-  <div class="lantern-glow" style="top:-140px; right:-100px; opacity:.34;"></div>
-  <div class="lantern-glow" style="bottom:-180px; left:-160px; opacity:.26;"></div>
-
-  <div class="relative z-10 max-w-[1200px] mx-auto px-5 sm:px-8 grid lg:grid-cols-12 gap-12 items-start">
-    <!-- left pitch -->
-    <div class="lg:col-span-5 reveal lg:sticky lg:top-28">
-      <h2 class="kin2 mincho font-extrabold palt" style="font-size:clamp(2rem,5.4vw,3.3rem); line-height:1.28;"><span class="w" style="--wd:0s"><span>今夜の仲間を、</span></span><br><span class="w" style="--wd:.12s"><span class="text-cta">先に確保しておく</span></span></h2>
-      <p class="text-muted mt-6 leading-[2] text-[1.04rem] max-w-[34em]">まだアプリは公開前。だからいまは、あなたの「行きたい」を聞かせてください。ローンチ時に、希望エリア・ジャンルの募集を優先してご案内します。</p>
-
-      <ul class="mt-8 space-y-3.5">
-        <li class="flex items-center gap-3 text-[0.99rem]"><span class="inline-flex w-6 h-6 rounded-full bg-fresh/15 items-center justify-center shrink-0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="min-w-0">登録は<strong class="text-ink font-bold whitespace-nowrap">完全無料</strong>・約60秒</span></li>
-        <li class="flex items-center gap-3 text-[0.99rem]"><span class="inline-flex w-6 h-6 rounded-full bg-fresh/15 items-center justify-center shrink-0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="min-w-0">先行ユーザー枠を<strong class="text-ink font-bold whitespace-nowrap">優先ご案内</strong></span></li>
-        <li class="flex items-center gap-3 text-[0.99rem]"><span class="inline-flex w-6 h-6 rounded-full bg-fresh/15 items-center justify-center shrink-0"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2f8f5b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><span class="min-w-0">いつでも配信停止OK・<strong class="text-ink font-bold whitespace-nowrap">勧誘しません</strong></span></li>
-      </ul>
-
-      <div class="reg-count mt-9 inline-flex items-center gap-3 rounded-card bg-paper border border-line px-6 py-5" hidden style="box-shadow:0 26px 60px -40px rgba(58,29,21,.45);">
-        <span class="anton text-cta text-[2.4rem] leading-none"><span data-count="1800" data-reg>1,800</span><span class="text-[1.1rem]">+</span></span>
-        <span class="text-[0.86rem] text-muted leading-snug">人が<br/>すでに登録済み</span>
-      </div>
-    </div>
-
-    <!-- the form -->
-    <div class="lg:col-span-7 reveal" style="--d:.08s;">
-      <form class="relative rounded-[28px] bg-paper border border-line p-7 sm:p-10 overflow-hidden" style="box-shadow:0 50px 100px -50px rgba(58,29,21,.6);" novalidate>
-        <span class="absolute top-0 inset-x-0 h-1.5" style="background:linear-gradient(90deg,#df4f1c,#ff7a3d,#c2913f);"></span>
-        <p class="mincho font-bold text-[1.35rem] palt">事前登録フォーム</p>
-        <p class="text-muted text-[0.88rem] mt-1.5">入力は4項目だけ。<span class="text-terra font-bold">*</span> は必須です。</p>
-
-        <fieldset class="mt-8">
-          <legend class="flex items-center gap-2.5 text-[0.96rem] font-bold mb-3"><span class="anton text-terra text-[0.95rem]">01</span>連絡先 <span class="text-terra">*</span> <span class="font-normal text-muted text-[0.8rem]">（メール または LINE のどちらか）</span></legend>
-          <div class="grid sm:grid-cols-2 gap-3">
-            <label class="block"><span class="sr-only">メールアドレス</span><input type="email" class="field-input" placeholder="you@example.com" aria-label="メールアドレス" autocomplete="email" /></label>
-            <label class="block"><span class="sr-only">LINE ID</span><input type="text" class="field-input" placeholder="LINE ID（任意）" aria-label="LINE ID" /></label>
-          </div>
-        </fieldset>
-
-        <fieldset class="mt-8">
-          <legend class="flex items-center gap-2.5 text-[0.96rem] font-bold mb-3"><span class="anton text-terra text-[0.95rem]">02</span>希望エリア <span class="text-terra">*</span></legend>
-          <div class="flex flex-wrap gap-2.5">
-            <label class="chip"><input type="radio" name="area" /><span>渋谷</span></label>
-            <label class="chip"><input type="radio" name="area" /><span>新宿</span></label>
-            <label class="chip"><input type="radio" name="area" /><span>池袋</span></label>
-            <label class="chip"><input type="radio" name="area" /><span>恵比寿</span></label>
-            <label class="chip"><input type="radio" name="area" /><span>横浜</span></label>
-            <label class="chip"><input type="radio" name="area" /><span>大阪</span></label>
-            <label class="chip"><input type="radio" name="area" /><span>名古屋</span></label>
-            <label class="chip"><input type="radio" name="area" /><span>その他</span></label>
-          </div>
-        </fieldset>
-
-        <fieldset class="mt-8">
-          <legend class="flex items-center gap-2.5 text-[0.96rem] font-bold mb-3"><span class="anton text-terra text-[0.95rem]">03</span>好きなジャンル <span class="text-terra">*</span> <span class="font-normal text-muted text-[0.8rem]">（複数選択OK）</span></legend>
-          <div class="flex flex-wrap gap-2.5">
-            <label class="chip"><input type="checkbox" name="genre" /><span>居酒屋</span></label>
-            <label class="chip"><input type="checkbox" name="genre" /><span>焼肉</span></label>
-            <label class="chip"><input type="checkbox" name="genre" /><span>イタリアン</span></label>
-            <label class="chip"><input type="checkbox" name="genre" /><span>中華</span></label>
-            <label class="chip"><input type="checkbox" name="genre" /><span>カフェ</span></label>
-            <label class="chip"><input type="checkbox" name="genre" /><span>バル</span></label>
-            <label class="chip"><input type="checkbox" name="genre" /><span>寿司</span></label>
-            <label class="chip"><input type="checkbox" name="genre" /><span>エスニック</span></label>
-            <label class="chip"><input type="checkbox" name="genre" /><span>激辛</span></label>
-            <label class="chip"><input type="checkbox" name="genre" /><span>純喫茶</span></label>
-            <label class="chip"><input type="checkbox" name="genre" /><span>その他</span></label>
-          </div>
-        </fieldset>
-
-        <fieldset class="mt-8">
-          <legend class="flex items-center gap-2.5 text-[0.96rem] font-bold mb-3"><span class="anton text-terra text-[0.95rem]">04</span>参加したい価格帯 <span class="text-terra">*</span></legend>
-          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-            <label class="chip block"><input type="radio" name="price" /><span class="w-full justify-center"><span class="anton text-[0.95rem]">〜2,000</span></span></label>
-            <label class="chip block"><input type="radio" name="price" /><span class="w-full justify-center"><span class="anton text-[0.95rem]">2,000〜3,999</span></span></label>
-            <label class="chip block"><input type="radio" name="price" /><span class="w-full justify-center"><span class="anton text-[0.95rem]">4,000〜5,999</span></span></label>
-            <label class="chip block"><input type="radio" name="price" /><span class="w-full justify-center"><span class="anton text-[0.95rem]">6,000〜7,999</span></span></label>
-            <label class="chip block"><input type="radio" name="price" /><span class="w-full justify-center"><span class="anton text-[0.95rem]">8,000〜</span></span></label>
-          </div>
-          <p class="text-muted text-[0.78rem] mt-2">単位：円・1人あたりの目安</p>
-        </fieldset>
-
-        <details class="mt-8 group">
-          <summary class="cursor-pointer list-none flex items-center gap-2 text-[0.92rem] font-bold text-terra select-none"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-open:rotate-90" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>任意であと3つ（マッチ精度が上がります）</summary>
-          <div class="mt-6 space-y-7">
-            <fieldset>
-              <legend class="text-[0.9rem] font-bold mb-3">年代 <span class="font-normal text-muted text-[0.78rem]">（任意）</span></legend>
-              <div class="flex flex-wrap gap-2.5">
-                <label class="chip"><input type="radio" name="age" /><span>10代</span></label>
-                <label class="chip"><input type="radio" name="age" /><span>20代</span></label>
-                <label class="chip"><input type="radio" name="age" /><span>30代</span></label>
-                <label class="chip"><input type="radio" name="age" /><span>40代</span></label>
-                <label class="chip"><input type="radio" name="age" /><span>50代〜</span></label>
-              </div>
-            </fieldset>
-            <fieldset>
-              <legend class="text-[0.9rem] font-bold mb-3">「知らない人と食事する」ことへの抵抗感 <span class="font-normal text-muted text-[0.78rem]">（任意）</span></legend>
-              <div class="flex flex-wrap gap-2.5">
-                <label class="chip"><input type="radio" name="hesitation" /><span>かなり参加したい</span></label>
-                <label class="chip"><input type="radio" name="hesitation" /><span>条件が合えば参加したい</span></label>
-                <label class="chip"><input type="radio" name="hesitation" /><span>友人と一緒なら</span></label>
-                <label class="chip"><input type="radio" name="hesitation" /><span>まだ少し不安</span></label>
-              </div>
-            </fieldset>
-            <label class="block"><span class="text-[0.9rem] font-bold">使ってみたい理由・ひとこと <span class="font-normal text-muted text-[0.78rem]">（任意・自由記述）</span></span>
-              <textarea rows="3" class="field-input mt-2.5 resize-y" placeholder="例：ひとりでは入りづらい焼肉に行きたい／純喫茶めぐりの仲間がほしい"></textarea>
-            </label>
-          </div>
-        </details>
-
-        <div class="mt-9">
-          <button type="submit" class="btn-noren w-full sm:w-auto inline-flex items-center justify-center h-[68px] px-12 bg-cta text-cream font-bold text-[1.06rem]" style="background-color:var(--color-cta); box-shadow:0 24px 50px -20px rgba(184,51,26,.95);">
-            <span class="inline-flex items-center gap-2.5 pt-1">この内容で事前登録する<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          </button>
-          <p class="text-muted text-[0.78rem] mt-3.5 leading-relaxed">送信で<a href="#footer" class="underline underline-offset-2 hover:text-terra">利用規約・プライバシーポリシー</a>に同意したものとみなします。これはプロトタイプのため、実際の送信は行われません。</p>
-        </div>
-      </form>
-    </div>
-  </div>
-</section>
-
-</main>
-
-
-<!-- ====================== FOOTER ====================== -->
-<footer id="footer" class="relative bg-sumi text-cream overflow-hidden pt-28 pb-10">
-  <svg class="absolute top-0 inset-x-0 w-full" style="transform:translateY(-99%);" height="34" viewBox="0 0 1440 34" preserveAspectRatio="none" fill="#160e09" aria-hidden="true"><path d="M0 34 V14 C 120 0,240 0,360 14 C 480 28,600 28,720 14 C 840 0,960 0,1080 14 C 1200 28,1320 28,1440 14 V34 Z"/></svg>
-  <div class="absolute inset-0 ph ph-bar opacity-[0.14]" aria-hidden="true"></div>
-  <div class="lantern-glow" style="top:-120px; right:-60px; opacity:.4;"></div>
-  <div class="lantern-glow" style="bottom:-200px; left:-120px; opacity:.3;"></div>
-
-  <div class="relative z-10 max-w-[1200px] mx-auto px-5 sm:px-8">
-    <div class="text-center max-w-[44rem] mx-auto reveal">
-      <h2 class="kin2 mincho font-extrabold palt inline-block text-left" style="font-size:clamp(2rem,5.5vw,3.4rem); line-height:1.28;"><span class="w" style="--wd:0s"><span>今夜、</span></span><span class="w" style="--wd:.08s"><span>知らない</span></span><span class="w" style="--wd:.16s"><span>誰かと、</span></span><br><span class="w" style="--wd:.28s"><span class="text-ember">うまいもん。</span></span></h2>
-      <a href="#register" class="btn-noren mt-9 inline-flex items-center justify-center px-10 bg-terra text-cream font-bold" style="height:66px; background-color:var(--color-terra); box-shadow:0 24px 50px -20px rgba(223,79,28,.9);">
-        <span class="inline-flex items-center gap-2.5 pt-1">無料で事前登録する<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-      </a>
-    </div>
-
-    <div class="mt-16 rounded-card border border-white/10 bg-white/[0.04] p-6 sm:p-8 reveal">
-      <p class="flex items-center gap-2 text-brass font-bold text-[0.88rem]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c2913f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>ご利用にあたって</p>
-      <ul class="mt-3 space-y-2 text-cream/65 text-[0.86rem] leading-[1.9]">
-        <li>・ あいのりごはんは、初期段階では<strong class="text-cream/90">「ごはん仲間を集めるサービス」</strong>です。お店の予約・決済を代行する予約サービスや決済サービスではありません。</li>
-        <li>・ 店舗の予約、料金の支払いは、各ユーザーがお店で直接行っていただきます（事前決済・予約自動確定はありません）。</li>
-        <li>・ 掲載店舗との提携・審査済み掲載は順次拡大予定です。現時点ですべての店舗と提携しているものではありません。</li>
-        <li>・ 本ページはローンチ前の需要確認を目的とした事前登録ページです。掲載中の数値・募集内容はイメージを含みます。</li>
-        <li>・ あいのりごはんは出会い系サービスではありません。性別非表示・通報/ブロック等で、食体験を主役にした安心な場づくりを行います。</li>
-      </ul>
-    </div>
-
-    <div class="mt-12 pt-8 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-      <a href="#top" class="flex items-center gap-2.5" aria-label="あいのりごはん トップへ">
-        <span class="inline-flex items-center justify-center w-9 h-9 rounded-full" style="background:radial-gradient(circle at 32% 28%,#ff9a66,#df4f1c 55%,#b8331a);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff8f0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19 C 9 11, 15 8, 19 6"/><path d="M6 16 C 11 15, 15 12, 18 8"/></svg></span>
-        <span class="leading-tight"><span class="block mincho font-bold text-[1.02rem]">あいのりごはん</span><span class="block anton text-[0.58rem] tracking-[0.22em]" style="color:var(--color-brass)">AINORI GOHAN</span></span>
-      </a>
-      <nav class="flex flex-wrap gap-x-6 gap-y-2 text-[0.86rem] text-cream/70" aria-label="フッターナビゲーション">
-        <a href="#problem" class="hover:text-ember transition-colors">こんな夜に</a>
-        <a href="#how" class="hover:text-ember transition-colors">使い方</a>
-        <a href="#value" class="hover:text-ember transition-colors">体験価値</a>
-        <a href="#safety" class="hover:text-ember transition-colors">安心設計</a>
-        <a href="#register" class="hover:text-ember transition-colors">事前登録</a>
-      </nav>
-    </div>
-    <p class="mt-8 text-cream/40 text-[0.78rem]">© 2026 あいのりごはん（AINORI GOHAN）. 本ページはローンチ前の需要検証用プロトタイプです。</p>
+  <div class="sc8-foot">
+    <span class="mincho">あいのりごはん <span class="anton" style="color:var(--brass); font-size:.7rem; letter-spacing:.25em;">AINORI GOHAN</span></span>
+    <nav aria-label="フッターナビゲーション">
+      <a href="#yoru">こんな夜に</a><a href="#tana">たとえば</a><a href="#tsukai">使い方</a><a href="#anshin">安心設計</a><a href="#register">事前登録</a><a href="/privacy">プライバシーポリシー</a>
+    </nav>
+    <span>© 2026 AINORI GOHAN ・ 需要検証用プロトタイプ</span>
   </div>
 </footer>
 
+</main>
+
+<!-- ⚠️ フォームは外部JSより前に置く。このLPの唯一のコンバージョンで、
+     CDNが詰まっている間に押されると素のGET送信になってリードが消える -->
 
 <script>
-  // mobile menu
-  (function(){
-    var btn=document.getElementById('menuBtn'), menu=document.getElementById('mobileMenu');
-    if(!btn||!menu) return;
-    btn.addEventListener('click', function(){
-      var open=menu.classList.toggle('hidden')===false;
-      btn.setAttribute('aria-expanded',String(open));
-      btn.setAttribute('aria-label', open?'メニューを閉じる':'メニューを開く');
-    });
-    menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ menu.classList.add('hidden'); btn.setAttribute('aria-expanded','false'); }); });
-  })();
+(function(){
+  'use strict';
+  var REDUCE = window.__REDUCE;
 
-  // navbar glass on scroll (IntersectionObserver sentinel)
+  /* ---------- フォーム送信（実際に /api/register へ送信） ---------- */
   (function(){
-    var bar=document.getElementById('navbar'), sentinel=document.getElementById('top-sentinel');
-    if(!bar||!sentinel) return;
-    function setSolid(solid){
-      if(solid){ bar.classList.add('nav-glass','glass-light','shadow-lg'); }
-      else { bar.classList.remove('nav-glass','glass-light','shadow-lg'); }
-      bar.querySelectorAll('.nav-brand').forEach(function(el){ el.classList.toggle('text-cream', !solid); el.classList.toggle('text-ink', solid); });
-      bar.querySelectorAll('.nav-links a:not(.bg-cta)').forEach(function(el){ el.classList.toggle('text-cream/90', !solid); el.classList.toggle('text-ink', solid); });
-      bar.querySelectorAll('.nav-burger').forEach(function(el){ el.classList.toggle('text-cream', !solid); el.classList.toggle('text-ink', solid); });
+    var form=document.getElementById('regForm'), wrap=document.getElementById('submitWrap'),
+        label=document.getElementById('submitLabel'), status=document.getElementById('regStatus'),
+        emailInput=document.getElementById('regEmail'), honeypot=document.getElementById('regHoneypot'),
+        submitBtn=form ? form.querySelector('button[type="submit"]') : null,
+        areaOther=document.getElementById('areaOther'), otherWrap=document.getElementById('otherWrap'),
+        areaFree=document.getElementById('areaFree');
+    if(!form) return;
+
+    /* 「その他」に連動して場所の入力を開閉する。閉じるときは値も捨てる。
+       残したまま送ると「その他を外したのに地名だけ付いてくる」ことになる */
+    if(areaOther && otherWrap){
+      areaOther.addEventListener('change', function(){
+        otherWrap.hidden = !areaOther.checked;
+        if(areaOther.checked){ if(areaFree) areaFree.focus(); }
+        else if(areaFree){ areaFree.value=''; }
+      });
     }
-    if(!('IntersectionObserver' in window)){ setSolid(true); return; }
-    new IntersectionObserver(function(e){ setSolid(!e[0].isIntersecting); }, {rootMargin:'-40px 0px 0px 0px', threshold:0}).observe(sentinel);
-  })();
 
-  // reveal + kinetic headlines
-  (function(){
-    var els=document.querySelectorAll('.reveal, .reveal-l, .reveal-r, .reveal-scale, .reveal-clip, .kin2, .gauge');
-    if(!('IntersectionObserver' in window)){ els.forEach(function(el){ el.classList.add('in'); }); return; }
-    var io=new IntersectionObserver(function(entries){
-      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
-    }, {threshold:0.14, rootMargin:'0px 0px -8% 0px'});
-    els.forEach(function(el){ io.observe(el); });
-  })();
+    function puff(){
+      if(!wrap || REDUCE) return;
+      for(var i=0;i<3;i++){
+        var s=document.createElement('span'); s.className='puff';
+        s.style.left=(30+i*18)+'%'; s.style.animationDelay=(i*0.13)+'s';
+        wrap.appendChild(s);
+        (function(el){ setTimeout(function(){ el.remove(); },1800); })(s);
+      }
+    }
+    function showStatus(msg, isError){
+      if(!status) return;
+      status.hidden=false; status.textContent=msg;
+      status.style.color = isError ? '#b8331a' : '';
+    }
 
-  // how-it-works: active rail item synced to step in view
-  (function(){
-    var steps=document.querySelectorAll('.how-step'), rails=document.querySelectorAll('.rail-item');
-    if(!steps.length||!('IntersectionObserver' in window)) return;
-    var io=new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if(e.isIntersecting){
-          var n=e.target.getAttribute('data-step');
-          rails.forEach(function(r){ r.classList.toggle('active', r.getAttribute('data-rail')===n); });
+    /* 流入元。?utm_source=ig&utm_campaign=aug&utm_content=reels_a → "ig/aug/reels_a"
+       ponytail: DBに列を足さない方針なので area に "渋谷|ig/aug/reels_a" の形で相乗りさせる。
+       集計時は area を '|' で split する。区切りに使うので値からは | を落とす。 */
+    function trafficSrc(){
+      try{
+        var q = new URLSearchParams(location.search);
+        var v = ['utm_source','utm_campaign','utm_content']
+                  .map(function(k){ return q.get(k); }).filter(Boolean).join('/');
+        if(!v && document.referrer){
+          var h = new URL(document.referrer).hostname;
+          if(h && h !== location.hostname) v = 'ref:' + h;
         }
-      });
-    }, {rootMargin:'-45% 0px -45% 0px', threshold:0});
-    steps.forEach(function(s){ io.observe(s); });
-  })();
+        return v.replace(/[|\s]/g,'').slice(0,60);
+      }catch(_){ return ''; }
+    }
 
-  // count-up stats
-  (function(){
-    var nodes=document.querySelectorAll('[data-count]');
-    if(!nodes.length) return;
-    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(reduce||!('IntersectionObserver' in window)) return;
-    function fmt(n){ return n.toLocaleString('en-US'); }
-    var io=new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if(!e.isIntersecting) return;
-        var el=e.target, target=parseInt(el.getAttribute('data-count'),10), start=null, dur=1400;
-        el.textContent='0';
-        function tick(t){
-          if(start===null) start=t;
-          var p=Math.min((t-start)/dur,1), eased=1-Math.pow(1-p,3);
-          el.textContent=fmt(Math.round(target*eased));
-          if(p<1) requestAnimationFrame(tick);
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      /* ボット想定。ただし name="company" はパスワードマネージャが勝手に埋めることがあり、
+         黙って return すると人間には「ボタンが死んでいる」としか見えない。
+         サーバ側も同じ状況で ok を返すので、UIも成功に揃える(fbqは撃たない) */
+      if(honeypot && honeypot.value.trim()!==''){
+        if(label) label.textContent = 'ありがとうございます！';
+        showStatus('事前登録を受け付けました。ローンチ時にご案内します。', false);
+        return;
+      }
+
+      var email = emailInput ? emailInput.value.trim() : '';
+      if(!email || email.indexOf('@')===-1){
+        showStatus('メールアドレスを入力してください', true);
+        if(emailInput) emailInput.focus();
+        return;
+      }
+      /* 複数選択。集計は area を '|' で split したあと先頭を ',' で split する */
+      var area = Array.prototype.map.call(
+        form.querySelectorAll('input[name="area"]:checked'), function(el){ return el.value; }
+      ).join(',');
+      var src = trafficSrc();
+      if(src) area = area + '|' + src;
+
+      if(submitBtn) submitBtn.disabled = true;
+      if(label) label.textContent = '送信中…';
+
+      fetch('/api/register', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        /* area_free は area とは別に送る。area は120字上限で流入元(|ref:...)が相乗りしているので、
+           地名を足すと切り捨てで流入元のほうが落ちる */
+        body: JSON.stringify({
+          /* 登録完了の計測はサーバー側で撃つ。sendBeacon は送信直後に閉じられると落ちるので、
+             実レコードと計測でズレが出ていた。sid は events テーブルの照合キー */
+          sid: window.__sid || '',
+          email: email, area: area,
+          area_free: (areaOther && areaOther.checked && areaFree) ? areaFree.value.trim() : '',
+          company: honeypot ? honeypot.value : ''
+        })
+      }).then(function(res){
+        return res.json().then(function(data){ return { ok: res.ok, data: data }; });
+      }).then(function(result){
+        if(!result.ok || !result.data || !result.data.ok){
+          if(submitBtn) submitBtn.disabled = false;
+          if(label) label.textContent = '無料で事前登録する →';
+          var err = result.data && result.data.error;
+          var msg = err==='invalid_email' ? 'メールアドレスの形式を確認してください' : '送信に失敗しました。少し時間をおいて再度お試しください';
+          showStatus(msg, true);
+          return;
         }
-        requestAnimationFrame(tick);
-        io.unobserve(el);
+        /* Lead は「サーバーが保存に成功した」その瞬間だけ発火させる。
+           送信ボタンのクリックに紐付けると、失敗した送信まで成果として数えてしまい
+           Meta の最適化が壊れる。src は広告別の内訳を Meta 側でも見るため。 */
+        if(window.fbq) fbq('track','Lead', src ? { content_name: src } : {});
+        /* __ev('lead') はここでは撃たない。/api/register が保存成功時に自分で記録する */
+        puff();
+        if(label) label.textContent = 'ありがとうございます！';
+        showStatus('事前登録を受け付けました。ローンチ時にご案内します。', false);
+        form.reset();
+        // reset はチェックを戻すが hidden は戻さない。開いたままだと送信後に空欄が残る
+        if(otherWrap) otherWrap.hidden = true;
+      }).catch(function(){
+        if(submitBtn) submitBtn.disabled = false;
+        if(label) label.textContent = '無料で事前登録する →';
+        showStatus('通信に失敗しました。少し時間をおいて再度お試しください', true);
       });
-    }, {threshold:0.5});
-    nodes.forEach(function(n){ io.observe(n); });
-  })();
-
-  // scroll progress bar fallback (only when CSS scroll-driven animations unsupported)
-  (function(){
-    var bar=document.getElementById('scrollProgress'); if(!bar) return;
-    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ bar.style.display='none'; return; }
-    if(window.CSS && CSS.supports && CSS.supports('animation-timeline','scroll()')) return;
-    var ticking=false;
-    function update(){ var h=document.documentElement, max=h.scrollHeight-h.clientHeight, p=max>0?h.scrollTop/max:0; bar.style.transform='scaleX('+p+')'; ticking=false; }
-    window.addEventListener('scroll', function(){ if(!ticking){ ticking=true; requestAnimationFrame(update); } }, {passive:true});
-    update();
-  })();
-
-  // subtle magnetic pull on primary hero CTA (pointer only, reduced-motion safe)
-  (function(){
-    var cta=document.getElementById('heroCta');
-    if(!cta) return;
-    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if(!window.matchMedia('(pointer:fine)').matches) return;
-    cta.addEventListener('pointermove', function(ev){
-      var r=cta.getBoundingClientRect(), x=ev.clientX-r.left-r.width/2, y=ev.clientY-r.top-r.height/2;
-      cta.style.transform='translate('+(x*0.12)+'px,'+(y*0.18-2)+'px)';
-    });
-    cta.addEventListener('pointerleave', function(){ cta.style.transform=''; });
-  })();
-
-  // ponytail: 事前登録者数の表示制御。広告で100人超えたら REGISTERED を実数に更新するだけ。
-  (function(){
-    var REGISTERED = 0; // 実際の登録者数。100以上で表示される。
-    if (REGISTERED < 100) return; // 非表示のまま
-    document.querySelectorAll('.reg-count').forEach(function(el){ el.hidden = false; });
-    document.querySelectorAll('[data-reg]').forEach(function(el){
-      el.setAttribute('data-count', REGISTERED);
-      el.textContent = REGISTERED.toLocaleString();
     });
   })();
+})();
 </script>
+
+<script>
+/* ---------- 演出。lite では GSAP 系を1バイトも読まない ----------
+   lite で実際に動いていたのは3pxのプログレスバー1本だけ(章ナビはモバイル非表示、
+   Lenis は !LITE 条件で未使用、カーソルは pointer:fine 限定)。
+   そのために GSAP+ScrollTrigger+Lenis 約125KB と外部2ドメインへの往復を、
+   広告流入のほぼ全員に配っていた。進捗バーは素の scroll で足りる。
+   ponytail: 下の startFull() 内の if(!LITE) は呼び出し側の条件と二重になるが、
+   12箇所の括弧を触るリスクに見合わないのでそのまま残してある */
+(function(){
+  'use strict';
+  var LITE = window.__LITE, REDUCE = window.__REDUCE;
+  var progress = document.getElementById('progress');
+
+  if(REDUCE){ progress.style.display='none'; return; }
+
+  if(LITE){
+    var queued=0;
+    function upd(){
+      queued=0;
+      var h=document.documentElement, max=h.scrollHeight-h.clientHeight;
+      progress.style.transform='scaleX('+(max>0 ? h.scrollTop/max : 0)+')';
+    }
+    addEventListener('scroll', function(){ if(!queued) queued=requestAnimationFrame(upd); }, {passive:true});
+    upd();
+    return;
+  }
+
+  var SRC=[
+    'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js',
+    'https://unpkg.com/lenis@1.1.14/dist/lenis.min.js'
+  ];
+  (function next(i){
+    if(i>=SRC.length){ startFull(); return; }
+    var s=document.createElement('script');
+    s.src=SRC[i]; s.async=false;
+    s.onload=function(){ next(i+1); };
+    /* 落ちても html:not(.gsap-on) の静的レイアウトで全文読める */
+    s.onerror=function(){ progress.style.display='none'; };
+    document.head.appendChild(s);
+  })(0);
+
+function startFull(){
+  if(!window.gsap || !window.ScrollTrigger){ progress.style.display='none'; return; }
+  gsap.registerPlugin(ScrollTrigger);
+  document.documentElement.classList.add('gsap-on');
+  if('scrollRestoration' in history){ history.scrollRestoration='manual'; } // pin距離が変わるため復元位置は信用しない
+
+  /* ---------- Lenis ---------- */
+  var lenis=null;
+  if(window.Lenis && !LITE){ /* 慣性スクロールは指の動きとズレて重く感じるのでモバイルでは使わない */
+    lenis=new Lenis({ duration:1.15, smoothWheel:true });
+    if(!location.hash) lenis.scrollTo(0,{ immediate:true }); /* #register 付きで来た人を先頭に巻き戻さない */
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function(t){ lenis.raf(t*1000); });
+    gsap.ticker.lagSmoothing(0);
+    document.documentElement.style.scrollBehavior='auto';
+    document.querySelectorAll('a[href^="#"]').forEach(function(a){
+      a.addEventListener('click', function(e){
+        var id=a.getAttribute('href');
+        if(id.length>1 && document.querySelector(id)){ e.preventDefault(); lenis.scrollTo(id); }
+      });
+    });
+  }
+
+  /* ---------- 文字分割ヘルパー ---------- */
+  function splitChars(root){
+    root.querySelectorAll('.split-chars').forEach(function(el){
+      (function walk(node){
+        Array.prototype.slice.call(node.childNodes).forEach(function(ch){
+          if(ch.nodeType===3){
+            var frag=document.createDocumentFragment();
+            ch.textContent.split('').forEach(function(c){
+              var s=document.createElement('span'); s.className='c'; s.style.display='inline-block'; s.textContent=c;
+              frag.appendChild(s);
+            });
+            node.replaceChild(frag, ch);
+          } else if(ch.nodeType===1){ walk(ch); }
+        });
+      })(el);
+    });
+  }
+  if(!LITE) splitChars(document); /* 一文字ずつのspan量産はモバイルでは重いだけ */
+
+  /* ---------- プログレスバー ---------- */
+  gsap.to('#progress',{ scaleX:1, ease:'none',
+    scrollTrigger:{ trigger:document.body, start:'top top', end:'bottom bottom', scrub:.3 } });
+
+  /* ---------- ローダー ---------- */
+  if(!LITE){ /* 1.8秒待たせる価値はモバイルにはない */
+  var loader=document.createElement('div'); loader.id='loader'; loader.setAttribute('aria-hidden','true');
+  loader.innerHTML='<span class="ld-brand">AINORI GOHAN — TONIGHT</span><span class="ld-num">0</span>';
+  document.body.appendChild(loader);
+  var ldNum=loader.querySelector('.ld-num'), cnt={v:0};
+  gsap.timeline()
+    .to(cnt,{ v:100, duration:1.0, ease:'power2.inOut', onUpdate:function(){ ldNum.textContent=Math.round(cnt.v); } })
+    .to(loader,{ yPercent:-100, duration:.7, ease:'expo.inOut', onComplete:function(){ loader.remove(); ScrollTrigger.refresh(); } }, '+=0.1');
+  }
+
+  /* 軽量版はスクロール連動の演出をゼロにする。
+     入場フェードは1つ1つは控えめでも、指スクロールだと数十回ぶん連続で発火して
+     「読もうとするたびに何か動く」状態になり、本文の可読性をそのまま削る。
+     残すのはプログレスバーと、タップに対する反応(chipPop / puff)だけ。 */
+
+  /* ========== 序: レイヤードズームヒーロー ========== */
+  if(!LITE){
+  gsap.set('.sc1-floats .f',{ opacity:0, scale:.7, y:40 });
+  var tl1=gsap.timeline({ defaults:{ ease:'none' },
+    scrollTrigger:{ trigger:'.sc1', start:'top top', end:'+=280%', scrub:1, pin:true, anticipatePin:1 } });
+  tl1
+    .fromTo('.sc1-media',{ clipPath:'inset(26% 33% 24% 33% round 26px)' },{ clipPath:'inset(0% 0% 0% 0% round 0px)', duration:4.6 }, 0)
+    .fromTo('.sc1-img',{ scale:1.5 },{ scale:1.06, duration:5.2 }, 0)
+    .to('.sc1-shade',{ opacity:.15, duration:2.5 }, 0)
+    .to('.sc1-floats .f',{ opacity:.95, scale:1, y:0, duration:1.2, stagger:.14, ease:'power2.out' }, .2)
+    .to('.sc1-floats .f',{ opacity:0, scale:1.9, duration:2.4, stagger:.1, ease:'power1.in' }, 1.8)
+    .to('.t-l',{ x:'-42vw', duration:3.4 }, 1.2)
+    .to('.t-r',{ x:'42vw', duration:3.4 }, 1.2)
+    .to('.sc1-sub',{ opacity:0, y:-30, duration:1.4 }, 1.2)
+    .to('.sc1-title',{ opacity:0, duration:1 }, 4.0)
+    .to('.sc1-shade',{ opacity:.72, duration:1.6 }, 4.4)
+    .fromTo('.sc1-end',{ opacity:0 },{ opacity:1, duration:.8 }, 4.8)
+    /* .sc1-end は CSS で pointer-events:none(まだ透明なうちに下の写真を覆わないため)。
+       opacity だけ上げると「オレンジのCTAが見えているのに押せない」状態になるので、
+       出し切った時点で auto に戻す。scrub を巻き戻せば set も戻る */
+    .set('.sc1-end',{ pointerEvents:'auto' }, 5.6)
+    .fromTo('.sc1-end .l2 .c',{ yPercent:120, opacity:0 },{ yPercent:0, opacity:1, duration:1.2, stagger:.05, ease:'power3.out' }, 4.8)
+    .fromTo('.sc1-end .l3',{ opacity:0, y:24 },{ opacity:1, y:0, duration:1 }, 5.6)
+    .to({},{ duration:.8 })
+    .to('.scroll-hint',{ opacity:0, duration:.5 }, .5);
+  }
+
+  /* ========== 壱: 縦書き視差 ========== */
+  if(!LITE){
+  gsap.utils.toArray('.vtx').forEach(function(col,i){
+    var d=[ -70, 110, -50 ][i%3];
+    gsap.fromTo(col,{ y:d },{ y:-d, ease:'none',
+      scrollTrigger:{ trigger:'.sc2', start:'top bottom', end:'bottom top', scrub:true } });
+  });
+  ScrollTrigger.create({ trigger:'.sc2-punch', start:'top 78%', once:true, onEnter:function(){
+    gsap.fromTo('.sc2-punch .c',{ yPercent:130, opacity:0 },{ yPercent:0, opacity:1, duration:1, stagger:.045, ease:'expo.out' });
+  }});
+  gsap.set('.sc2-punch .c',{ opacity:0 });
+  }
+  if(!LITE){
+  gsap.from('.sc2-label',{ opacity:0, y:30, duration:1, ease:'power3.out',
+    scrollTrigger:{ trigger:'.sc2', start:'top 70%', once:true } });
+  }
+
+  /* ========== 弐: 横スクロール棚 ========== */
+  if(!LITE){ /* 軽量版はCSSで2列グリッドにしてある(横方向の操作なし) */
+  var track=document.querySelector('.sc3-track');
+  var dist=function(){ return Math.max(0, track.scrollWidth - window.innerWidth); };
+  var horiz=gsap.to(track,{ x:function(){ return -dist(); }, ease:'none',
+    scrollTrigger:{ trigger:'.sc3', start:'top top', end:function(){ return '+='+dist(); },
+      scrub:1, pin:true, anticipatePin:1, invalidateOnRefresh:true } });
+  gsap.utils.toArray('.hcard .himg').forEach(function(img){
+    gsap.fromTo(img,{ xPercent:-8 },{ xPercent:8, ease:'none',
+      scrollTrigger:{ trigger:img.closest('.hcard'), containerAnimation:horiz,
+        start:'left right', end:'right left', scrub:true } });
+  });
+
+  /* velocity skew: スクロール速度でカードが歪む */
+  var skewSet=gsap.quickSetter('.hcard','skewX','deg');
+  var skewClamp=gsap.utils.clamp(-6,6), skewProxy={ v:0 };
+  ScrollTrigger.create({ onUpdate:function(self){
+    var s=skewClamp(self.getVelocity()/-350);
+    if(Math.abs(s)>Math.abs(skewProxy.v)){
+      skewProxy.v=s;
+      gsap.to(skewProxy,{ v:0, duration:.7, ease:'power3', overwrite:true,
+        onUpdate:function(){ skewSet(skewProxy.v); } });
+    }
+  }});
+  }
+
+  /* ========== 参: ピン留めスマホ ========== */
+  if(!LITE){
+  gsap.set('.step',{ opacity:0, y:30 });
+  gsap.set('.st1',{ opacity:1, y:0 });
+  gsap.set('.scr',{ opacity:0, yPercent:6 });
+  gsap.set('.scr-1',{ opacity:1, yPercent:0 });
+  gsap.set('.sc4-bignum .num',{ opacity:0 });
+  gsap.set('.sc4-bignum .n1',{ opacity:1 });
+  var tl4=gsap.timeline({ defaults:{ ease:'none' },
+    scrollTrigger:{ trigger:'.sc4', start:'top top', end:'+=320%', scrub:1, pin:true, anticipatePin:1 } });
+  [2,3,4].forEach(function(n,idx){
+    var t=idx*3+2;
+    /* 出る→入るを直列にして、文字同士が重なって読める瞬間をなくす */
+    tl4
+      .to('.scr-'+(n-1),{ opacity:0, yPercent:-6, duration:.7 }, t)
+      .to('.st'+(n-1),{ opacity:0, y:-24, duration:.7 }, t)
+      .to('.sc4-bignum .n'+(n-1),{ opacity:0, duration:.7 }, t)
+      .to('.scr-'+n,{ opacity:1, yPercent:0, duration:.7 }, t+.85)
+      .to('.st'+n,{ opacity:1, y:0, duration:.7 }, t+.85)
+      .to('.sc4-bignum .n'+n,{ opacity:1, duration:.7 }, t+.85);
+  });
+  tl4.to({},{ duration:1.4 });
+  gsap.fromTo('.phone',{ y:60, rotate:3 },{ y:0, rotate:0, ease:'none',
+    scrollTrigger:{ trigger:'.sc4', start:'top bottom', end:'top top', scrub:true } });
+  }
+
+  /* ========== 帯: velocity反応マーキー ========== */
+  /* 常時ループはrAFを回しっぱなしにする(発熱・電池)うえ、読んでいる横で動き続けて目障り */
+  if(!LITE){
+  var m1=gsap.to('.band .r1',{ xPercent:-50, ease:'none', duration:22, repeat:-1 });
+  var m2=gsap.fromTo('.band .r2',{ xPercent:-50 },{ xPercent:0, ease:'none', duration:26, repeat:-1 });
+  ScrollTrigger.create({ onUpdate:function(self){
+    var v=gsap.utils.clamp(1,4, 1+Math.abs(self.getVelocity())/900);
+    gsap.to([m1,m2],{ timeScale:v, duration:.4, overwrite:true });
+    gsap.to([m1,m2],{ timeScale:1, duration:1.2, delay:.4, overwrite:false });
+  }});
+  }
+
+  /* ========== 肆: カードが札のように開く ========== */
+  if(!LITE){
+  /* ここに来る時点で必ず901px以上(=.fanは3カラム)。旧: 1カラム幅では横オフセットを殺す分岐があった */
+  gsap.utils.toArray('.fan-card').forEach(function(card,i){
+    gsap.from(card,{ x:(1-i)*140, y:60, rotate:(1-i)*-6, opacity:0, duration:1, ease:'power3.out',
+      scrollTrigger:{ trigger:'.fan', start:'top 75%', once:true }, delay:i*.12 });
+  });
+  gsap.from('.sc6-head h2',{ opacity:0, y:50, duration:1.1, ease:'power3.out',
+    scrollTrigger:{ trigger:'.sc6', start:'top 70%', once:true } });
+
+  /* ========== 伍: 紙面へ反転 ========== */
+  gsap.from('.sc7-in > *',{ opacity:0, y:50, duration:1, stagger:.1, ease:'power3.out',
+    scrollTrigger:{ trigger:'.sc7', start:'top 70%', once:true } });
+  }
+
+  /* ========== 終: 文字が満ちる ========== */
+  /* 軽量版では html:not(.gsap-on) の clip-path:none が効いて最初から塗られた状態になる */
+  if(!LITE){
+  gsap.fromTo('.sc8-giant .fill-top',{ clipPath:'inset(0 100% 0 0)' },{ clipPath:'inset(0 0% 0 0)', ease:'none',
+    scrollTrigger:{ trigger:'.sc8-giant', start:'top 88%', end:'top 32%', scrub:true } });
+  }
+
+  /* ========== 章ナビ同期（pin-spacer込みの実位置で判定） ========== */
+  var dots=document.querySelectorAll('.chap-dot'), chapSecs=[];
+  function measureChaps(){
+    chapSecs=[];
+    document.querySelectorAll('[data-chapter]').forEach(function(sec){
+      var box=sec.closest('.pin-spacer')||sec;
+      chapSecs.push({ id:sec.id, top:box.getBoundingClientRect().top + window.scrollY });
+    });
+    chapSecs.sort(function(a,b){ return a.top-b.top; });
+  }
+  ScrollTrigger.addEventListener('refresh', measureChaps);
+  measureChaps();
+  ScrollTrigger.create({ start:0, end:'max', onUpdate:function(){
+    var y=window.scrollY + window.innerHeight*.5, cur=chapSecs.length?chapSecs[0].id:null;
+    chapSecs.forEach(function(c){ if(c.top<=y) cur=c.id; });
+    dots.forEach(function(d){ d.classList.toggle('on', d.getAttribute('data-for')===cur); });
+  } });
+
+  /* ========== カスタムカーソル ========== */
+  if(window.matchMedia('(pointer:fine)').matches){
+    var cur=document.createElement('div'); cur.id='cursor'; cur.setAttribute('aria-hidden','true');
+    cur.innerHTML='<span class="dot"></span>';
+    document.body.appendChild(cur);
+    var shown=false;
+    var qx=gsap.quickTo(cur,'x',{ duration:.32, ease:'power3' }), qy=gsap.quickTo(cur,'y',{ duration:.32, ease:'power3' });
+    window.addEventListener('pointermove', function(e){
+      if(!shown){ shown=true; cur.style.opacity=1; }
+      qx(e.clientX); qy(e.clientY);
+    },{ passive:true });
+    document.querySelectorAll('a, button, .chip, .hcard').forEach(function(el){
+      el.addEventListener('pointerenter', function(){ cur.classList.add('big'); });
+      el.addEventListener('pointerleave', function(){ cur.classList.remove('big'); });
+    });
+  }
+
+  window.addEventListener('load', function(){ ScrollTrigger.refresh(); });
+}
+})();
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"ca9fdd8630ad4b8ca3349bf8b3979167","r":1}' crossorigin="anonymous"></script>
 </body>
 </html>

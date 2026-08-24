@@ -1,0 +1,7 @@
+name = "ainori-local"
+compatibility_date = "2026-08-20"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ainori-waitlist"
+database_id = "ainori-waitlist"  # pages dev --d1 DB=ainori-waitlist と同じ文字列にしないとローカルDBファイルが別になる
