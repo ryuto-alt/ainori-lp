@@ -15,7 +15,9 @@ Cloudflare Pages（Git 連携）で配信。`main` に push すると自動デ�
 
 - ビルドコマンド・出力ディレクトリともに**空**（ルートをそのまま配信）
 - バインディング: D1 `DB` → `ainori-waitlist`
-- 環境変数: `DISCORD_WEBHOOK`（任意。無くても登録は成立する）
+- 環境変数（どちらも Secret）:
+  - `DISCORD_WEBHOOK` … 登録通知。任意で、無くても登録は成立する
+  - `DASH_KEY` … `/dash?k=` の鍵。**未設定だと /dash は 404**。以前はコードに直書きしていたが、public リポジトリに載るのでやめた
 
 ## ローカル
 

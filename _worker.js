@@ -12,16 +12,15 @@
  *
  * 追記(2026-08-23): ファネル計測を追加。
  *   /api/ev  … LP から章到達・フォーム入力開始・登録完了を受ける (table: events)
- *   /dash    … 上を集計して出すダッシュボード。?k=DASH_KEY で保護
+ *   /dash    … 上を集計して出すダッシュボード。?k= に env.DASH_KEY(Secret) が要る。未設定なら404
  *
  * ⚠️ _worker.js は全リクエストを飲み込む。static への素通しを壊すとサイト全体が落ちるので、
  *    既定の分岐は必ず env.ASSETS.fetch(request) のままにすること。
  */
 
-// ponytail: 身内しか見ないダッシュボード。env のシークレットを増やさず定数で持つ。
-// 漏れて困るのは登録メールではなく流入数だけ(メールは /dash に出していない)。
-// 本当に守りたくなったら Cloudflare Access を前段に置く。
-const DASH_KEY = 'ainori-7f3c9a21e4';
+/* 定数で持っていたが、リポジトリを public にした時点で「身内しか見ない」が崩れた。
+   コードに書いた鍵は git 履歴からは消せないので、env のシークレットに移して値も変えてある。
+   未設定なら 404 で閉じる — 鍵無しで開く方が事故なので、フェイルオープンにはしない。 */
 
 /* 自分とテスト送信。ここを引かないと「登録◯件」が実ユーザー数として読めない。
    実際 8/13 は3件入っていて実ユーザーは0人だった。増えたらここに足す。 */
@@ -130,7 +129,8 @@ const pct = (n, d) => (d > 0 ? (n / d) * 100 : 0);
 const fmtPct = (n, d) => (d > 0 ? pct(n, d).toFixed(1) + '%' : '—');
 
 async function dash(url, env) {
-  if (url.searchParams.get('k') !== DASH_KEY) return new Response('Not found', { status: 404 });
+  const key = env.DASH_KEY;
+  if (!key || url.searchParams.get('k') !== key) return new Response('Not found', { status: 404 });
 
   await ensureTable(env);
 
@@ -307,7 +307,7 @@ tr:last-child td{border-bottom:0}
 <p class="range">${[1, 7, 30, 90]
     .map(
       (d) =>
-        `<a class="${d === days ? 'on' : ''}" href="?k=${encodeURIComponent(DASH_KEY)}&d=${d}">${d}日</a>`
+        `<a class="${d === days ? 'on' : ''}" href="?k=${encodeURIComponent(key)}&d=${d}">${d}日</a>`
     )
     .join('')}</p>
 
