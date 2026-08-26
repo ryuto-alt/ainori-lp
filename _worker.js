@@ -461,13 +461,14 @@ async function register(request, env, ctx) {
   /* 「その他」の自由入力。area に相乗りさせると 120字の切り捨てで流入元(|ref:...)が落ちるので別列。
      中身は人が読む前提の自由文字列。改行だけ潰して、正規化は集計時にやる */
   const areaFree = String(body.area_free || '').replace(/\s+/g, ' ').trim().slice(0, 60);
+  const conversionId = crypto.randomUUID();
 
   try {
     await env.DB.prepare(
       'INSERT INTO waitlist (id, created_at, email, area, user_agent, country, area_free) VALUES (?, ?, ?, ?, ?, ?, ?)'
     )
       .bind(
-        crypto.randomUUID(),
+        conversionId,
         new Date().toISOString(),
         email,
         area,
@@ -496,7 +497,7 @@ async function register(request, env, ctx) {
     ctx.waitUntil(notify(env, email, area, areaFree).catch(() => {}));
   }
 
-  return json({ ok: true });
+  return json({ ok: true, conversion_id: conversionId });
 }
 
 export default {
