@@ -500,6 +500,150 @@ async function register(request, env, ctx) {
   return json({ ok: true, conversion_id: conversionId });
 }
 
+/* ============================================================
+   Android App Links / 招待リンク
+   ============================================================ */
+
+/* Digital Asset Links。Android は https://ainorigohan.com/.well-known/assetlinks.json を
+   取りに来て、ここに載っている署名のアプリにだけ https://ainorigohan.com/i/<code> を
+   直接開かせる(App Links)。これが無いと招待リンクはブラウザで開いてしまう。
+
+   静的ファイルとして置かず _worker.js から返している理由:
+   _worker.js が全リクエストを飲む構造で、かつ先頭ドットのディレクトリは
+   アップロード経路によっては落ちる。ここで返せば配信経路に依存せず必ず 200 + JSON になる。
+
+   フィンガープリントはアプリの debug keystore のもの。
+   android/app/build.gradle.kts が release も debug 署名を使っているので現状はこれ1つで足りる。
+   本番用の署名鍵を作ったら、この配列に足すこと(消すのではなく足す — 旧版アプリが死ぬ)。 */
+const ASSETLINKS = [
+  {
+    relation: ['delegate_permission/common.handle_all_urls'],
+    target: {
+      namespace: 'android_app',
+      package_name: 'com.ainorigohan.ainori',
+      sha256_cert_fingerprints: [
+        '75:68:E9:24:E6:96:96:AC:2B:83:A8:97:D5:9F:32:D3:47:23:26:29:98:3B:C6:6B:96:DC:F7:E0:5F:79:A8:E5',
+      ],
+    },
+  },
+];
+
+/* アプリ側 lib/services/invite_links.dart の normalize() と同じ規則。
+   大文字化して英数字32文字まで。ここを緩めるとアプリが弾く値でページだけ出てしまう */
+const INVITE_CODE_RE = /^[A-Z0-9]{1,32}$/;
+
+/* 招待ページ。App Links が効いている端末はここに来る前にアプリが開くので、
+   ここに来るのは「アプリが入っていない人」と「未検証の端末」だけ。
+   前者には事前登録(アプリはまだストアに無いので、これが唯一正直な導線)、
+   後者にはカスタムスキーム ainori://invite/<code> を出す。
+   コードは INVITE_CODE_RE を通っているので HTML エスケープ不要。
+
+   GSAP/Lenis の類は一切読まない。LP 本体がモバイルで重いライブラリを
+   1バイトも読まない設計なのに、リンクを踏んだ直後のこのページが重いのでは本末転倒。 */
+const invitePage = (code) => `<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ごはん会への招待｜あいのりごはん</title>
+<meta name="description" content="あいのりごはんのごはん会に招待されています。" />
+<!-- 招待コードごとにURLが増えるだけで検索する価値が無く、
+     個別の招待が検索結果に出るのも望ましくない。索引させない -->
+<meta name="robots" content="noindex,nofollow" />
+<meta name="theme-color" content="#f6ecdd" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0605'/%3E%3Cpath d='M14 30h36a18 18 0 0 1-36 0z' fill='%23ff6b2c'/%3E%3Crect x='10' y='50' width='44' height='5' rx='2.5' fill='%23c2913f'/%3E%3C/svg%3E" />
+<style>
+  :root{
+    --paper:#f6ecdd; --cream:#fcf5ea; --ink:#241812; --mute:#6d5c4d;
+    --ember:#ff6b2c; --terra:#e14e17; --brass:#c2913f; --line:#d9c5ac;
+    --jp-sans:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+    --jp-serif:"Hiragino Mincho ProN","Yu Mincho",YuMincho,serif;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{ background:var(--paper); color:var(--ink); font-family:var(--jp-sans); line-height:1.9;
+    -webkit-font-smoothing:antialiased; padding:clamp(40px,8vw,88px) 6vw; }
+  .wrap{ max-width:560px; margin:0 auto; }
+  .brand{ font-size:.78rem; letter-spacing:.22em; color:var(--mute); text-decoration:none; }
+  .brand:hover{ color:var(--terra); }
+  .eyebrow{ margin-top:34px; font-size:.76rem; letter-spacing:.2em; color:var(--terra); font-weight:700; }
+  h1{ margin-top:12px; font-family:var(--jp-serif); font-weight:800;
+    font-size:clamp(1.55rem,6vw,2.3rem); line-height:1.45; letter-spacing:.02em; }
+  .lead{ margin-top:20px; color:var(--mute); font-size:.95rem; }
+  .card{ margin-top:30px; background:var(--cream); border:1px solid var(--line);
+    border-radius:14px; padding:clamp(20px,5vw,28px); }
+  .card-label{ font-size:.74rem; letter-spacing:.18em; color:var(--mute); }
+  .code{ margin-top:10px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:clamp(1.5rem,7vw,2.1rem); font-weight:700; letter-spacing:.14em;
+    color:var(--ink); word-break:break-all; }
+  .copy{ margin-top:14px; font:inherit; font-size:.82rem; padding:8px 16px; cursor:pointer;
+    background:transparent; color:var(--terra); border:1px solid var(--line);
+    border-radius:999px; letter-spacing:.06em; }
+  .copy:hover{ border-color:var(--terra); }
+  .note{ margin-top:14px; font-size:.82rem; color:var(--mute); }
+  .cta{ display:block; margin-top:28px; text-align:center; text-decoration:none;
+    background:var(--terra); color:var(--cream); font-weight:700; letter-spacing:.06em;
+    padding:16px 20px; border-radius:999px; font-size:1rem; }
+  .cta:hover{ background:var(--ember); }
+  .sub{ display:block; margin-top:14px; text-align:center; text-decoration:none;
+    color:var(--terra); font-size:.88rem; letter-spacing:.04em; }
+  .sub:hover{ text-decoration:underline; }
+  h2{ margin-top:44px; font-family:var(--jp-serif); font-weight:700; font-size:1.02rem;
+    padding-bottom:9px; border-bottom:1px solid var(--line); }
+  h2 + p{ margin-top:14px; }
+  p{ font-size:.92rem; }
+  .foot{ margin-top:56px; padding-top:20px; border-top:1px solid var(--line);
+    font-size:.78rem; color:#a08e7e; display:flex; flex-wrap:wrap; gap:10px 24px;
+    justify-content:space-between; }
+  .foot a{ color:#a08e7e; text-decoration:none; }
+  .foot a:hover{ color:var(--terra); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="brand" href="/">あいのりごはん</a>
+
+  <p class="eyebrow">INVITATION</p>
+  <h1>ごはん会に<br />招待されています</h1>
+  <p class="lead">あいのりごはんは「食べたい」でつながる、ごはん仲間を集めるSNSです。下の招待コードで、この会に参加できます。</p>
+
+  <div class="card">
+    <p class="card-label">招待コード</p>
+    <p class="code" id="code">${code}</p>
+    <button class="copy" id="copy" type="button">コードをコピー</button>
+    <p class="note">アプリをお持ちの方は、アプリの招待コード入力欄にこのコードを貼り付けてください。</p>
+    <a class="sub" href="ainori://invite/${code}">アプリで開く</a>
+  </div>
+
+  <h2>まだアプリをお持ちでない方へ</h2>
+  <p>あいのりごはんは現在リリース準備中で、アプリストアではまだ公開していません。公開したらすぐにご案内できるよう、事前登録を受け付けています。登録は30秒・無料です。</p>
+  <a class="cta" href="/#register">無料で事前登録する</a>
+  <p class="note" style="text-align:center">このページを閉じても、上の招待コードがあれば後から参加できます。</p>
+
+  <div class="foot">
+    <span>© 2026 AINORI GOHAN</span>
+    <a href="/privacy">プライバシーポリシー</a>
+  </div>
+</div>
+<script>
+/* コピーボタンだけ。ライブラリは読まない。
+   clipboard API は https か localhost でしか生えず、古い端末にも無い。
+   使えないときはボタンを消して、コードの手入力に任せる(表示は常に出ている) */
+(function(){
+  var b = document.getElementById('copy');
+  if(!b) return;
+  if(!navigator.clipboard || !navigator.clipboard.writeText){ b.hidden = true; return; }
+  b.addEventListener('click', function(){
+    navigator.clipboard.writeText(document.getElementById('code').textContent.trim()).then(function(){
+      b.textContent = 'コピーしました';
+      setTimeout(function(){ b.textContent = 'コードをコピー'; }, 1800);
+    }, function(){ b.textContent = '長押しで選択してください'; });
+  });
+})();
+</script>
+</body>
+</html>
+`;
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -515,6 +659,38 @@ export default {
     }
 
     if (url.pathname === '/dash') return dash(url, env);
+
+    /* Android の Digital Asset Links。App Links の検証はこの1ファイルが
+       200 + application/json で返ることだけに懸かっている。ASSETS 任せにしない */
+    if (url.pathname === '/.well-known/assetlinks.json') {
+      return new Response(JSON.stringify(ASSETLINKS, null, 2), {
+        headers: {
+          'content-type': 'application/json',
+          'cache-control': 'public, max-age=3600',
+          'access-control-allow-origin': '*',
+        },
+      });
+    }
+
+    /* 招待リンク /i/<code>。放っておくと ASSETS が index.html を 200 で返すので、
+       招待リンクを踏んだのに普通の LP が出るという体験になっていた。
+       コードが無い/アプリ側の規則に合わない値は LP へ逃がす */
+    if (url.pathname === '/i' || url.pathname.startsWith('/i/')) {
+      let code = '';
+      try {
+        code = decodeURIComponent(url.pathname.slice(3)).trim().toUpperCase();
+      } catch {
+        code = '';
+      }
+      if (!INVITE_CODE_RE.test(code)) return Response.redirect(new URL('/', url).toString(), 302);
+      return new Response(invitePage(code), {
+        headers: {
+          'content-type': 'text/html; charset=utf-8',
+          'cache-control': 'no-store',
+          'x-robots-tag': 'noindex, nofollow',
+        },
+      });
+    }
 
     /* Pages の直アップロードは .assetsignore を見ず、ディレクトリを丸ごと上げてしまう。
        test/ と設定ファイルはデプロイ物に混ざるので、配信の手前で落とす。
