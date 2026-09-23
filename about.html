@@ -1,0 +1,1499 @@
+<!doctype html>
+<html lang="ja" class="no-js">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>運営メンバー｜あいのりごはん</title>
+<meta name="description" content="あいのりごはんを運営している2人の紹介と、ごはん会で先に決めていること、連絡先をまとめています。" />
+<link rel="canonical" href="https://ainorigohan.com/about" />
+<meta name="theme-color" content="#fbf6ef" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0f0907" media="(prefers-color-scheme: dark)" />
+
+<!--
+  運営メンバー紹介 v3「のれん」
+  - 名刺のQRから来る初対面の人が、スマホで数十秒見る前提。文字は少なく、動きで見せる。
+  - 色: あいのりごはんの色(LP/pilot の紙・墨・朱・真鍮)に揃えた。暖簾などの布は茶(--noren)、リンク・ボタンは朱(--ai)。
+  - 書体: 見出し = Dela Gothic One(看板の太ゴシック) / 本文 = BIZ UDPゴシック(読みやすさ優先のUD書体)。
+  - 角はすべて直角。暖簾・短冊・名札が四角いので、ボタンも四角に揃える。
+  - 顔写真は載せない(Team Hub の方針)。名札は名前の頭文字(N/R)。Dela の「り」は単独だと「ら」に見えるので英字にした。
+  - 動きは GSAP + ScrollTrigger(LP と同じ cdnjs 3.12.5 を読むのでキャッシュが効く)。
+      <html> に .js が付いている間だけ「最初は隠す」「物語を舞台に重ねる」等の CSS が効く。
+      動きを減らす設定の人・GSAP が読めなかった人は .js が付かない/外れるので、全部が最初から見える静的ページになる。
+  - 本人確認が必要な文言には data-tbd を付けてある。grep data-tbd で全部出る。確定したら属性ごと消す。
+-->
+
+<meta property="og:type" content="profile" />
+<meta property="og:site_name" content="あいのりごはん" />
+<meta property="og:locale" content="ja_JP" />
+<meta property="og:url" content="https://ainorigohan.com/about" />
+<meta property="og:title" content="のれんの奥にいる、2人です｜あいのりごはん" />
+<meta property="og:description" content="企画も開発も、この2人で。あいのりごはんを運営している2人の紹介です。" />
+<meta property="og:image" content="https://ainorigohan.com/assets/pilot/shared-dishes.jpg" />
+<meta property="og:image:alt" content="食卓に並んだ料理と取り皿" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="のれんの奥にいる、2人です｜あいのりごはん" />
+<meta name="twitter:description" content="企画も開発も、この2人で。あいのりごはんを運営している2人の紹介です。" />
+<meta name="twitter:image" content="https://ainorigohan.com/assets/pilot/shared-dishes.jpg" />
+
+<script>
+  /* 動かすかどうかはここで一度だけ決める。
+     4秒たっても動きの初期化(window.__aboutAnim)が走らなければ .js を外し、隠した物を全部見せる。
+     CDN が落ちている・古い端末で例外、などで「真っ白なまま」になるのを防ぐ保険 */
+  (function (h) {
+    h.classList.remove('no-js');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    h.classList.add('js');
+    setTimeout(function () { if (!window.__aboutAnim) h.classList.remove('js'); }, 4000);
+  })(document.documentElement);
+</script>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0605'/%3E%3Cpath d='M14 30h36a18 18 0 0 1-36 0z' fill='%23ff6b2c'/%3E%3Crect x='10' y='50' width='44' height='5' rx='2.5' fill='%23c2913f'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Dela+Gothic+One&display=swap" rel="stylesheet" />
+
+<style>
+  /* ============================================================
+     トークン
+     ============================================================ */
+  :root {
+    color-scheme: light dark;
+
+    /* 地と文字は LP / pilot の紙と墨。値の出どころ: pilot.html の --paper / --ink / --muted */
+    --bg:        #fbf6ef;
+    --bg-2:      #f3e8da;
+    --surface:   #fffdfa;
+    --ink:       #251a16;
+    --ink-2:     #4a3b33;
+    --muted:     #6f625b;  /* bg 上で 5.5:1 */
+    --line:      #e2d5c7;
+
+    --noren:     #5c3421;  /* 暖簾の生地。焦げ茶に染めた綿。染め抜き(--noren-ink)が 9.9:1 */
+    --noren-ink: #fcf5ea;  /* 染め抜きの生成り。LP の --cream */
+    --rod-hi:    #85766a;  /* 竿: 黒漆の照り → 地 → 影 */
+    --rod:       #2e231c;
+    --rod-lo:    #110b08;
+    --loop-hi:   #83522f;  /* 乳(竿に通す輪)の、竿に回り込んで光る所と陰 */
+    --loop-lo:   #341b0f;
+    --ai:        #b9361b;  /* リンク・ボタンの朱。pilot の --terra-dark。bg 上で 5.4:1、白文字を載せて 5.7:1 */
+    --ai-hover:  #9e2c14;
+    --on-ai:     #fffdfa;
+
+    --display: "Dela Gothic One", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    --body:    "BIZ UDPGothic", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+
+    --gutter: 20px;
+    --max: 1180px;
+    --ease: cubic-bezier(.16, 1, .3, 1);
+  }
+
+  /* 夜は LP の夜トーン(焦げ茶の闇 + 橙) */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:        #0f0907;
+      --bg-2:      #1b120c;
+      --surface:   #20160f;
+      --ink:       #f6ecdd;
+      --ink-2:     #e2d5c3;
+      --muted:     #a8957f;
+      --line:      #3a2b20;
+
+      --noren:     #6f3f26;  /* 闇に沈まないよう一段明るい茶。染め抜きが 8.0:1 */
+      --noren-ink: #fcf5ea;
+      --rod-hi:    #b8a794;
+      --rod:       #5b4b3f;
+      --rod-lo:    #2a1f18;
+      --loop-hi:   #a0653f;
+      --loop-lo:   #4a2716;
+      --ai:        #ff8a52;  /* bg 上で 8.5:1 */
+      --ai-hover:  #ffa574;
+      --on-ai:     #14100c;
+    }
+  }
+
+  /* ============================================================
+     土台
+     ============================================================ */
+  *, *::before, *::after { box-sizing: border-box; }
+  html { background: var(--bg); -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.85;
+    letter-spacing: .02em;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* 揺れ・傾き・落下で一瞬はみ出した物が、横スクロールを生まないように切る。
+     clip はスクロール容器を作らないので、ScrollTrigger の固定(pin)を壊さない */
+  main { overflow-x: hidden; overflow-x: clip; }   /* hidden は clip 未対応(iOS 15 以前)向けの保険 */
+  a { color: inherit; -webkit-tap-highlight-color: transparent; }
+  img { display: block; max-width: 100%; }
+  h1, h2, h3 { margin: 0; font-family: var(--display); font-weight: 400; line-height: 1.35; letter-spacing: .03em; line-break: strict; }
+  p { margin: 0; }
+  :focus-visible { outline: 3px solid var(--ai); outline-offset: 3px; }
+
+  /* 見出しを文節の途中で折らないための塊。改行はこの塊の境目でだけ起きる */
+  .ph { display: inline-block; }
+  /* JS が1字ずつ span に割った字 */
+  .ch { display: inline-block; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  .wrap { width: min(100% - var(--gutter) * 2, var(--max)); margin-inline: auto; }
+
+  .skip-link {
+    position: fixed; z-index: 100; left: 12px; top: 12px;
+    padding: 10px 14px; background: var(--ink); color: var(--bg);
+    text-decoration: none; transform: translateY(-200%);
+  }
+  .skip-link:focus { transform: none; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 54px; padding: 0 28px;
+    border: 2px solid var(--ai); background: var(--ai); color: var(--on-ai);
+    font-weight: 700; font-size: .98rem; letter-spacing: .06em;
+    white-space: nowrap; text-decoration: none;
+    transition: background-color .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease), transform .12s var(--ease);
+  }
+  .btn:hover { background: var(--ai-hover); border-color: var(--ai-hover); }
+  .btn:active { transform: translateY(1px); }
+  .btn.is-ghost { background: transparent; color: var(--ink); border-color: var(--ink); }
+  .btn.is-ghost:hover { background: var(--ink); color: var(--bg); }
+
+  /* Dela は 30px を切ると画数の多い漢字(運営・録・絡・撮)の中が潰れて黒い塊になる。
+     Dela を使う見出しは、いちばん狭い画面でも 30px 以上を守ること。小さい見出しは本文書体の太字にする */
+  .section-title { font-size: clamp(1.95rem, 8vw, 3.4rem); }
+
+  /* ============================================================
+     ヘッダー
+     ============================================================ */
+  .header-inner { height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { width: 138px; display: block; }
+  .brand img { width: 100%; height: auto; }  /* width/height 属性は CLS 対策で残す */
+  @media (prefers-color-scheme: dark) {
+    .brand img { filter: invert(1) hue-rotate(180deg) brightness(1.08); }
+  }
+  .header-link {
+    color: var(--ai); font-size: .88rem; font-weight: 700; text-decoration: none;
+    padding: 6px 0; border-bottom: 2px solid currentColor; line-height: 1.3;
+  }
+  .header-link:hover { color: var(--ai-hover); }
+
+  /* ============================================================
+     冒頭: 暖簾
+     暖簾は飾り(aria-hidden)。意味は h1 が持つ。
+     本体は WebGL の布(JS の createCloth)。点の網を竿から吊るして重力で解き、光と影で襞を出す。
+     .noren-static は同じ意匠を CSS で組んだ静止版。JS なし・動きを減らす設定・WebGL が使えない端末ではこれが見える。
+     竿(.noren-rod)と乳(ちち: 布を竿に通す輪 .noren-loops)は DOM のまま、布の手前に重ねる
+     ============================================================ */
+  .hero { padding-bottom: clamp(56px, 10vw, 96px); }
+  .hero-grid { display: grid; gap: 30px; }
+
+  .noren {
+    position: relative;
+    height: clamp(236px, 46svh, 430px);   /* 背の低い端末(iPhone SE 初代 568px)でもボタンまで1画面に入る高さ */
+    margin-inline: calc(var(--gutter) * -1);
+    touch-action: pan-y;         /* 横になでると布が動き、縦はそのままスクロール */
+    user-select: none; -webkit-user-select: none;
+  }
+  /* 竿: 黒漆に上からの照り。両端に石突 */
+  .noren-rod {
+    position: absolute; z-index: 2; left: 0; right: 0; top: 0; height: 14px;
+    background: linear-gradient(180deg, var(--rod-hi) 0%, var(--rod) 45%, var(--rod-lo) 100%);
+    box-shadow: 0 3px 7px rgba(0, 0, 0, .25);
+  }
+  .noren-rod::before, .noren-rod::after {
+    content: ""; position: absolute; top: -3px; width: 12px; height: 20px;
+    background: linear-gradient(180deg, var(--rod-hi), var(--rod-lo));
+  }
+  .noren-rod::before { left: -5px; }
+  .noren-rod::after { right: -5px; }
+  /* 乳: 竿の上に回り込んでいる所だけ見せる。幅の % と margin の % は同じ基準(親の幅)なので、これで中心が揃う */
+  .noren-loops { position: absolute; z-index: 3; left: 0; right: 0; top: -9px; height: 25px; pointer-events: none; }
+  .noren-loops i {
+    position: absolute; top: 0; height: 100%;
+    width: clamp(16px, 4.4%, 28px); margin-left: calc(clamp(16px, 4.4%, 28px) / -2);
+    transform-origin: 50% 100%;
+    background: linear-gradient(180deg, var(--loop-hi) 0%, var(--noren) 52%, var(--loop-lo) 100%);
+    border-radius: 9px 9px 2px 2px;
+    box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .28), 0 1px 3px rgba(0, 0, 0, .25);
+  }
+  .noren-loops i:nth-child(1) { left: 5%; }
+  .noren-loops i:nth-child(2) { left: 25%; }
+  .noren-loops i:nth-child(3) { left: 44.5%; }
+  .noren-loops i:nth-child(4) { left: 55.5%; }
+  .noren-loops i:nth-child(5) { left: 75%; }
+  .noren-loops i:nth-child(6) { left: 95%; }
+
+  /* 静止版の布。WebGL 版のテクスチャ(drawTexture)と同じ意匠: 丸に飯の紋、縁の折り返し、白いステッチ */
+  .noren-static {
+    position: absolute; z-index: 0; left: 0; right: 0; top: 7px; bottom: 0;
+    display: grid; grid-template-rows: 20% 1fr;
+  }
+  .noren-band {
+    position: relative; container-type: size;
+    display: flex; align-items: center; justify-content: center; gap: 9%;
+    background: var(--noren); color: var(--noren-ink);
+    box-shadow: inset 5px 0 0 rgba(0, 0, 0, .16), inset -5px 0 0 rgba(0, 0, 0, .16);
+  }
+  .noren-band::after {
+    content: ""; position: absolute; left: 8px; right: 8px; bottom: 5px;
+    border-top: 1.5px dashed rgba(252, 245, 234, .32);
+  }
+  .noren-sub { font-size: clamp(9px, 12cqh, 15px); font-weight: 700; letter-spacing: .45em; opacity: .9; }
+  .noren-crest {
+    display: grid; place-items: center;
+    height: 66cqh; aspect-ratio: 1;
+    border: max(2px, 4.4cqh) solid currentColor; border-radius: 50%;
+    font-family: var(--display); font-size: 36cqh; line-height: 1;
+  }
+  .noren-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .noren-cloth {
+    display: grid; place-items: center;
+    container-type: inline-size;
+    color: var(--noren-ink);
+    background-color: var(--noren);
+    background-image:
+      linear-gradient(90deg, rgba(0,0,0,.16) 0 5px, transparent 5px calc(100% - 5px), rgba(0,0,0,.16) calc(100% - 5px)),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 1px, transparent 1px 3px);
+    box-shadow: inset 0 -14px 0 rgba(0, 0, 0, .16);
+    outline: 1.5px dashed rgba(252, 245, 234, .3); outline-offset: -9px;
+  }
+  .noren-word { font-family: var(--display); font-size: 21cqi; line-height: 1; white-space: nowrap; }
+  .noren-gl { position: absolute; top: 0; z-index: 1; opacity: 0; pointer-events: none; }
+  .noren.gl-on .noren-static { visibility: hidden; }
+
+  .hero-eyebrow { margin-bottom: 10px; color: var(--ai); font-size: .84rem; font-weight: 700; letter-spacing: .18em; }
+  .hero h1 { font-size: clamp(1.9rem, 9vw, 3.4rem); line-height: 1.3; }
+  .hero-lead { margin-top: 16px; color: var(--ink-2); font-size: 1.05rem; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  .hero-actions .btn { flex: 1 1 auto; }
+
+  /* ============================================================
+     メンバー
+     ============================================================ */
+  .members { padding: clamp(24px, 6vw, 56px) 0 clamp(88px, 14vw, 160px); }
+  .member-list { display: grid; gap: 72px; }
+
+  .member-mark {
+    position: relative; overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: var(--noren); color: var(--noren-ink);
+    container-type: inline-size;
+  }
+  .member.is-alt .member-mark { background: var(--bg-2); color: var(--ai); }
+  .mark-glyph { position: absolute; right: 9cqi; bottom: 0; }
+  .member.is-alt .mark-glyph { right: auto; left: 9cqi; }
+  .mark-glyph span { display: block; font-family: var(--display); font-size: 74cqi; line-height: 1; }
+  .mark-ring {   /* 判子を押したときの輪。JS が一瞬だけ広げる */
+    position: absolute; left: 50%; top: 50%;
+    width: 60cqi; height: 60cqi; margin: -30cqi 0 0 -30cqi;
+    border: 3px solid currentColor; border-radius: 50%;
+    opacity: 0; pointer-events: none;
+  }
+
+  .member-body { margin-top: 20px; }
+  .member-role { color: var(--ai); font-size: .84rem; font-weight: 700; letter-spacing: .08em; }
+  .member-name {
+    margin-top: 2px;
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px;
+    font-size: clamp(2.1rem, 9vw, 3rem); line-height: 1.2;
+  }
+  .member-name small { font-family: var(--body); color: var(--muted); font-size: .88rem; font-weight: 700; letter-spacing: .16em; }
+  .member-line { margin-top: 12px; color: var(--ink-2); font-size: 1.02rem; }
+  .member-duty { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; padding: 0; }
+  .member-duty li {
+    padding: 4px 12px;
+    border: 1px solid var(--line); background: var(--surface);
+    color: var(--ink-2); font-size: .82rem; font-weight: 700;
+  }
+
+  /* ============================================================
+     物語
+     JS なし: 上から順に積むだけ。JS あり: 1画面の舞台に全部を重ね、スクロールで順に出す
+     ============================================================ */
+  .story { padding: clamp(80px, 12vw, 140px) 0; border-top: 1px solid var(--line); }
+  .story-stage { width: min(100% - var(--gutter) * 2, var(--max)); margin-inline: auto; display: grid; gap: 18px; }
+  .story-line { font-family: var(--display); font-size: clamp(2rem, 9.6vw, 5rem); line-height: 1.25; letter-spacing: .03em; }  /* 2行目は <p> なので書体を明示 */
+  .story-line.l2 { color: var(--ai); }
+  .story-plate { position: relative; margin: 18px 0 0; aspect-ratio: 4 / 3; overflow: hidden; }
+  .story-plate img { width: 100%; height: 100%; object-fit: cover; object-position: center 60%; }
+  .story-big { margin-top: 18px; font-family: var(--display); font-size: clamp(3.2rem, 17vw, 9rem); line-height: 1.1; color: var(--ai); }
+  .story-note { color: var(--ink-2); font-size: 1.02rem; }
+
+  /* ============================================================
+     流れる帯
+     ============================================================ */
+  .marquee { overflow: hidden; overflow: clip; padding-block: 56px; }
+  .marquee-band {
+    width: 124%; margin-left: -12%;
+    padding: 16px 0;
+    background: var(--noren); color: var(--noren-ink);
+    transform: rotate(-3deg);
+  }
+  .marquee-track {
+    display: flex; width: max-content;
+    font-family: var(--display); font-size: clamp(2rem, 9vw, 4.6rem); line-height: 1.15;
+    white-space: nowrap; will-change: transform;
+  }
+  .marquee-track span { padding-inline: .5em; }
+  .marquee-track span:nth-child(even) { color: transparent; -webkit-text-stroke: 1.5px var(--noren-ink); }
+
+  /* ============================================================
+     先に決めていること: 短冊
+     縦書き。数字・英字は縦で崩れるので、文言は漢数字と和文だけで書く。
+     JS なし: 右に題、左に説明の縦2段。JS あり: 表=題、裏=説明のめくれる札。
+     説明は <br> で2列に割ってある(1列12字まで)。成り行きで折ると最後の列に「す。」だけが残る
+     ============================================================ */
+  .rules { padding: clamp(40px, 8vw, 96px) 0 clamp(88px, 14vw, 160px); }
+  .rule-wall {
+    list-style: none; margin: clamp(32px, 6vw, 56px) 0 0; padding: 0;
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px 10px;
+  }
+  .rule { height: 240px; perspective: 900px; }
+  /* vertical-rl の中の column 方向 = 右から左。題の列、説明の列の順に並べて左右中央に寄せる */
+  .rule-card {
+    position: relative; height: 100%;
+    display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 8px;
+    padding: 18px 10px 16px;
+    writing-mode: vertical-rl;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top: 6px solid var(--noren);
+  }
+  .rule-title { font-weight: 700; font-size: 1.12rem; line-height: 1.3; letter-spacing: .1em; }  /* 20px 前後なので Dela は使わない */
+  .rule-desc  { color: var(--ink-2); font-size: .82rem; line-height: 1.75; letter-spacing: .04em; }
+
+  /* ============================================================
+     いま、ここ: 年表
+     ============================================================ */
+  .status { padding-bottom: clamp(88px, 14vw, 160px); }
+  .steps-wrap { position: relative; margin-top: clamp(32px, 6vw, 56px); }
+  .steps-line {
+    position: absolute; left: 8px; top: 12px; bottom: 12px; width: 2px;
+    background: var(--line); transform-origin: 50% 0;
+  }
+  .steps { list-style: none; margin: 0; padding: 0; position: relative; }
+  .step { position: relative; padding-left: 44px; }
+  .step + .step { margin-top: 34px; }
+  .step-node {
+    position: absolute; left: 0; top: 6px; width: 18px; height: 18px;
+    background: var(--bg); border: 2px solid var(--ink-2);
+  }
+  .step.is-now .step-node { background: var(--ai); border-color: var(--ai); }
+  /* 「受付中」だけは今も動いている状態なので、輪を出し続けて知らせる */
+  @media (prefers-reduced-motion: no-preference) {
+    .step.is-now .step-node::after {
+      content: ""; position: absolute; inset: -2px;
+      border: 2px solid var(--ai);
+      animation: pulse 2s var(--ease) infinite;
+    }
+  }
+  @keyframes pulse { from { transform: scale(1); opacity: .9; } to { transform: scale(2.6); opacity: 0; } }
+  .step-state { color: var(--muted); font-size: .82rem; font-weight: 700; letter-spacing: .08em; }
+  .step.is-now .step-state { color: var(--ai); }
+  .step h3 { margin-top: 2px; font-size: clamp(1.9rem, 8vw, 2.3rem); }
+  .step-note { margin-top: 4px; color: var(--ink-2); }
+  .step-link {
+    display: inline-block; margin-top: 8px;
+    color: var(--ai); font-weight: 700;
+    text-decoration-thickness: 2px; text-underline-offset: 6px;
+  }
+  .step-link:hover { color: var(--ai-hover); }
+
+  /* ============================================================
+     連絡先
+     ============================================================ */
+  .contact { padding-bottom: clamp(56px, 10vw, 112px); }
+  .contact-card {
+    margin-inline: calc(var(--gutter) * -1);
+    padding: clamp(44px, 9vw, 88px) var(--gutter);
+    background: var(--noren); color: var(--noren-ink);
+  }
+  .contact-lead { margin-top: 12px; color: rgba(252, 245, 234, .86); }
+  .contact-mail-row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 22px; margin-top: clamp(28px, 5vw, 44px); }
+  /* 下線は背景で引く。1字ずつ inline-block に割ると text-decoration が子に届かず消えるため */
+  .contact-mail {
+    padding-bottom: 8px;
+    /* Dela の英字は幅が広い(1字≒0.68em)。19字が 320px 幅でも1行に収まる大きさに抑え、途中で折らない */
+    font-family: var(--display); font-size: min(5.6vw, 3.4rem); line-height: 1.2;
+    text-decoration: none; white-space: nowrap;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 100% 3px no-repeat;
+  }
+  .copy-btn {
+    appearance: none; cursor: pointer;
+    min-height: 44px; padding: 0 16px;
+    border: 2px solid var(--noren-ink); background: transparent; color: var(--noren-ink);
+    font: 700 .86rem/1 var(--body); letter-spacing: .06em;
+    transition: background-color .2s var(--ease), color .2s var(--ease);
+  }
+  .copy-btn:hover, .copy-btn.is-done { background: var(--noren-ink); color: var(--noren); }
+  .contact-card :focus-visible { outline-color: var(--noren-ink); }
+  .contact-facts {
+    margin: clamp(36px, 6vw, 56px) 0 0; padding-top: 24px;
+    border-top: 1px solid rgba(252, 245, 234, .28);
+    display: grid; gap: 18px;
+  }
+  .contact-facts dt { font-size: .78rem; font-weight: 700; letter-spacing: .08em; color: rgba(252, 245, 234, .72); }
+  .contact-facts dd { margin: 2px 0 0; line-height: 1.7; }
+  .contact-facts a, .contact-note a { text-underline-offset: 4px; }
+  .contact-note { margin-top: 24px; font-size: .82rem; color: rgba(252, 245, 234, .78); }
+
+  /* ============================================================
+     フッター
+     ============================================================ */
+  .site-footer { border-top: 1px solid var(--line); }
+  .footer-inner { padding: 26px 0 34px; display: grid; gap: 14px; }
+  .footer-links { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+  .footer-links a { color: var(--muted); font-size: .84rem; font-weight: 700; text-decoration: none; }
+  .footer-links a:hover { color: var(--ai); }
+  .footer-links a[aria-current] { color: var(--ink); }
+  .footer-copy { color: var(--muted); font-size: .78rem; }
+
+  /* ============================================================
+     画面幅
+     ============================================================ */
+  @media (max-width: 359px) {
+    :root { --gutter: 16px; }
+    .rule { height: 256px; }
+  }
+
+  @media (min-width: 720px) {
+    :root { --gutter: 40px; }
+    .header-inner { height: 72px; }
+    .brand { width: 170px; }
+
+    .member-list { grid-template-columns: 1fr 1fr; gap: 0 48px; }
+    .member.is-alt { margin-top: 150px; }   /* 段違いにして、2枚が同格の飾りに見えないようにする */
+
+    .story-plate { aspect-ratio: 21 / 9; }
+
+    .rule-wall { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+    .rule { height: 268px; }
+    .rule-card { padding: 24px 12px 20px; }
+    .rule-title { font-size: 1.3rem; }
+    .rule-desc { font-size: .88rem; }
+
+    .steps-line { left: 0; right: 0; top: 8px; bottom: auto; width: auto; height: 2px; transform-origin: 0 50%; }
+    .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+    .step { padding: 44px 0 0; }
+    .step + .step { margin-top: 0; }
+    .step-node { top: 0; }
+
+    .contact-card { margin-inline: 0; padding-inline: clamp(40px, 6vw, 88px); }
+    .contact-facts { grid-template-columns: 1.4fr 1fr 1fr; gap: 24px; }
+
+    .footer-inner { grid-auto-flow: column; justify-content: space-between; align-items: center; }
+  }
+
+  @media (min-width: 900px) {
+    .hero-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 56px; align-items: end; }
+    .noren { order: 2; margin-inline: 0; height: min(calc(100svh - 150px), 620px); min-height: 440px; }
+    .noren-panels { gap: 12px; }
+    .noren-rod { left: -18px; right: -18px; }
+    .hero-copy { order: 1; padding-bottom: 8px; }
+    .hero h1 { font-size: min(3.3rem, 4vw); }
+    .hero-actions .btn { flex: 0 0 auto; }
+  }
+
+  /* ============================================================
+     .js … 動きがある時だけ効く指定
+     ============================================================ */
+  /* 冒頭は JS が幕を開けるまで畳んでおく(初回描画で一瞬全部見えてから消える、を防ぐ) */
+  .js .hero:not(.is-in) .noren-rod { transform: scaleX(0); }
+  .js .hero:not(.is-in) .noren-loops i { transform: scaleY(0); }
+  .js .hero:not(.is-in) .noren-static { clip-path: inset(0 0 100% 0); }
+  .js .hero:not(.is-in) .hero-copy > * { opacity: 0; }
+  .js .member-mark { cursor: pointer; }
+
+  /* 物語: 1画面の舞台。2行と写真と一言を同じマスに重ね、JS が順に出し入れする */
+  .js .story { padding: 0; }
+  .js .story-stage {
+    position: relative; width: auto; margin: 0;
+    height: 100vh; height: 100svh;
+    display: grid; grid-template-areas: "s"; gap: 0;
+    overflow: hidden;
+  }
+  .js .story-stage > * { grid-area: s; margin: 0; }
+  .js .story-line, .js .story-big, .js .story-note {
+    position: relative; z-index: 2;
+    padding-inline: var(--gutter); text-align: center;
+  }
+  .js .story-line.l1 { align-self: start; margin-top: 16svh; }
+  .js .story-line.l2 { align-self: end; margin-bottom: 16svh; }
+  .js .story-big { align-self: center; color: #fcf5ea; }
+  .js .story-note { align-self: end; margin-bottom: 13svh; color: #fcf5ea; font-weight: 700; }
+  .js .story-plate { --scrim: 0; aspect-ratio: auto; width: 100%; height: 100%; z-index: 1; clip-path: circle(0% at 50% 50%); }
+  .js .story-plate::after { content: ""; position: absolute; inset: 0; background: rgb(20, 11, 6); opacity: var(--scrim); }
+
+  /* 短冊: 表と裏を重ねてめくれる札にする */
+  .js .rule-card {
+    display: block; padding: 0; writing-mode: horizontal-tb;
+    background: none; border: 0; cursor: pointer;
+    transform-style: preserve-3d;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .js .rule-face {
+    position: absolute; inset: 0;
+    display: flex; justify-content: flex-start; align-items: center;
+    writing-mode: vertical-rl;
+    -webkit-backface-visibility: hidden; backface-visibility: hidden;
+  }
+  .js .rule-front {
+    padding: 22px 10px 16px;
+    background: var(--surface);
+    border: 1px solid var(--line); border-top: 6px solid var(--noren);
+  }
+  /* 左下の角を折る。裏地の茶がのぞいて、裏がある札だと分かる */
+  .js .rule-front::after {
+    content: ""; position: absolute; left: -1px; bottom: -1px; width: 22px; height: 22px;
+    background: linear-gradient(45deg, var(--bg) 50%, var(--noren) 50%);
+  }
+  .js .rule-back {
+    justify-content: center;
+    padding: 18px 10px;
+    background: var(--noren); color: var(--noren-ink);
+    transform: rotateY(180deg);
+  }
+  .js .rule-back .rule-desc { color: var(--noren-ink); font-size: .92rem; font-weight: 700; }
+  @media (min-width: 720px) {
+    .js .rule-front { padding: 26px 12px 20px; }
+    .js .rule-back .rule-desc { font-size: 1rem; }
+  }
+</style>
+
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へスキップ</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="/" aria-label="あいのりごはん トップへ">
+      <img src="/assets/pilot/brand-logo.png" alt="あいのりごはん" width="1910" height="395" />
+    </a>
+    <!-- Cloudflare の Email Obfuscation を切る。既定のままだと /cdn-cgi/l/email-protection に化ける -->
+    <!--email_off--><a class="header-link" href="mailto:sns@ainorigohan.com">お問い合わせ</a><!--/email_off-->
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero-grid">
+      <div class="noren" aria-hidden="true">
+        <div class="noren-static">
+          <div class="noren-band"><span class="noren-sub">AINORI</span><span class="noren-crest">飯</span><span class="noren-sub">GOHAN</span></div>
+          <div class="noren-panels">
+            <div class="noren-cloth"><span class="noren-word">あいのり</span></div>
+            <div class="noren-cloth"><span class="noren-word">ごはん</span></div>
+          </div>
+        </div>
+        <div class="noren-rod"></div>
+        <div class="noren-loops"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+
+      <div class="hero-copy">
+        <p class="hero-eyebrow">運営メンバー</p>
+        <h1 id="hero-title"><span class="ph">のれんの奥にいる、</span><span class="ph">2人です。</span></h1>
+        <p class="hero-lead">企画も開発も、この2人で。</p>
+        <div class="hero-actions">
+          <!--email_off--><a class="btn" href="mailto:sns@ainorigohan.com">お問い合わせ</a><!--/email_off-->
+          <a class="btn is-ghost" href="/">サービスを見る</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="members" aria-label="運営メンバー">
+    <div class="wrap member-list">
+
+      <article class="member">
+        <div class="member-mark" aria-hidden="true">
+          <span class="mark-ring"></span>
+          <div class="mark-glyph"><span>N</span></div>
+        </div>
+        <div class="member-body">
+          <p class="member-role">代表　企画・運営</p>
+          <h2 class="member-name"><span class="nm" data-tbd>なぎ</span><small lang="en">Nagi</small></h2>
+          <p class="member-line" data-tbd>ごはん会の中身を決める人。お店選びから、当日の進行まで。</p>
+          <ul class="member-duty">
+            <li>企画</li><li>お店の下見</li><li>当日の進行</li><li>お問い合わせ窓口</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="member is-alt">
+        <div class="member-mark" aria-hidden="true">
+          <span class="mark-ring"></span>
+          <div class="mark-glyph"><span>R</span></div>
+        </div>
+        <div class="member-body">
+          <p class="member-role">開発　アプリ・サイト</p>
+          <h2 class="member-name"><span class="nm" data-tbd>りゅうと</span><small lang="en">Ryuto</small></h2>
+          <p class="member-line" data-tbd>サイトとアプリを作る人。通報とブロックは、最初の版から。</p>
+          <ul class="member-duty">
+            <li>アプリ開発</li><li>サイト・サーバー</li><li>安全の仕組み</li><li>当日のサポート</li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="story" aria-labelledby="story-title">
+    <div class="story-stage">
+      <h2 class="story-line l1" id="story-title">行きたい店はある。</h2>
+      <p class="story-line l2">相手がいない。</p>
+      <figure class="story-plate">
+        <img src="/assets/pilot/shared-dishes.jpg" alt="木のテーブルに、サラダや焼いた鶏肉、パンなどの大皿と取り皿が並んでいる"
+             width="1448" height="1086" decoding="async" />
+      </figure>
+      <p class="story-big">目的は、飯。</p>
+      <p class="story-note">同じ店に行きたい人と、その日の一食だけ。</p>
+    </div>
+  </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-band">
+      <div class="marquee-track">
+        <span>焼肉</span><span>寿司</span><span>町中華</span><span>パスタ</span><span>焼き鳥</span><span>カレー</span>
+        <span>ラーメン</span><span>ビストロ</span><span>餃子</span><span>居酒屋</span><span>天ぷら</span><span>タコス</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="rules" aria-labelledby="rules-title">
+    <div class="wrap">
+      <h2 class="section-title" id="rules-title"><span class="ph">先に、</span><span class="ph">決めていること。</span></h2>
+      <!-- 札は JS が role=button を付けて「めくれる」ようにする。JS が無ければ題と説明が並んだ普通の札 -->
+      <ul class="rule-wall">
+        <li class="rule"><div class="rule-card">
+          <span class="rule-face rule-front"><span class="rule-title">一対一では開かない</span></span>
+          <span class="rule-face rule-back"><span class="rule-desc">運営一人と参加者三人、<br />四人が基本です。</span></span>
+        </div></li>
+        <li class="rule"><div class="rule-card">
+          <span class="rule-face rule-front"><span class="rule-title">開けた店で会う</span></span>
+          <span class="rule-face rule-back"><span class="rule-desc">公共の飲食店で開きます。<br />完全個室は使いません。</span></span>
+        </div></li>
+        <li class="rule"><div class="rule-card">
+          <span class="rule-face rule-front"><span class="rule-title">運営が同席する</span></span>
+          <span class="rule-face rule-back"><span class="rule-desc">運営と名乗った責任者が、<br />解散まで同じ席にいます。</span></span>
+        </div></li>
+        <li class="rule"><div class="rule-card">
+          <span class="rule-face rule-front"><span class="rule-title">性別を聞かない</span></span>
+          <span class="rule-face rule-back"><span class="rule-desc">性別の欄がありません。<br />選考にも使いません。</span></span>
+        </div></li>
+        <li class="rule"><div class="rule-card">
+          <span class="rule-face rule-front"><span class="rule-title">無断で撮らない</span></span>
+          <span class="rule-face rule-back"><span class="rule-desc">許可なく撮影・録音・<br />投稿をしません。</span></span>
+        </div></li>
+        <li class="rule"><div class="rule-card">
+          <span class="rule-face rule-front"><span class="rule-title">通報はワンタップ</span></span>
+          <span class="rule-face rule-back"><span class="rule-desc">嫌だと感じた相手は、<br />すぐにブロックできます。</span></span>
+        </div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="status" aria-labelledby="status-title">
+    <div class="wrap">
+      <h2 class="section-title" id="status-title">いま、ここ。</h2>
+      <div class="steps-wrap">
+        <span class="steps-line" aria-hidden="true"></span>
+        <ol class="steps">
+          <li class="step is-now">
+            <span class="step-node" aria-hidden="true"></span>
+            <div class="step-body">
+              <p class="step-state">受付中</p>
+              <h3>事前登録</h3>
+              <p class="step-note">30秒、無料。</p>
+              <a class="step-link" href="/#register">登録する</a>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-node" aria-hidden="true"></span>
+            <div class="step-body">
+              <p class="step-state">準備中</p>
+              <h3>初回ごはん会</h3>
+              <p class="step-note">4人で、最初の一回。</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="step-node" aria-hidden="true"></span>
+            <div class="step-body">
+              <p class="step-state">開発中</p>
+              <h3>アプリ</h3>
+              <p class="step-note">いま、つくっています。</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+      <div class="contact-card">
+        <h2 class="section-title" id="contact-title">ご連絡は、こちらへ。</h2>
+        <p class="contact-lead">取材、出店のご相談、ご意見。なんでもどうぞ。</p>
+        <div class="contact-mail-row">
+          <!-- data-copy の中のアドレスも Cloudflare の Email Obfuscation に書き換えられないよう、ボタンごと email_off で囲む -->
+          <!--email_off--><a class="contact-mail" href="mailto:sns@ainorigohan.com">sns@ainorigohan.com</a>
+          <button class="copy-btn" type="button" data-copy="sns@ainorigohan.com"><span class="copy-label" aria-live="polite">コピー</span></button><!--/email_off-->
+        </div>
+        <dl class="contact-facts">
+          <div>
+            <dt>運営</dt>
+            <dd>あいのりごはん運営チーム<br />大学生を含む個人開発・2名</dd>
+          </div>
+          <div>
+            <dt>公式X</dt>
+            <dd><a href="https://x.com/Ainorigohan" target="_blank" rel="noopener">@Ainorigohan</a></dd>
+          </div>
+          <div>
+            <dt>サイト</dt>
+            <dd><a href="/">ainorigohan.com</a></dd>
+          </div>
+        </dl>
+        <p class="contact-note">個人情報の取り扱いは、<a href="/privacy">プライバシーポリシー</a>へ。</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <nav class="footer-links" aria-label="フッターナビゲーション">
+      <a href="/">トップ</a>
+      <a href="/about" aria-current="page">運営メンバー</a>
+      <a href="/privacy">プライバシーポリシー</a>
+      <!--email_off--><a href="mailto:sns@ainorigohan.com">お問い合わせ</a><!--/email_off-->
+    </nav>
+    <p class="footer-copy">© 2026 あいのりごはん運営チーム</p>
+  </div>
+</footer>
+
+<script>
+/* ==============================================================
+   動き
+   DOMContentLoaded は defer の GSAP が実行された後に来る。ここで gsap が無い = CDN 失敗なので静的ページに戻す
+   ============================================================== */
+document.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+  var html = document.documentElement;
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  /* ---- コピーボタン: 動きの有無に関係なく使う ---- */
+  $$('[data-copy]').forEach(function (btn) {
+    var label = $('.copy-label', btn), def = label.textContent, timer;
+    var done = function (ok) {
+      label.textContent = ok ? 'コピーしました' : 'コピーできませんでした';
+      btn.classList.toggle('is-done', ok);
+      if (ok && window.gsap && html.classList.contains('js')) {
+        gsap.fromTo(btn, { scale: .86 }, { scale: 1, duration: .5, ease: 'back.out(3)' });
+      }
+      clearTimeout(timer);
+      timer = setTimeout(function () { label.textContent = def; btn.classList.remove('is-done'); }, 2200);
+    };
+    var legacy = function (text) {   // Clipboard API が無い・拒否された時(古い Safari 等)
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;opacity:0';
+      document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+      ta.remove(); done(ok);
+    };
+    btn.addEventListener('click', function () {
+      var text = btn.getAttribute('data-copy');
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(function () { done(true); }, function () { legacy(text); });
+      } else legacy(text);
+    });
+  });
+
+  if (!html.classList.contains('js')) return;          // 動きを減らす設定 / 4秒の保険が発動済み
+  if (!window.gsap || !window.ScrollTrigger) { html.classList.remove('js'); return; }
+  window.__aboutAnim = true;
+
+  try { run(); }
+  catch (err) {
+    // 途中で落ちたら、動きを全部止めて静的ページに戻す
+    if (window.console) console.error(err);
+    ScrollTrigger.getAll().forEach(function (t) { t.kill(true); });
+    gsap.globalTimeline.clear();
+    html.classList.remove('js');
+    gsap.set($$('main *'), { clearProps: 'all' });
+  }
+
+  function run() {
+    gsap.registerPlugin(ScrollTrigger);
+    // スマホのアドレスバーの出入りで毎回測り直すと、固定中の物語がガクッと跳ねる
+    ScrollTrigger.config({ ignoreMobileResize: true });
+
+    var fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var clamp = gsap.utils.clamp;
+
+    /* 1字ずつ span に割る。読み上げ用に元の文を sr-only で残し、割った方は aria-hidden */
+    function split(el) {
+      if (!el) return [];
+      if (el.__chars) return el.__chars;
+      var label = el.textContent.replace(/\s+/g, '');
+      var vis = document.createElement('span');
+      vis.setAttribute('aria-hidden', 'true');
+      while (el.firstChild) vis.appendChild(el.firstChild);
+      (function walk(node) {
+        Array.prototype.slice.call(node.childNodes).forEach(function (n) {
+          if (n.nodeType === 3) {
+            var frag = document.createDocumentFragment();
+            Array.from(n.textContent).forEach(function (c) {
+              if (/\s/.test(c)) return;
+              var s = document.createElement('span'); s.className = 'ch'; s.textContent = c; frag.appendChild(s);
+            });
+            n.parentNode.replaceChild(frag, n);
+          } else if (n.nodeType === 1 && n.tagName !== 'BR') walk(n);
+        });
+      })(vis);
+      var sr = document.createElement('span'); sr.className = 'sr-only'; sr.textContent = label;
+      el.appendChild(sr); el.appendChild(vis);
+      el.__chars = $$('.ch', vis);
+      return el.__chars;
+    }
+
+    /* ==========================================================
+       1. 暖簾(WebGL の布)
+       点の網を竿から吊るし、Verlet 積分 + 距離拘束で布として動かす。
+         - 上端の1列は竿に留めて動かさない。帯(上の縫い合わせ部分)は左右2枚を繋ぎ、その下で2枚に分かれる
+         - 縦横の拘束は「伸びだけ止める」。縮む向きは自由なので、押すと襞になって縮む(布らしさの肝)
+         - 手(ポインタ)は近くの点を、動いた向きへ引きずり、横へ押しのけ、奥へ押す。止まっていれば軽く凹むだけ
+         - 絵は WebGL。面の向きから光を当てて襞に陰を付け、少しずつずらした3枚の影を後ろに落とす
+       WebGL が使えない/落ちた時は null を返し、CSS の静止版(.noren-static)がそのまま見える
+       ========================================================== */
+    var hero = $('.hero'), noren = $('.noren'), cloth = null;
+
+    function createCloth(noren) {
+      var canvas = document.createElement('canvas');
+      var gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: true, depth: true, powerPreference: 'low-power' });
+      if (!gl) return null;
+
+      var VS = [
+        'attribute vec3 aPos; attribute vec3 aNrm; attribute vec2 aUv;',
+        'uniform vec2 uOrigin; uniform vec2 uSize; uniform vec2 uCenter; uniform float uF; uniform vec2 uOff;',
+        'uniform mediump float uShadow;',                                     // 両方のシェーダで使うので精度を揃える(違うとリンクで落ちる)
+        'varying vec2 vUv; varying vec3 vN; varying float vZ;',
+        'void main() {',
+        '  float s = uF / (uF - aPos.z);',                                   // 奥(z<0)ほど小さく: 弱い透視
+        '  vec2 p = uCenter + (aPos.xy - uCenter) * s + uOff;',
+        '  vec2 c = (p - uOrigin) / uSize;',
+        '  float depth = uShadow > 0.5 ? 0.99 : clamp(-aPos.z / 1200.0, -0.95, 0.95);',
+        '  gl_Position = vec4(c.x * 2.0 - 1.0, 1.0 - c.y * 2.0, depth, 1.0);',
+        '  vUv = aUv; vN = aNrm; vZ = aPos.z;',
+        '}'
+      ].join('\n');
+      var FS = [
+        'precision mediump float;',
+        'uniform sampler2D uTex; uniform vec3 uLight; uniform float uShadow; uniform float uAlpha;',
+        'varying vec2 vUv; varying vec3 vN; varying float vZ;',
+        'void main() {',
+        '  if (uShadow > 0.5) { gl_FragColor = vec4(0.0, 0.0, 0.0, uAlpha); return; }',
+        '  vec3 n = normalize(vN);',
+        '  float back = 1.0;',
+        '  if (n.z < 0.0) { n = -n; back = 0.74; }',                          // 裏返った面は暗く
+        '  vec3 tex = texture2D(uTex, vUv).rgb;',
+        '  float diff = max(dot(n, uLight), 0.0);',
+        '  float shade = 0.5 + 0.62 * diff;',
+        '  shade *= mix(0.6, 1.0, smoothstep(0.1, 0.95, n.z));',               // 横を向いた襞の腹は暗く
+        '  shade *= clamp(1.0 + vZ * 0.0022, 0.62, 1.12);',                    // 奥へ押された所は暗く
+        '  shade *= mix(0.62, 1.0, smoothstep(0.0, 0.05, vUv.y));',            // 竿の落とす影
+        '  vec3 h = normalize(uLight + vec3(0.0, 0.0, 1.0));',
+        '  float spec = pow(max(dot(n, h), 0.0), 28.0) * 0.09;',               // 綿の鈍い照り
+        '  gl_FragColor = vec4((tex * shade + spec) * back, 1.0);',
+        '}'
+      ].join('\n');
+      function compile(type, src) {
+        var sh = gl.createShader(type);
+        gl.shaderSource(sh, src); gl.compileShader(sh);
+        if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(sh));
+        return sh;
+      }
+      var prog = gl.createProgram();
+      gl.attachShader(prog, compile(gl.VERTEX_SHADER, VS));
+      gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FS));
+      gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+      gl.useProgram(prog);
+      var aPos = gl.getAttribLocation(prog, 'aPos'), aNrm = gl.getAttribLocation(prog, 'aNrm'), aUv = gl.getAttribLocation(prog, 'aUv');
+      var U = {};
+      ['uOrigin', 'uSize', 'uCenter', 'uF', 'uOff', 'uShadow', 'uAlpha', 'uTex', 'uLight'].forEach(function (n) { U[n] = gl.getUniformLocation(prog, n); });
+      var bPos = gl.createBuffer(), bNrm = gl.createBuffer(), bUv = gl.createBuffer(), bIdx = gl.createBuffer(), tex = gl.createTexture();
+      gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+      gl.depthFunc(gl.LEQUAL);
+      var ll = Math.hypot(-.42, -.56, .72);
+      gl.uniform3f(U.uLight, -.42 / ll, -.56 / ll, .72 / ll);                 // 左上手前から
+      gl.uniform1i(U.uTex, 0);
+      gl.uniform1f(U.uF, 1100);
+
+      var ROD_Y = 7;          // 布の上端 = 竿の中心。上端は竿の裏に隠れる
+      var G = 2200;           // 重力 px/s²
+      var DAMP = .986;        // 1ステップで残る速度(空気抵抗)
+      var STEP = 1 / 60;
+      var SHADOW = [[3, 7, .08], [7, 14, .06], [12, 23, .045]];              // 影は3枚ずらして重ね、ぼかしの代わりにする
+      var dark = matchMedia('(prefers-color-scheme: dark)');
+
+      var W = 0, H = 0, Hc, bandH, bandRow, gap, panelW, NC, NR, N, ITER, ox, cw, ch, dpr;
+      var pos, prv, rest, im, nrm, uvs, cA, cB, cR, cK, cM, CN, idxLen;
+      var released = false, active = true, part = 0, gust = 0, time = 0, acc = 0;
+      var ptr = { x: 0, y: 0, vx: 0, vy: 0, on: false };
+
+      function id(p, r, c) { return p * NC * (NR + 1) + r * NC + c; }
+
+      function build(settled) {
+        W = noren.clientWidth; H = noren.clientHeight;
+        if (!W || !H) return false;
+        var rect = noren.getBoundingClientRect(), s = rect.width / W || 1, vw = document.documentElement.clientWidth;
+        // 揺れてはみ出す分だけ絵を広げる。画面の外へは広げない(スマホは端まで布なので広げない)
+        var exL = Math.min(W * .25, Math.max(0, rect.left / s)), exR = Math.min(W * .25, Math.max(0, (vw - rect.right) / s));
+        ox = -exL; cw = W + exL + exR; ch = H * 1.25;
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.style.left = ox + 'px'; canvas.style.width = cw + 'px'; canvas.style.height = ch + 'px';
+        canvas.width = Math.round(cw * dpr); canvas.height = Math.round(ch * dpr);
+
+        Hc = H - ROD_Y; gap = W < 520 ? 8 : 12; panelW = (W - gap) / 2;
+        NC = Math.max(8, Math.min(16, Math.round(panelW / 18) + 1));
+        NR = Math.max(18, Math.min(32, Math.round(Hc / 16)));
+        ITER = W < 520 ? 5 : 6;
+        var sy = Hc / NR;
+        bandRow = Math.max(2, Math.round(Hc * .2 / sy)); bandH = bandRow * sy;   // 帯の下端を網の行に揃える
+        N = 2 * NC * (NR + 1);
+        pos = new Float32Array(N * 3); prv = new Float32Array(N * 3); rest = new Float32Array(N * 3);
+        nrm = new Float32Array(N * 3); uvs = new Float32Array(N * 2); im = new Float32Array(N);
+        var p, r, c, i;
+        for (p = 0; p < 2; p++) for (r = 0; r <= NR; r++) for (c = 0; c < NC; c++) {
+          i = id(p, r, c);
+          var x = (p ? W - panelW : 0) + c * panelW / (NC - 1), y = ROD_Y + r * sy;
+          rest[i * 3] = x; rest[i * 3 + 1] = y; rest[i * 3 + 2] = 0;
+          uvs[i * 2] = x / W; uvs[i * 2 + 1] = (y - ROD_Y) / Hc;
+          im[i] = r === 0 ? 0 : r >= NR - 1 ? .6 : 1;                        // 上端は竿に留める。裾は折り返しの分だけ重い
+        }
+
+        var LA = [], LB = [], LR = [], LK = [], LM = [];
+        function link(a, b, k, stretchOnly) {
+          LA.push(a); LB.push(b); LK.push(k); LM.push(stretchOnly ? 1 : 0);
+          LR.push(Math.hypot(rest[b * 3] - rest[a * 3], rest[b * 3 + 1] - rest[a * 3 + 1]));
+        }
+        for (p = 0; p < 2; p++) for (r = 0; r <= NR; r++) for (c = 0; c < NC; c++) {
+          var inBand = r <= bandRow;
+          if (c < NC - 1) link(id(p, r, c), id(p, r, c + 1), 1, true);
+          if (r < NR) link(id(p, r, c), id(p, r + 1, c), 1, true);
+          if (c < NC - 1 && r < NR) { link(id(p, r, c), id(p, r + 1, c + 1), .5, true); link(id(p, r, c + 1), id(p, r + 1, c), .5, true); }
+          if (c < NC - 2) link(id(p, r, c), id(p, r, c + 2), inBand ? .9 : .22, false);   // 横の曲げ: 帯は硬く、下は柔らかく
+          if (r < NR - 1) link(id(p, r, c), id(p, r + 2, c), 1, true);                    // 縦は伸び止めだけ
+        }
+        for (r = 0; r <= bandRow; r++) {                                   // 帯は左右の布を縫い合わせてある
+          link(id(0, r, NC - 1), id(1, r, 0), 1, false);
+          link(id(0, r, NC - 2), id(1, r, 0), .9, false);
+          link(id(0, r, NC - 1), id(1, r, 1), .9, false);
+          if (r < bandRow) { link(id(0, r, NC - 1), id(1, r + 1, 0), .5, true); link(id(0, r + 1, NC - 1), id(1, r, 0), .5, true); }
+        }
+        CN = LA.length;
+        cA = new Int32Array(LA); cB = new Int32Array(LB); cR = new Float32Array(LR); cK = new Float32Array(LK); cM = new Uint8Array(LM);
+
+        var I = [];
+        function quad(a, b, cc, d) { I.push(a, b, cc, b, d, cc); }
+        for (p = 0; p < 2; p++) for (r = 0; r < NR; r++) for (c = 0; c < NC - 1; c++) quad(id(p, r, c), id(p, r, c + 1), id(p, r + 1, c), id(p, r + 1, c + 1));
+        for (r = 0; r < bandRow; r++) quad(id(0, r, NC - 1), id(1, r, 0), id(0, r + 1, NC - 1), id(1, r + 1, 0));
+        idxLen = I.length;
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, bUv); gl.bufferData(gl.ARRAY_BUFFER, uvs, gl.STATIC_DRAW);
+        gl.enableVertexAttribArray(aUv); gl.vertexAttribPointer(aUv, 2, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, bNrm); gl.bufferData(gl.ARRAY_BUFFER, nrm, gl.DYNAMIC_DRAW);
+        gl.enableVertexAttribArray(aNrm); gl.vertexAttribPointer(aNrm, 3, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, bPos); gl.bufferData(gl.ARRAY_BUFFER, pos, gl.DYNAMIC_DRAW);
+        gl.enableVertexAttribArray(aPos); gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, bIdx); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(I), gl.STATIC_DRAW);
+
+        for (i = 0; i < N; i++) {
+          var j = i * 3;
+          pos[j] = rest[j];
+          if (settled) { pos[j + 1] = rest[j + 1]; pos[j + 2] = 0; }
+          else {  // 掛ける前: 竿を軸に奥へ 43° はね上げておき、release() で手前へ振り下ろす
+            var L = rest[j + 1] - ROD_Y;
+            pos[j + 1] = ROD_Y + L * Math.cos(.75);
+            pos[j + 2] = -L * Math.sin(.75);
+          }
+          prv[j] = pos[j]; prv[j + 1] = pos[j + 1]; prv[j + 2] = pos[j + 2];
+        }
+        drawTexture();
+        return true;
+      }
+
+      /* ---- 布の柄: 2D canvas で描いてテクスチャにする ---- */
+      function rng(seed) {
+        return function () {
+          seed = seed + 0x6D2B79F5 | 0;
+          var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+          t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+          return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        };
+      }
+      function cssVar(n, fb) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || fb; }
+      function drawTexture() {
+        var S = dpr, tc = document.createElement('canvas');
+        tc.width = Math.round(W * S); tc.height = Math.round(Hc * S);
+        var g = tc.getContext('2d'), R = rng(7), i, x, y;
+        var base = cssVar('--noren', '#5c3421'), ink = cssVar('--noren-ink', '#fcf5ea');
+        g.scale(S, S);
+        g.fillStyle = base; g.fillRect(0, 0, W, Hc);
+        // むら染め: 草木の茶は均一に染まらない。明るい溜まりと濃い溜まりを重ねる
+        for (i = 0; i < 70; i++) {
+          x = R() * W; y = R() * Hc;
+          var rad = 30 + R() * 140, light = R() < .45, gr = g.createRadialGradient(x, y, 0, x, y, rad);
+          gr.addColorStop(0, light ? 'rgba(255,255,255,.05)' : 'rgba(0,0,0,.09)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+          g.fillStyle = gr; g.fillRect(x - rad, y - rad, rad * 2, rad * 2);
+        }
+        // 縦の染めむら。細い線にすると茶色では木目に見えるので、幅広で縁のぼけた帯にする
+        for (i = 0; i < 16; i++) {
+          var sw = 14 + R() * 46, sx = R() * W, sg = g.createLinearGradient(sx, 0, sx + sw, 0), sa = (.025 + R() * .035).toFixed(3);
+          sg.addColorStop(0, 'rgba(0,0,0,0)'); sg.addColorStop(.5, 'rgba(0,0,0,' + sa + ')'); sg.addColorStop(1, 'rgba(0,0,0,0)');
+          g.fillStyle = sg; g.fillRect(sx, 0, sw, Hc);
+        }
+        function weave(a) {                                                    // 布目: 横糸だけうっすら。縦も引くと縞に見える
+          g.fillStyle = 'rgba(0,0,0,' + (.03 * a) + ')'; for (y = 0; y < Hc; y += 2) g.fillRect(0, y, W, .5);
+        }
+        function stitch(x1, y1, x2, y2) {
+          g.save(); g.strokeStyle = 'rgba(252,245,234,.34)'; g.lineWidth = 1.3; g.setLineDash([5, 4]);
+          g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); g.stroke(); g.restore();
+        }
+        weave(1);
+        // 縁の折り返しとステッチ
+        g.fillStyle = 'rgba(0,0,0,.16)';
+        g.fillRect(0, 0, 5, bandH); g.fillRect(W - 5, 0, 5, bandH);
+        g.fillStyle = 'rgba(0,0,0,.24)'; g.fillRect(0, bandH - 1, W, 2);
+        stitch(9, bandH - 6, W - 9, bandH - 6);
+        [0, W - panelW].forEach(function (x0) {
+          g.fillStyle = 'rgba(0,0,0,.16)';
+          g.fillRect(x0, bandH, 5, Hc - bandH); g.fillRect(x0 + panelW - 5, bandH, 5, Hc - bandH); g.fillRect(x0, Hc - 14, panelW, 14);
+          stitch(x0 + 9, bandH + 5, x0 + 9, Hc - 20); stitch(x0 + panelW - 9, bandH + 5, x0 + panelW - 9, Hc - 20);
+          stitch(x0 + 9, Hc - 20, x0 + panelW - 9, Hc - 20);
+        });
+        // 染め抜き。輪郭をわずかににじませて、印刷でなく染めに見せる
+        g.fillStyle = ink; g.strokeStyle = ink; g.textAlign = 'center'; g.textBaseline = 'middle';
+        g.shadowColor = 'rgba(252,245,234,.5)';
+        var cx = W / 2, cy = bandH * .52, cr = Math.min(bandH * .34, W * .09);
+        g.shadowBlur = 1.2 * S;
+        g.lineWidth = cr * .13; g.beginPath(); g.arc(cx, cy, cr, 0, Math.PI * 2); g.stroke();
+        g.font = Math.round(cr * 1.16) + 'px "Dela Gothic One"'; g.fillText('飯', cx, cy + cr * .05);
+        if (W > 330) {
+          var fs = Math.max(9, Math.min(15, bandH * .13)), sp = fs * .45;
+          g.font = '700 ' + fs + 'px "BIZ UDPGothic"';
+          [['AINORI', (cx - cr) / 2 + 4], ['GOHAN', W - (cx - cr) / 2 - 4]].forEach(function (t) {
+            var chars = t[0].split(''), wsum = 0;
+            chars.forEach(function (ch) { wsum += g.measureText(ch).width; });
+            var xx = t[1] - (wsum + sp * (chars.length - 1)) / 2;
+            chars.forEach(function (ch) { var cwid = g.measureText(ch).width; g.fillText(ch, xx + cwid / 2, cy); xx += cwid + sp; });
+          });
+        }
+        var wf = Math.min(panelW * .84 / 4, (Hc - bandH) * .22), wy = bandH + (Hc - bandH) * .47;
+        g.font = Math.round(wf) + 'px "Dela Gothic One"'; g.shadowBlur = wf * .025 * S;
+        g.fillText('あいのり', panelW / 2, wy); g.fillText('ごはん', W - panelW / 2, wy);
+        g.shadowBlur = 0;
+        weave(.6);                                                             // 白く抜いた所にも布目を戻す
+        // 粒: 画素ごとにわずかに明暗を散らし、綿の毛羽と染めのむらを出す(1回だけなので画素ループで足りる)
+        var img = g.getImageData(0, 0, tc.width, tc.height), px = img.data;
+        for (i = 0; i < px.length; i += 4) { var nn = (Math.random() - .5) * 18; px[i] += nn; px[i + 1] += nn; px[i + 2] += nn; }
+        g.putImageData(img, 0, 0);
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, tc);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      }
+
+      /* ---- 物理 ---- */
+      function step(dt) {
+        time += dt;
+        var dt2 = dt * dt, i, k;
+        var spd = Math.sqrt(ptr.vx * ptr.vx + ptr.vy * ptr.vy), sf = Math.min(spd / 900, 1.6);
+        var PR = Math.max(60, Math.min(130, W * .2)), PR2 = PR * PR;
+        // 掛けた直後の大振りだけ空気抵抗を強めにして、手前へ振れすぎないようにする
+        var damp = time < 1.4 ? .962 + (DAMP - .962) * time / 1.4 : DAMP;
+        for (i = 0; i < N; i++) {
+          if (!im[i]) continue;
+          var j = i * 3, x = pos[j], y = pos[j + 1], z = pos[j + 2];
+          var h = (rest[j + 1] - ROD_Y) / Hc;                                  // 竿からの深さ 0→1。下ほど大きく動く
+          var ax = 0, ay = G, az = 0;
+          az += 95 * h * (Math.sin(time * 1.15 + x * .011 + y * .017) + .6 * Math.sin(time * .63 - x * .021 + y * .006));  // そよ風
+          ax += 22 * h * Math.sin(time * .8 + y * .013);
+          if (part) { ax += (rest[j] < W / 2 ? -1 : 1) * 1150 * part * h; az -= 1500 * part * h; }                        // くぐる
+          az += gust * h;
+          if (ptr.on) {
+            var dx = x - ptr.x, dy = y - ptr.y, d2 = dx * dx + dy * dy;
+            if (d2 < PR2) {
+              var d = Math.sqrt(d2) || 1, w = 1 - d / PR; w *= w;
+              ax += w * (ptr.vx * 14 + dx / d * 6500 * sf);                    // 引きずる + 押しのける
+              ay += w * (ptr.vy * 7 + dy / d * 3000 * sf);
+              az -= w * (1200 + 14000 * sf);                                   // 奥へ押す(止まっていても軽く凹む)
+            }
+          }
+          var vx = (x - prv[j]) * damp, vy = (y - prv[j + 1]) * damp, vz = (z - prv[j + 2]) * damp;
+          prv[j] = x; prv[j + 1] = y; prv[j + 2] = z;
+          pos[j] = x + vx + ax * dt2; pos[j + 1] = y + vy + ay * dt2;
+          z = z + vz + az * dt2; pos[j + 2] = z < -900 ? -900 : z > 320 ? 320 : z;
+        }
+        ptr.vx *= .8; ptr.vy *= .8; gust *= .9;
+        for (var it = 0; it < ITER; it++) {
+          for (k = 0; k < CN; k++) {
+            var a = cA[k], b = cB[k], wa = im[a], wb = im[b], ws = wa + wb;
+            if (!ws) continue;
+            var pa = a * 3, pb = b * 3;
+            var ex = pos[pb] - pos[pa], ey = pos[pb + 1] - pos[pa + 1], ez = pos[pb + 2] - pos[pa + 2];
+            var dist = Math.sqrt(ex * ex + ey * ey + ez * ez) || 1e-6, diff = dist - cR[k];
+            if (cM[k] && diff <= 0) continue;
+            var f = diff / dist * cK[k] / ws;
+            pos[pa] += ex * f * wa; pos[pa + 1] += ey * f * wa; pos[pa + 2] += ez * f * wa;
+            pos[pb] -= ex * f * wb; pos[pb + 1] -= ey * f * wb; pos[pb + 2] -= ez * f * wb;
+          }
+        }
+      }
+
+      /* ---- 描画 ---- */
+      function normals() {
+        for (var p = 0; p < 2; p++) for (var r = 0; r <= NR; r++) for (var c = 0; c < NC; c++) {
+          var i = id(p, r, c) * 3;
+          var L = id(p, r, c > 0 ? c - 1 : c) * 3, Rr = id(p, r, c < NC - 1 ? c + 1 : c) * 3;
+          var T = id(p, r > 0 ? r - 1 : r, c) * 3, B = id(p, r < NR ? r + 1 : r, c) * 3;
+          var ux = pos[Rr] - pos[L], uy = pos[Rr + 1] - pos[L + 1], uz = pos[Rr + 2] - pos[L + 2];
+          var vx = pos[B] - pos[T], vy = pos[B + 1] - pos[T + 1], vz = pos[B + 2] - pos[T + 2];
+          var nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+          var l = Math.sqrt(nx * nx + ny * ny + nz * nz) || 1;
+          nrm[i] = nx / l; nrm[i + 1] = ny / l; nrm[i + 2] = nz / l;
+        }
+      }
+      function draw() {
+        normals();
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.bindBuffer(gl.ARRAY_BUFFER, bPos); gl.bufferSubData(gl.ARRAY_BUFFER, 0, pos);
+        gl.bindBuffer(gl.ARRAY_BUFFER, bNrm); gl.bufferSubData(gl.ARRAY_BUFFER, 0, nrm);
+        gl.uniform2f(U.uOrigin, ox, 0); gl.uniform2f(U.uSize, cw, ch); gl.uniform2f(U.uCenter, W / 2, H * .4);
+        gl.disable(gl.DEPTH_TEST); gl.uniform1f(U.uShadow, 1);
+        var sk = dark.matches ? 1.8 : 1;
+        for (var k = 0; k < SHADOW.length; k++) {
+          gl.uniform2f(U.uOff, SHADOW[k][0], SHADOW[k][1]); gl.uniform1f(U.uAlpha, SHADOW[k][2] * sk);
+          gl.drawElements(gl.TRIANGLES, idxLen, gl.UNSIGNED_SHORT, 0);
+        }
+        gl.enable(gl.DEPTH_TEST); gl.uniform1f(U.uShadow, 0); gl.uniform2f(U.uOff, 0, 0);
+        gl.drawElements(gl.TRIANGLES, idxLen, gl.UNSIGNED_SHORT, 0);
+      }
+      function frame(t, dtMs) {
+        if (!active || !W) return;
+        acc += Math.min(dtMs, 100) / 1000;
+        var n = 0;
+        while (acc >= STEP && n < 4) { if (released) step(STEP); acc -= STEP; n++; }
+        if (n >= 4) acc = 0;
+        if (n) draw();
+      }
+
+      /* ---- 手 ---- */
+      var lastT = 0, lx = 0, ly = 0;
+      function local(e) {
+        var r = noren.getBoundingClientRect(), s = r.width / W || 1;
+        return [(e.clientX - r.left) / s, (e.clientY - r.top) / s];
+      }
+      function onMove(e) {
+        if (!W) return;
+        var q = local(e), now = performance.now(), dt = Math.max(8, now - lastT) / 1000;
+        if (ptr.on && now - lastT < 150) {
+          ptr.vx = ptr.vx * .5 + clamp(-3000, 3000, (q[0] - lx) / dt) * .5;
+          ptr.vy = ptr.vy * .5 + clamp(-3000, 3000, (q[1] - ly) / dt) * .5;
+        }
+        ptr.x = lx = q[0]; ptr.y = ly = q[1]; ptr.on = true; lastT = now;
+      }
+      function poke(e) {                                                       // 叩く: 近くを奥へはじく
+        onMove(e);
+        var R = Math.max(70, W * .2);
+        for (var i = 0; i < N; i++) {
+          if (!im[i]) continue;
+          var j = i * 3, dx = pos[j] - ptr.x, dy = pos[j + 1] - ptr.y, d = Math.sqrt(dx * dx + dy * dy);
+          if (d < R) { var w = 1 - d / R; prv[j + 2] += w * w * 22; }
+        }
+      }
+      hero.addEventListener('pointermove', onMove);
+      hero.addEventListener('pointerdown', poke);
+      hero.addEventListener('pointerleave', function () { ptr.on = false; });
+      hero.addEventListener('pointercancel', function () { ptr.on = false; });
+      hero.addEventListener('pointerup', function (e) { if (e.pointerType !== 'mouse') ptr.on = false; });
+
+      if (!build(false)) return null;
+      noren.insertBefore(canvas, noren.querySelector('.noren-rod'));
+      canvas.className = 'noren-gl';
+      canvas.setAttribute('aria-hidden', 'true');
+      draw();
+      gsap.ticker.add(frame);
+
+      // 大きさが変わったら網を張り直す(幅・高さが実際に変わった時だけ。初回の通知で落下中の布を戻さないため)
+      var rt, lastSize = W + 'x' + H;
+      var ro = new ResizeObserver(function () {
+        clearTimeout(rt);
+        rt = setTimeout(function () {
+          var size = noren.clientWidth + 'x' + noren.clientHeight;
+          if (size === lastSize) return;
+          lastSize = size;
+          if (build(released)) draw();
+        }, 150);
+      });
+      ro.observe(noren);
+      dark.addEventListener && dark.addEventListener('change', function () { drawTexture(); draw(); });
+      // 書体が後から届いたら柄を描き直す(先に描くと代わりの書体で染まる)
+      if (document.fonts && document.fonts.load) {
+        Promise.all([
+          document.fonts.load('64px "Dela Gothic One"', 'あいのりごはん飯'),
+          document.fonts.load('700 14px "BIZ UDPGothic"', 'AINORIGH')
+        ]).then(function () { drawTexture(); draw(); }, function () {});
+      }
+      canvas.addEventListener('webglcontextlost', function (e) {             // GPU を失ったら静止版に戻す
+        e.preventDefault(); active = false; gsap.ticker.remove(frame); ro.disconnect();
+        canvas.remove(); noren.classList.remove('gl-on');
+      });
+
+      return {
+        canvas: canvas,
+        release: function () { released = true; },
+        setPart: function (p) { part = p; },
+        gust: function (v) { gust = clamp(-2600, 2600, -v * .8); },
+        setActive: function (on) { active = on; }
+      };
+    }
+
+    // 幕開け。字の形が変わって跳ねないよう、書体の読み込みを待つ(最大1.2秒)
+    Promise.race([
+      document.fonts ? document.fonts.ready : Promise.resolve(),
+      new Promise(function (r) { setTimeout(r, 1200); })
+    ]).then(function () {
+      try { cloth = createCloth(noren); }
+      catch (err) {
+        if (window.console) console.warn('暖簾は静止版で表示します', err);
+        cloth = null;
+        $$('.noren-gl').forEach(function (c) { c.remove(); });
+      }
+      if (cloth) noren.classList.add('gl-on');
+      var h1Chars = split($('#hero-title'));
+      // CSS の「畳んでおく」を外すのと、fromTo が初期値を書き込むのは同じ処理の中で済ませる(間に描画が入らない)
+      hero.classList.add('is-in');
+      // 暖簾(竿→乳→布を振り下ろす)と文字は並べて走らせる。文字が暖簾を待つと、読めるまでが長い
+      var tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+        .fromTo('.noren-rod', { scaleX: 0 }, { scaleX: 1, duration: .55, ease: 'power4.inOut' }, 0)
+        .fromTo('.noren-loops i', { scaleY: 0 }, { scaleY: 1, duration: .35, stagger: .04, ease: 'back.out(3)' }, .35);
+      if (cloth) {
+        tl.to(cloth.canvas, { opacity: 1, duration: .25 }, .6)
+          .add(function () { cloth.release(); }, .62);
+      } else {
+        tl.fromTo('.noren-static', { clipPath: 'inset(0% 0% 100% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: .8, ease: 'power4.out' }, .6)
+          .add(function () { gsap.set('.noren-static', { clearProps: 'clipPath' }); });
+      }
+      tl.fromTo('.hero-eyebrow', { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: .5 }, .3)
+        .fromTo(h1Chars, { yPercent: 80, opacity: 0, rotation: 12 }, { yPercent: 0, opacity: 1, rotation: 0, stagger: .035, duration: .7, ease: 'back.out(1.9)' }, .4)
+        .fromTo('.hero-lead', { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: .6 }, .95)
+        .fromTo('.hero-actions .btn', { y: 18, opacity: 0 }, { y: 0, opacity: 1, stagger: .08, duration: .6 }, 1.05);
+      ScrollTrigger.refresh();
+    });
+
+    // くぐる: スクロールで布が左右に割れて奥へ流れ、暖簾全体は少し手前に寄る
+    ScrollTrigger.create({
+      trigger: hero, start: 'top top', end: 'bottom top',
+      onUpdate: function (self) { if (cloth) { cloth.setPart(self.progress); cloth.gust(self.getVelocity()); } }
+    });
+    ScrollTrigger.create({ trigger: hero, start: 'top bottom', end: 'bottom top', onToggle: function (s) { if (cloth) cloth.setActive(s.isActive); } });
+    gsap.to('.noren', { scale: 1.05, yPercent: 4, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
+    gsap.to('.hero-copy', { yPercent: -18, opacity: .15, ease: 'none', scrollTrigger: { trigger: hero, start: 'center top', end: 'bottom top', scrub: true } });
+
+    /* ==========================================================
+       2. メンバー: 札が下から開き、頭文字を判子のように押す
+       ========================================================== */
+    $$('.member').forEach(function (m) {
+      var tile = $('.member-mark', m), glyphWrap = $('.mark-glyph', m), glyph = $('.mark-glyph span', m), ring = $('.mark-ring', m);
+      var name = split($('.nm', m));
+      gsap.timeline({ scrollTrigger: { trigger: m, start: 'top 80%', once: true } })
+        .fromTo(tile, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: .8, ease: 'power4.out' })
+        .fromTo(glyph, { scale: 2.4, rotation: -20, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: .6, ease: 'back.out(2.2)' }, '-=.35')
+        .fromTo(ring, { scale: .3, opacity: .9 }, { scale: 1.9, opacity: 0, duration: .7, ease: 'power2.out' }, '-=.28')
+        .fromTo($('.member-role', m), { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: .4 }, '-=.55')
+        .fromTo(name, { yPercent: 90, opacity: 0, rotation: 10 }, { yPercent: 0, opacity: 1, rotation: 0, stagger: .06, duration: .6, ease: 'back.out(2.2)' }, '-=.35')
+        .fromTo($('.member-name small', m), { opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: .4 }, '-=.3')
+        .fromTo($('.member-line', m), { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: .5 }, '-=.35')
+        .fromTo($$('.member-duty li', m), { scale: .4, opacity: 0 }, { scale: 1, opacity: 1, stagger: .06, duration: .45, ease: 'back.out(3)' }, '-=.3')
+        .add(function () { gsap.set(tile, { clearProps: 'clipPath' }); });
+
+      // スクロールで頭文字が枠の中をゆっくり上下する
+      gsap.fromTo(glyphWrap, { yPercent: 10 }, { yPercent: -6, ease: 'none', scrollTrigger: { trigger: tile, start: 'top bottom', end: 'bottom top', scrub: true } });
+
+      // 叩くと頭文字が跳ねて一回転する
+      tile.addEventListener('click', function () {
+        if (gsap.isTweening(glyph)) return;
+        gsap.timeline()
+          .to(glyph, { yPercent: -22, rotation: '+=360', duration: .55, ease: 'power2.out' })
+          .to(glyph, { yPercent: 0, duration: .5, ease: 'bounce.out' });
+      });
+
+      // マウスでは札が傾き、頭文字が逆へ動いて奥行きが出る
+      if (fine) {
+        gsap.set(tile, { transformPerspective: 900 });
+        var rx = gsap.quickTo(tile, 'rotationX', { duration: .6, ease: 'power3' });
+        var ry = gsap.quickTo(tile, 'rotationY', { duration: .6, ease: 'power3' });
+        var gx = gsap.quickTo(glyphWrap, 'x', { duration: .6, ease: 'power3' });
+        var gy = gsap.quickTo(glyphWrap, 'y', { duration: .6, ease: 'power3' });
+        tile.addEventListener('pointermove', function (e) {
+          var r = tile.getBoundingClientRect();
+          var px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+          ry(px * 12); rx(-py * 12); gx(px * -30); gy(py * -30);
+        });
+        tile.addEventListener('pointerleave', function () { rx(0); ry(0); gx(0); gy(0); });
+      }
+    });
+
+    /* ==========================================================
+       3. 物語: 画面を止めて、2行 → 皿の写真 → 皿が広がって「目的は、飯。」
+       ========================================================== */
+    var l1 = split($('.story-line.l1')), l2 = split($('.story-line.l2')), big = split($('.story-big'));
+    // 1行目は固定が始まる前、舞台が下から上がってくる間に出す。固定の中で出すと、手前で丸1画面ぶん空白が流れる
+    gsap.fromTo(l1, { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, stagger: .05, ease: 'power2.out',
+      scrollTrigger: { trigger: '.story', start: 'top 88%', end: 'top 25%', scrub: .6 } });
+    var mm = gsap.matchMedia();
+    mm.add({ small: '(max-width: 719px)', large: '(min-width: 720px)' }, function (ctx) {
+      var small = ctx.conditions.small;
+      gsap.timeline({
+        defaults: { ease: 'power2.out' },
+        scrollTrigger: {
+          trigger: '.story', start: 'top top', pin: true, scrub: .7, anticipatePin: 1, invalidateOnRefresh: true,
+          end: function () { return '+=' + Math.round(innerHeight * (small ? 2.1 : 2.5)); }
+        }
+      })
+        .fromTo(l2, { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, stagger: .05, duration: .5 })
+        .to('.story-line.l1', { opacity: .3, duration: .3 }, '<')
+        .fromTo('.story-plate', { clipPath: 'circle(0% at 50% 50%)', rotation: -30 },
+                                { clipPath: 'circle(' + (small ? 20 : 15) + '% at 50% 50%)', rotation: 0, duration: .6 }, '+=.15')
+        .to('.story-plate', { clipPath: 'circle(76% at 50% 50%)', duration: .9, ease: 'power2.in' }, '+=.2')
+        .to('.story-line', { opacity: 0, scale: .92, duration: .35 }, '<+.35')
+        .to('.story-plate', { '--scrim': .58, duration: .4 }, '<')
+        .fromTo(big, { scale: 2.8, opacity: 0 }, { scale: 1, opacity: 1, stagger: .07, duration: .4, ease: 'back.out(2)' })
+        .fromTo('.story-note', { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: .35 }, '-=.1')
+        .to({}, { duration: .5 });
+    });
+
+    /* ==========================================================
+       4. 流れる帯: スクロールの向きで流れる向きが変わり、速く回すと速く流れる
+       ========================================================== */
+    var track = $('.marquee-track');
+    track.innerHTML += track.innerHTML;       // 2周分並べて継ぎ目をなくす
+    var mx = 0, mdir = -1, boost = 0, skew = 0, mOn = false, half = 0;
+    var measure = function () { half = track.scrollWidth / 2; };
+    measure(); ScrollTrigger.addEventListener('refresh', measure);
+    var setX = gsap.quickSetter(track, 'x', 'px'), setSkew = gsap.quickSetter(track, 'skewX', 'deg');
+    gsap.ticker.add(function (t, dtMs) {
+      if (!mOn || !half) return;
+      var dt = Math.min(dtMs, 40) / 1000;
+      mx += mdir * (70 + boost) * dt;
+      if (mx <= -half) mx += half;
+      if (mx > 0) mx -= half;
+      boost *= .93; skew *= .9;
+      setX(mx); setSkew(skew);
+    });
+    ScrollTrigger.create({
+      trigger: '.marquee', start: 'top bottom', end: 'bottom top',
+      onToggle: function (s) { mOn = s.isActive; },
+      onUpdate: function (s) {
+        var v = s.getVelocity();
+        mdir = s.direction === 1 ? -1 : 1;
+        boost = Math.min(Math.abs(v) * .35, 1100);
+        skew = clamp(-10, 10, -v / 260);
+      }
+    });
+
+    /* ==========================================================
+       5. 短冊: 上から落ちてきて揺れ、叩くとめくれて裏に説明
+       ========================================================== */
+    var rules = $$('.rule'), touched = false;
+    var flip = function (card, on) {
+      card.setAttribute('aria-pressed', on ? 'true' : 'false');
+      gsap.to(card, { rotationY: on ? 180 : 0, duration: .75, ease: 'back.out(1.5)', overwrite: true });
+    };
+    rules.forEach(function (li) {
+      var card = $('.rule-card', li);
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-pressed', 'false');
+      var toggle = function () { touched = true; flip(card, card.getAttribute('aria-pressed') !== 'true'); };
+      card.addEventListener('click', toggle);
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      });
+      if (fine) li.addEventListener('pointerenter', function () {
+        if (gsap.isTweening(li)) return;
+        gsap.fromTo(li, { rotation: gsap.utils.random([-4, 4]) }, { rotation: 0, duration: 1.3, ease: 'elastic.out(1, .3)' });
+      });
+    });
+    gsap.set(rules, { transformOrigin: '50% 0%' });
+    gsap.fromTo(rules,
+      { yPercent: -115, opacity: 0, rotation: function () { return gsap.utils.random(-18, 18); } },
+      { yPercent: 0, opacity: 1, rotation: 0, duration: 1.6, ease: 'elastic.out(1, .42)',
+        stagger: { each: .07, from: 'random' },
+        scrollTrigger: { trigger: '.rule-wall', start: 'top 82%', once: true },
+        onComplete: function () {
+          // 1枚だけ勝手にめくって戻し、「めくれる札」だと見せる。もう触っていたらやらない
+          if (touched) return;
+          var c = $('.rule-card', rules[0]);
+          flip(c, true);
+          gsap.delayedCall(1.4, function () { if (!touched) flip(c, false); });
+        } });
+
+    /* ==========================================================
+       6. 見出し: 画面に入ったら1字ずつ跳ねて出る
+       ========================================================== */
+    $$('.section-title').forEach(function (h) {
+      gsap.fromTo(split(h), { yPercent: 90, opacity: 0, rotation: 8 },
+        { yPercent: 0, opacity: 1, rotation: 0, stagger: .035, duration: .6, ease: 'back.out(2)',
+          scrollTrigger: { trigger: h, start: 'top 85%', once: true } });
+    });
+
+    /* ==========================================================
+       7. いま、ここ: 線が引かれ、節が順に打たれる(スマホは縦線、広い画面は横線)
+       ========================================================== */
+    var wide = innerWidth >= 720;
+    gsap.timeline({ scrollTrigger: { trigger: '.steps-wrap', start: 'top 78%', once: true } })
+      .fromTo('.steps-line', wide ? { scaleX: 0 } : { scaleY: 0 }, { scaleX: 1, scaleY: 1, duration: 1, ease: 'power2.inOut' })
+      .fromTo('.step-node', { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, stagger: .22, duration: .5, ease: 'back.out(3)' }, '-=.8')
+      .fromTo('.step-body', { y: 18, opacity: 0 }, { y: 0, opacity: 1, stagger: .22, duration: .5 }, '<+.1');
+
+    /* ==========================================================
+       8. 連絡先: 茶の札がせり出し、アドレスはなでると波打つ
+       ========================================================== */
+    gsap.fromTo('.contact-card', { clipPath: 'inset(10% 8% 10% 8%)' },
+      { clipPath: 'inset(0% 0% 0% 0%)', ease: 'none',
+        scrollTrigger: { trigger: '.contact', start: 'top 92%', end: 'top 40%', scrub: .5 } });
+    var mail = $('.contact-mail'), mailChars = split(mail);
+    var wave = function () {
+      if (gsap.isTweening(mailChars[0])) return;
+      gsap.to(mailChars, { yPercent: -28, duration: .18, yoyo: true, repeat: 1, stagger: .025, ease: 'power2.out' });
+    };
+    mail.addEventListener('pointerenter', wave);
+    gsap.fromTo(['.contact-lead', '.contact-mail-row', '.contact-facts', '.contact-note'], { y: 24, opacity: 0 },
+      { y: 0, opacity: 1, stagger: .1, duration: .6, ease: 'power3.out',
+        scrollTrigger: { trigger: '.contact-card', start: 'top 75%', once: true },
+        onComplete: wave });
+
+    // 画像や書体が後から来ると高さが変わる。読み込み後に位置を測り直す
+    window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+  }
+});
+</script>
+</body>
+</html>
