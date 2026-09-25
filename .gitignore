@@ -2,3 +2,4 @@
 test/state/
 *.bak
 node_modules/
+test/about/out/
