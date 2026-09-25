@@ -1,91 +1,82 @@
-# 宇野の名札のアイコン: かわいい狐(胸から上)。SVG を手で組む。
+# 宇野の名札のアイコン: 一色のシルエットの狐(右向きに座り、尻尾を前に巻く。尻尾の先だけ白)。SVG を手で組む。
 #   python test/about/make_fox.py
-#     -> test/about/out/fox-inline.svg   about.html の名札(4:3)に差し込む分。色は CSS 変数、動きは JS/CSS が class を見て付ける
-#     -> assets/about/uno-fox.svg        単体のアイコン(正方形・丸い地つき)。SNS のアイコン等にそのまま使える
-# 形は 400x400 の座標で描く。名札では viewBox を 4:3 に切り、体の下は札の下辺で切れる。
+#     -> test/about/out/fox-inline.svg   about.html の名札(4:3)に差し込む分。形ができあがる動きは about.html の JS が付ける
+#     -> assets/about/uno-fox.svg        単体のロゴ(背景は透明)
+# 本人が見せてくれた参考(一色の狐のロゴ)は同じ系統というだけで、形はなぞっていない(向きも構図も別)。
+# 形は 400x400 の座標で描く。
 import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, '..', '..'))
 
-
-def mirror(d):
-    """x を 400 - x に写した path を返す(左半分から右半分を作る)。数字は x y の組で並んでいる前提"""
-    out, toks, i = [], d.replace(',', ' ').split(), 0
-    xy = 0
-    for t in toks:
-        if t[0].isalpha():
-            out.append(t); xy = 0
-        else:
-            v = float(t)
-            out.append(('%g' % (400 - v)) if xy % 2 == 0 else ('%g' % v))
-            xy += 1
-    return ' '.join(out)
-
-
-# ---- 部品(左半分で描いて、右は写す) ----
-EAR_L = 'M 116 214 C 98 160 96 112 108 84 C 113 72 124 70 133 78 C 162 104 184 128 198 154 Z'
-EAR_IN_L = 'M 128 196 C 118 150 118 118 125 100 C 128 94 134 94 139 99 C 158 118 172 136 182 156 Z'
-EAR_TIP_L = 'M 103 116 C 102 98 104 88 108 84 C 113 72 124 70 133 78 C 140 84 147 91 153 97 C 136 98 116 104 103 116 Z'
-HEAD = ('M 200 126 C 258 126 300 156 308 204 C 312 224 322 240 342 252 C 320 258 308 262 299 267 '
-        'C 286 297 248 316 200 316 C 152 316 114 297 101 267 C 92 262 80 258 58 252 C 78 240 88 224 92 204 '
-        'C 100 156 142 126 200 126 Z')
-TUFT = 'M 184 131 C 188 118 193 112 199 110 C 199 118 201 124 205 128 C 208 119 213 114 220 112 C 218 120 219 126 222 132 Z'
-MASK = ('M 60 252 C 88 246 110 237 126 225 C 144 211 169 214 183 232 C 189 240 195 246 200 250 '
-        'C 205 246 211 240 217 232 C 231 214 256 211 274 225 C 290 237 312 246 340 252 C 320 258 308 262 299 267 '
-        'C 286 297 248 316 200 316 C 152 316 114 297 101 267 C 92 262 80 258 60 252 Z')
-BODY = 'M 104 420 C 104 346 142 298 200 298 C 258 298 296 346 296 420 Z'
-BIB = 'M 150 420 C 152 360 172 322 200 314 C 228 322 248 360 250 420 Z'
-TAIL = ('M 262 420 C 318 414 376 378 386 318 C 394 270 372 226 340 214 C 322 208 306 220 310 238 '
-        'C 318 274 312 306 286 330 C 272 344 262 370 262 420 Z')
-# 尻尾の先の白。尻尾の形で切り抜く。境目は小さく波打たせて毛のふわっと感を出す
-TAIL_TIP = ('M 280 150 L 420 150 L 420 300 C 410 296 402 290 393 293 C 384 281 374 285 365 278 '
-            'C 356 266 346 272 337 264 C 327 253 318 258 300 252 Z')
-NOSE = 'M 187 246 C 194 241 206 241 213 246 C 211 256 205 261 200 261 C 195 261 189 256 187 246 Z'
-MOUTH = 'M 200 261 L 200 267 M 185 266 C 189 275 197 276 200 267 C 203 276 211 275 215 266'
+# ---- 形 ----
+# 頭から胸・背中・腰・前脚まで。鼻先は右上。耳は別の形にして、手前の耳だけぴくっと動かせるようにする
+HEAD = ('M 346 122 C 332 116 314 106 300 99 C 294 92 286 86 276 86 '
+        'C 256 86 240 94 230 108 C 218 126 214 150 206 172 '
+        'C 190 206 168 236 160 280 C 152 316 166 346 198 354 '
+        'L 296 354 C 294 322 292 286 298 252 C 304 226 314 206 312 186 '
+        'C 310 168 306 158 314 148 C 322 141 338 133 346 122 Z')
+EAR_BACK = 'M 238 100 C 236 80 240 60 248 42 C 258 58 264 76 266 90 Z'
+EAR_FRONT = 'M 262 90 C 262 68 266 48 276 28 C 290 46 298 70 298 101 C 290 95 282 91 262 90 Z'
+TAIL = ('M 160 296 C 112 300 86 340 114 365 C 150 394 252 394 320 373 '
+        'C 352 363 373 341 377 306 C 379 292 377 281 371 272 '
+        'C 364 300 344 322 310 334 C 262 350 200 348 176 326 C 168 318 162 306 160 296 Z')
+# 尻尾の先の白(尻尾の形で切り抜く)。付け根側へ向いたとがった毛先を3つ
+TIP = ('M 318 250 L 420 250 L 420 420 L 314 420 C 322 402 331 388 331 374 '
+       'C 323 369 317 363 313 355 C 325 357 335 355 343 351 C 335 345 329 337 327 327 '
+       'C 337 331 347 331 357 326 Z')
+# 抜き(背景の色で体を切る)。どれも両端がとがった三日月: 尻尾と体の境目、後ろ脚の付け根、耳の内側
+GAPS = ['M 166 312 C 192 344 262 352 322 331 C 262 356 190 352 166 312 Z',
+        'M 234 246 C 253 272 259 306 254 346 C 250 346 248 346 246 346 C 251 306 248 274 234 246 Z',
+        'M 271 86 C 271 70 273 56 278 44 C 283 56 286 70 286 88 C 281 84 276 84 271 86 Z']
+EYE = 'M 296 114 C 302 109 311 108 317 112 C 311 117 302 118 296 114 Z'
+OUTLINES = [HEAD, EAR_BACK, EAR_FRONT, TAIL]
 
 
-def fox_group():
-    g = ['<g class="fx-all">']
-    g.append('<defs><clipPath id="fx-tail-clip"><path d="%s" /></clipPath></defs>' % TAIL)
-    g.append('<g class="fx-tail"><path class="fx-o2" d="%s" /><path class="fx-c" clip-path="url(#fx-tail-clip)" d="%s" /></g>' % (TAIL, TAIL_TIP))
-    g.append('<path class="fx-o2" d="%s" />' % BODY)
-    g.append('<path class="fx-c" d="%s" />' % BIB)
-    g.append('<g class="fx-head">')
-    for side, sx in (('l', ''), ('r', 'r')):
-        e, ei, et = (EAR_L, EAR_IN_L, EAR_TIP_L) if side == 'l' else (mirror(EAR_L), mirror(EAR_IN_L), mirror(EAR_TIP_L))
-        g.append('<g class="fx-ear fx-ear-%s"><path class="fx-o" d="%s" /><path class="fx-in" d="%s" /><path class="fx-dk" d="%s" /></g>' % (side, e, ei, et))
-    g.append('<path class="fx-o" d="%s" />' % HEAD)
-    g.append('<path class="fx-o" d="%s" />' % TUFT)
-    g.append('<path class="fx-c" d="%s" />' % MASK)
-    g.append('<ellipse class="fx-blush" cx="132" cy="240" rx="15" ry="8" /><ellipse class="fx-blush" cx="268" cy="240" rx="15" ry="8" />')
-    g.append('<g class="fx-eyes">')
-    for cx in (152, 248):
-        g.append('<g class="fx-eye"><ellipse class="fx-ink" cx="%d" cy="205" rx="15" ry="18" />'
-                 '<circle class="fx-hi" cx="%d" cy="197" r="5.5" /><circle class="fx-hi" cx="%d" cy="212" r="2.4" /></g>' % (cx, cx + 5, cx - 6))
-    g.append('</g>')
-    g.append('<path class="fx-ink" d="%s" /><ellipse class="fx-hi" cx="195" cy="246" rx="3.2" ry="1.8" />' % NOSE)
-    g.append('<path class="fx-line" d="%s" />' % MOUTH)
-    g.append('</g></g>')
-    return ''.join(g)
+def svg_inner(uid):
+    """uid は id の頭。ページに2つ置いても id がぶつからないように"""
+    o = []
+    o.append('<defs>')
+    o.append('<clipPath id="%s-tail"><path d="%s" /></clipPath>' % (uid, TAIL))
+    o.append('<clipPath id="%s-tipzone"><path d="%s" /></clipPath>' % (uid, TIP))
+    o.append('<mask id="%s-cut" maskUnits="userSpaceOnUse" x="-100" y="-100" width="600" height="600">' % uid
+             + '<rect x="-100" y="-100" width="600" height="600" fill="#fff" />'
+             + ''.join('<path class="fl-gap" d="%s" fill="#000" />' % g for g in GAPS)
+             + '<path class="fl-eye" d="%s" fill="#000" />' % EYE
+             + '</mask>')
+    o.append('<mask id="%s-reveal" maskUnits="userSpaceOnUse" x="-100" y="-100" width="600" height="600">'
+             '<circle class="fl-reveal" cx="170" cy="330" r="520" fill="#fff" /></mask>' % uid)
+    o.append('<clipPath id="%s-shape"><path d="%s" /><path d="%s" /><path d="%s" /><path d="%s" /></clipPath>' % ((uid,) + tuple(OUTLINES)))
+    o.append('<linearGradient id="%s-shine" x1="0" y1="0" x2="1" y2="0">'
+             '<stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset=".5" stop-color="#fff" stop-opacity=".55" />'
+             '<stop offset="1" stop-color="#fff" stop-opacity="0" /></linearGradient>' % uid)
+    o.append('</defs>')
+    # 0. できあがった瞬間に後ろで広がる輪(動きがある時だけ)
+    o.append('<circle class="fl-ring" cx="256" cy="224" r="150" />')
+    # 1. 輪郭の線(できあがる途中だけ見せる)
+    o.append('<g class="fl-lines">' + ''.join('<path class="fl-line" pathLength="1" d="%s" />' % d for d in OUTLINES) + '</g>')
+    # 2. 塗り(広がる丸で見せていき、抜きの線と目で切る)
+    o.append('<g mask="url(#%s-reveal)"><g class="fl-fill" mask="url(#%s-cut)">' % (uid, uid))
+    o.append('<g class="fl-tail"><path class="fl-o" d="%s" /><path class="fl-tip" clip-path="url(#%s-tail)" d="%s" /></g>' % (TAIL, uid, TIP))
+    o.append('<path class="fl-o" d="%s" />' % HEAD)
+    o.append('<path class="fl-o" d="%s" />' % EAR_BACK)
+    o.append('<path class="fl-o fl-ear" d="%s" />' % EAR_FRONT)
+    o.append('</g></g>')
+    # 3. 尻尾の先の白の縁取り
+    o.append('<g class="fl-tip-lines"><path class="fl-tip-line" pathLength="1" clip-path="url(#%s-tail)" d="%s" />' % (uid, TIP)
+             + '<path class="fl-tip-line fl-tip-edge" pathLength="1" clip-path="url(#%s-tipzone)" d="%s" /></g>' % (uid, TAIL))
+    # 4. 仕上げの光(シルエットの中だけを斜めに走る)
+    o.append('<g clip-path="url(#%s-shape)"><g class="fl-shine"><rect x="-160" y="0" width="120" height="400" fill="url(#%s-shine)" transform="skewX(-18)" /></g></g>' % (uid, uid))
+    return ''.join(o)
 
 
-COLORS = {'o': '#f28c3c', 'o2': '#e57a33', 'c': '#fff5e8', 'in': '#ffd8c4', 'dk': '#5c3421', 'ink': '#2b1b14', 'blush': '#ff9f98', 'bg': '#f3e8da'}
+FIXED_STYLE = ('.fl-o{fill:#f0602a}.fl-tip{fill:#fff8ef}.fl-tip-line{fill:none;stroke:#f0602a;stroke-width:6;stroke-linejoin:round}.fl-tip-edge{stroke-width:12}'
+               '.fl-lines,.fl-shine,.fl-ring{display:none}')
 
-STYLE_FIXED = ('.fx-o{fill:%(o)s}.fx-o2{fill:%(o2)s}.fx-c{fill:%(c)s}.fx-in{fill:%(in)s}.fx-dk{fill:%(dk)s}'
-               '.fx-ink{fill:%(ink)s}.fx-hi{fill:#fff}.fx-blush{fill:%(blush)s;opacity:.65}'
-               '.fx-line{fill:none;stroke:%(ink)s;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}') % COLORS
-
-# 名札用: 4:3。耳の先から、体が札の下辺で切れるところまで
-inline = ('<svg class="mark-fox" viewBox="-45 45 490 367.5" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false">'
-          + fox_group() + '</svg>')
-
-# 単体のアイコン: 丸い地に胸から上。丸の外は透明
-standalone = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">'
-              '<style>%s</style>' % STYLE_FIXED
-              + '<defs><clipPath id="fx-round"><circle cx="200" cy="200" r="200" /></clipPath></defs>'
-              + '<circle cx="200" cy="200" r="200" fill="%s" />' % COLORS['bg']
-              + '<g clip-path="url(#fx-round)"><g transform="translate(0 12)">' + fox_group() + '</g></g></svg>')
+inline = ('<svg class="mark-fox" viewBox="-20 22 500 375" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">'
+          + svg_inner('fl') + '</svg>')
+standalone = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="70 18 330 382" width="330" height="382"><style>%s</style>' % FIXED_STYLE
+              + svg_inner('fls') + '</svg>')
 
 os.makedirs(os.path.join(HERE, 'out'), exist_ok=True)
 open(os.path.join(HERE, 'out', 'fox-inline.svg'), 'w', encoding='utf-8').write(inline)

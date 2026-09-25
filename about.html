@@ -23,7 +23,7 @@
   - 書体: 見出し = Dela Gothic One / 本文 = BIZ UDPゴシック。Dela は 30px 未満だと画数の多い漢字が潰れるので、小さい見出しは本文書体の太字。
   - 角はすべて直角。例外はスマホの枠だけ(画面ではなく「物」なので、実物どおり角が丸い)。
   - 顔写真は載せない(Team Hub の方針)。名札: 遠藤 = 本人から届いたアイコン(assets/about/member-endo.webp、背景を抜いたもの)。頭文字は載せない(本人の判断)。
-    宇野 = かわいい狐のアイコン(test/about/make_fox.py が書き出す SVG。本人の希望: 狐が好き、遠藤のアイコンとは関係ない絵柄)。名前と英字の肩書きは名刺と同じ表記。
+    宇野 = 一色のシルエットの狐のロゴ(test/about/make_fox.py が書き出す SVG。本人の希望: 狐が好き、遠藤のアイコンとは関係ない絵柄、形ができあがっていく動き)。名前と英字の肩書きは名刺と同じ表記。
   - 動きは GSAP + ScrollTrigger(LP と同じ cdnjs 3.12.5)。<html> に .js が付いている間だけ「最初は隠す」「横に流す」等の CSS が効く。
       動きを減らす設定の人・GSAP が読めなかった人は .js が付かない/外れるので、全部が最初から見える静的ページになる。
   - 固定(pin)する節は 物語 → 制作実績 → 歩み の順に並ぶ。refreshPriority はこの並びで大きい順(12 → 10 → 8)にしておくこと(逆だと位置がずれる)。
@@ -417,7 +417,7 @@
   .member.is-alt .member-mark { background: var(--bg-2); color: var(--ai); }
   /* 遠藤の札: 本人のアイコン(背景を抜いたもの)を真ん中に。下の弧は札の外に出して隠し、札の下辺でまっすぐ切れて見せる */
   /* 札は 4:3、絵は 650:800。絵の高さ = 札の高さ なので、幅は札の幅の 60.94%(= .8125 x .75) */
-  .av { position: absolute; left: 19.53%; bottom: -8%; width: 60.94%; height: 100%; }
+  .av { position: absolute; left: 19.53%; bottom: -8%; width: 60.94%; height: 100%; perspective: 900px; }
   .av-bob { position: absolute; inset: 0; transform-origin: 50% 100%; }
   .mark-avatar {
     position: absolute; inset: 0; width: 100%; height: 100%; max-width: none;
@@ -448,25 +448,27 @@
     background: linear-gradient(100deg, transparent 18%, rgba(255, 255, 255, .9) 30%, rgba(255, 255, 255, .9) 38%, rgba(255, 255, 255, .08) 46%, rgba(255, 255, 255, .75) 54%, rgba(255, 255, 255, .75) 58%, transparent 66%);
     transform: translateX(150%); opacity: 0;
   }
-  /* 動きがある時だけ: 首でリズム(2拍で1往復)、拍ごとに音の波、音符、数秒おきにキラッ */
-  .av.is-live .av-bob { animation: av-nod 1.1s ease-in-out infinite; }
+  /* 動きがある時だけ: 拍ごとにうなずき(1拍 .55s)、音の波、音符、数秒おきにキラッ */
+  .av.is-live .av-bob { animation: av-nod .55s infinite; }
   .av.is-live .av-wave { animation: av-wave 1.1s ease-out infinite; }
-  .av.is-live .av-wave.w1 { animation-delay: .366s; }
-  .av.is-live .av-wave.w2 { animation-delay: .733s; }
+  .av.is-live .av-wave.w1 { animation-delay: .55s; }
+  .av-wave.w2 { display: none; }
   .av.is-live .av-note { animation: av-note 2.6s ease-out infinite; }
   .av.is-live .av-note.n0 { --dx: -170%; --dy: -300%; --r: -14deg; }
   .av.is-live .av-note.n1 { --dx: -60%; --dy: -330%; --r: 12deg; animation-delay: .65s; }
   .av.is-live .av-note.n2 { --dx: -230%; --dy: -190%; --r: -22deg; animation-delay: 1.3s; }
   .av.is-live .av-note.n3 { --dx: -110%; --dy: -300%; --r: 16deg; animation-delay: 1.95s; }
   .av.is-live .av-glint::before { animation: av-glint 4.4s ease-in-out 1s infinite; }
-  .av.is-hype .av-bob { animation-duration: .55s; }
-  .av.is-hype .av-wave { animation-duration: .55s; }
+  .av.is-hype .av-bob { animation-duration: .36s; }
+  .av.is-hype .av-wave { animation-duration: .72s; }
+  .av.is-hype .av-wave.w1 { animation-delay: .36s; }
   .av.is-hype .av-note { animation-duration: 1.3s; }
   .av.is-glint .av-glint::before { animation: av-glint-once .9s ease-in-out; }
+  /* 拍の頭で素早く首を前へ(上が手前に倒れて下がる)、あとはゆっくり戻る */
   @keyframes av-nod {
-    0%, 50%, 100% { transform: translateY(0) rotate(0); }
-    25% { transform: translateY(1.6%) rotate(-1.6deg); }
-    75% { transform: translateY(1.6%) rotate(1.6deg); }
+    0% { transform: translateY(0) rotateX(0); animation-timing-function: cubic-bezier(.3, 0, .6, 1); }
+    28% { transform: translateY(2.6%) rotateX(-11deg) scaleY(.985); animation-timing-function: cubic-bezier(.3, .6, .4, 1); }
+    100% { transform: translateY(0) rotateX(0); }
   }
   @keyframes av-wave { 0% { transform: scale(.55); opacity: 0; } 15% { opacity: .9; } 100% { transform: scale(1.7); opacity: 0; } }
   @keyframes av-note {
@@ -487,29 +489,25 @@
     100% { transform: translateX(400%); opacity: 0; }
   }
 
-  /* 宇野の札: 狐のアイコン(胸から上)。体の下は札の下辺で切れる */
+  /* 宇野の札: 一色のシルエットの狐(右向きに座り、尻尾を前に巻く)。できあがっていく動きは JS */
   .mark-fox { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-  .mark-fox .fx-o { fill: #f28c3c; }
-  .mark-fox .fx-o2 { fill: #e57a33; }
-  .mark-fox .fx-c { fill: #fff5e8; }
-  .mark-fox .fx-in { fill: #ffd8c4; }
-  .mark-fox .fx-dk { fill: #5c3421; }
-  .mark-fox .fx-ink { fill: #2b1b14; }
-  .mark-fox .fx-hi { fill: #fff; }
-  .mark-fox .fx-blush { fill: #ff9f98; opacity: .65; }
-  .mark-fox .fx-line { fill: none; stroke: #2b1b14; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
-  /* 動きがある時だけ: ときどき瞬きし、尻尾がゆっくり揺れ、右耳がぴくっと動く */
-  .mark-fox .fx-tail, .mark-fox .fx-eye, .mark-fox .fx-ear-r { transform-box: fill-box; }
-  .mark-fox .fx-tail { transform-origin: 8% 96%; }
-  .mark-fox .fx-eye { transform-origin: 50% 50%; }
-  .mark-fox .fx-ear-r { transform-origin: 30% 100%; }
-  .mark-fox.is-live .fx-tail { animation: fx-tail 3.2s ease-in-out infinite; }
-  .mark-fox.is-live .fx-eye { animation: fx-blink 4.6s infinite; }
-  .mark-fox.is-live .fx-ear-r { animation: fx-ear 6.5s ease-in-out 1.2s infinite; }
-  .mark-fox.is-wag .fx-tail { animation-duration: .42s; }
-  @keyframes fx-tail { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(7deg); } }
-  @keyframes fx-blink { 0%, 90%, 100% { transform: scaleY(1); } 94% { transform: scaleY(.12); } }
-  @keyframes fx-ear { 0%, 80%, 88%, 100% { transform: rotate(0); } 84% { transform: rotate(9deg); } }
+  .mark-fox .fl-o { fill: #f0602a; }
+  .mark-fox .fl-tip { fill: #fff8ef; }
+  .mark-fox .fl-tip-line { fill: none; stroke: #f0602a; stroke-width: 6; stroke-linejoin: round; }
+  .mark-fox .fl-tip-edge { stroke-width: 12; }
+  .mark-fox .fl-line { fill: none; stroke: #f0602a; stroke-width: 2.5; stroke-linejoin: round; opacity: 0; }
+  .mark-fox .fl-ring { fill: none; stroke: #f0602a; stroke-width: 2; opacity: 0; }
+  .mark-fox .fl-shine { opacity: 0; }
+  /* できあがった後: ときどき耳がぴくっと動き、瞬きし、光が走る */
+  .mark-fox .fl-ear, .mark-fox .fl-eye { transform-box: fill-box; }
+  .mark-fox .fl-ear { transform-origin: 30% 100%; }
+  .mark-fox .fl-eye { transform-origin: 50% 50%; }
+  .mark-fox.is-live .fl-ear { animation: fl-ear 5.2s ease-in-out 1s infinite; }
+  .mark-fox.is-live .fl-eye { animation: fl-blink 4.3s 2s infinite; }
+  .mark-fox.is-live .fl-shine { animation: fl-shine 6s ease-in-out 3s infinite; }
+  @keyframes fl-ear { 0%, 78%, 90%, 100% { transform: rotate(0); } 82% { transform: rotate(10deg); } 86% { transform: rotate(-3deg); } }
+  @keyframes fl-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+  @keyframes fl-shine { 0%, 80% { transform: translateX(0); opacity: 0; } 82% { opacity: 1; } 96% { transform: translateX(680px); opacity: 1; } 100% { transform: translateX(680px); opacity: 0; } }
   .member-body { margin-top: 20px; }
   .member-role { color: var(--ai); font-size: .84rem; font-weight: 700; letter-spacing: .08em; }
   .member-name {
@@ -1108,7 +1106,7 @@
         <article class="member is-alt">
           <!-- 狐の形は test/about/make_fox.py が書き出す(手で書き換えない) -->
           <div class="member-mark has-fox" aria-hidden="true">
-            <svg class="mark-fox" viewBox="-45 45 490 367.5" preserveAspectRatio="xMidYMax meet" aria-hidden="true" focusable="false"><g class="fx-all"><defs><clipPath id="fx-tail-clip"><path d="M 262 420 C 318 414 376 378 386 318 C 394 270 372 226 340 214 C 322 208 306 220 310 238 C 318 274 312 306 286 330 C 272 344 262 370 262 420 Z" /></clipPath></defs><g class="fx-tail"><path class="fx-o2" d="M 262 420 C 318 414 376 378 386 318 C 394 270 372 226 340 214 C 322 208 306 220 310 238 C 318 274 312 306 286 330 C 272 344 262 370 262 420 Z" /><path class="fx-c" clip-path="url(#fx-tail-clip)" d="M 280 150 L 420 150 L 420 300 C 410 296 402 290 393 293 C 384 281 374 285 365 278 C 356 266 346 272 337 264 C 327 253 318 258 300 252 Z" /></g><path class="fx-o2" d="M 104 420 C 104 346 142 298 200 298 C 258 298 296 346 296 420 Z" /><path class="fx-c" d="M 150 420 C 152 360 172 322 200 314 C 228 322 248 360 250 420 Z" /><g class="fx-head"><g class="fx-ear fx-ear-l"><path class="fx-o" d="M 116 214 C 98 160 96 112 108 84 C 113 72 124 70 133 78 C 162 104 184 128 198 154 Z" /><path class="fx-in" d="M 128 196 C 118 150 118 118 125 100 C 128 94 134 94 139 99 C 158 118 172 136 182 156 Z" /><path class="fx-dk" d="M 103 116 C 102 98 104 88 108 84 C 113 72 124 70 133 78 C 140 84 147 91 153 97 C 136 98 116 104 103 116 Z" /></g><g class="fx-ear fx-ear-r"><path class="fx-o" d="M 284 214 C 302 160 304 112 292 84 C 287 72 276 70 267 78 C 238 104 216 128 202 154 Z" /><path class="fx-in" d="M 272 196 C 282 150 282 118 275 100 C 272 94 266 94 261 99 C 242 118 228 136 218 156 Z" /><path class="fx-dk" d="M 297 116 C 298 98 296 88 292 84 C 287 72 276 70 267 78 C 260 84 253 91 247 97 C 264 98 284 104 297 116 Z" /></g><path class="fx-o" d="M 200 126 C 258 126 300 156 308 204 C 312 224 322 240 342 252 C 320 258 308 262 299 267 C 286 297 248 316 200 316 C 152 316 114 297 101 267 C 92 262 80 258 58 252 C 78 240 88 224 92 204 C 100 156 142 126 200 126 Z" /><path class="fx-o" d="M 184 131 C 188 118 193 112 199 110 C 199 118 201 124 205 128 C 208 119 213 114 220 112 C 218 120 219 126 222 132 Z" /><path class="fx-c" d="M 60 252 C 88 246 110 237 126 225 C 144 211 169 214 183 232 C 189 240 195 246 200 250 C 205 246 211 240 217 232 C 231 214 256 211 274 225 C 290 237 312 246 340 252 C 320 258 308 262 299 267 C 286 297 248 316 200 316 C 152 316 114 297 101 267 C 92 262 80 258 60 252 Z" /><ellipse class="fx-blush" cx="132" cy="240" rx="15" ry="8" /><ellipse class="fx-blush" cx="268" cy="240" rx="15" ry="8" /><g class="fx-eyes"><g class="fx-eye"><ellipse class="fx-ink" cx="152" cy="205" rx="15" ry="18" /><circle class="fx-hi" cx="157" cy="197" r="5.5" /><circle class="fx-hi" cx="146" cy="212" r="2.4" /></g><g class="fx-eye"><ellipse class="fx-ink" cx="248" cy="205" rx="15" ry="18" /><circle class="fx-hi" cx="253" cy="197" r="5.5" /><circle class="fx-hi" cx="242" cy="212" r="2.4" /></g></g><path class="fx-ink" d="M 187 246 C 194 241 206 241 213 246 C 211 256 205 261 200 261 C 195 261 189 256 187 246 Z" /><ellipse class="fx-hi" cx="195" cy="246" rx="3.2" ry="1.8" /><path class="fx-line" d="M 200 261 L 200 267 M 185 266 C 189 275 197 276 200 267 C 203 276 211 275 215 266" /></g></g></svg>
+            <svg class="mark-fox" viewBox="-20 22 500 375" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><defs><clipPath id="fl-tail"><path d="M 160 296 C 112 300 86 340 114 365 C 150 394 252 394 320 373 C 352 363 373 341 377 306 C 379 292 377 281 371 272 C 364 300 344 322 310 334 C 262 350 200 348 176 326 C 168 318 162 306 160 296 Z" /></clipPath><clipPath id="fl-tipzone"><path d="M 318 250 L 420 250 L 420 420 L 314 420 C 322 402 331 388 331 374 C 323 369 317 363 313 355 C 325 357 335 355 343 351 C 335 345 329 337 327 327 C 337 331 347 331 357 326 Z" /></clipPath><mask id="fl-cut" maskUnits="userSpaceOnUse" x="-100" y="-100" width="600" height="600"><rect x="-100" y="-100" width="600" height="600" fill="#fff" /><path class="fl-gap" d="M 166 312 C 192 344 262 352 322 331 C 262 356 190 352 166 312 Z" fill="#000" /><path class="fl-gap" d="M 234 246 C 253 272 259 306 254 346 C 250 346 248 346 246 346 C 251 306 248 274 234 246 Z" fill="#000" /><path class="fl-gap" d="M 271 86 C 271 70 273 56 278 44 C 283 56 286 70 286 88 C 281 84 276 84 271 86 Z" fill="#000" /><path class="fl-eye" d="M 296 114 C 302 109 311 108 317 112 C 311 117 302 118 296 114 Z" fill="#000" /></mask><mask id="fl-reveal" maskUnits="userSpaceOnUse" x="-100" y="-100" width="600" height="600"><circle class="fl-reveal" cx="170" cy="330" r="520" fill="#fff" /></mask><clipPath id="fl-shape"><path d="M 346 122 C 332 116 314 106 300 99 C 294 92 286 86 276 86 C 256 86 240 94 230 108 C 218 126 214 150 206 172 C 190 206 168 236 160 280 C 152 316 166 346 198 354 L 296 354 C 294 322 292 286 298 252 C 304 226 314 206 312 186 C 310 168 306 158 314 148 C 322 141 338 133 346 122 Z" /><path d="M 238 100 C 236 80 240 60 248 42 C 258 58 264 76 266 90 Z" /><path d="M 262 90 C 262 68 266 48 276 28 C 290 46 298 70 298 101 C 290 95 282 91 262 90 Z" /><path d="M 160 296 C 112 300 86 340 114 365 C 150 394 252 394 320 373 C 352 363 373 341 377 306 C 379 292 377 281 371 272 C 364 300 344 322 310 334 C 262 350 200 348 176 326 C 168 318 162 306 160 296 Z" /></clipPath><linearGradient id="fl-shine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset=".5" stop-color="#fff" stop-opacity=".55" /><stop offset="1" stop-color="#fff" stop-opacity="0" /></linearGradient></defs><circle class="fl-ring" cx="256" cy="224" r="150" /><g class="fl-lines"><path class="fl-line" pathLength="1" d="M 346 122 C 332 116 314 106 300 99 C 294 92 286 86 276 86 C 256 86 240 94 230 108 C 218 126 214 150 206 172 C 190 206 168 236 160 280 C 152 316 166 346 198 354 L 296 354 C 294 322 292 286 298 252 C 304 226 314 206 312 186 C 310 168 306 158 314 148 C 322 141 338 133 346 122 Z" /><path class="fl-line" pathLength="1" d="M 238 100 C 236 80 240 60 248 42 C 258 58 264 76 266 90 Z" /><path class="fl-line" pathLength="1" d="M 262 90 C 262 68 266 48 276 28 C 290 46 298 70 298 101 C 290 95 282 91 262 90 Z" /><path class="fl-line" pathLength="1" d="M 160 296 C 112 300 86 340 114 365 C 150 394 252 394 320 373 C 352 363 373 341 377 306 C 379 292 377 281 371 272 C 364 300 344 322 310 334 C 262 350 200 348 176 326 C 168 318 162 306 160 296 Z" /></g><g mask="url(#fl-reveal)"><g class="fl-fill" mask="url(#fl-cut)"><g class="fl-tail"><path class="fl-o" d="M 160 296 C 112 300 86 340 114 365 C 150 394 252 394 320 373 C 352 363 373 341 377 306 C 379 292 377 281 371 272 C 364 300 344 322 310 334 C 262 350 200 348 176 326 C 168 318 162 306 160 296 Z" /><path class="fl-tip" clip-path="url(#fl-tail)" d="M 318 250 L 420 250 L 420 420 L 314 420 C 322 402 331 388 331 374 C 323 369 317 363 313 355 C 325 357 335 355 343 351 C 335 345 329 337 327 327 C 337 331 347 331 357 326 Z" /></g><path class="fl-o" d="M 346 122 C 332 116 314 106 300 99 C 294 92 286 86 276 86 C 256 86 240 94 230 108 C 218 126 214 150 206 172 C 190 206 168 236 160 280 C 152 316 166 346 198 354 L 296 354 C 294 322 292 286 298 252 C 304 226 314 206 312 186 C 310 168 306 158 314 148 C 322 141 338 133 346 122 Z" /><path class="fl-o" d="M 238 100 C 236 80 240 60 248 42 C 258 58 264 76 266 90 Z" /><path class="fl-o fl-ear" d="M 262 90 C 262 68 266 48 276 28 C 290 46 298 70 298 101 C 290 95 282 91 262 90 Z" /></g></g><g class="fl-tip-lines"><path class="fl-tip-line" pathLength="1" clip-path="url(#fl-tail)" d="M 318 250 L 420 250 L 420 420 L 314 420 C 322 402 331 388 331 374 C 323 369 317 363 313 355 C 325 357 335 355 343 351 C 335 345 329 337 327 327 C 337 331 347 331 357 326 Z" /><path class="fl-tip-line fl-tip-edge" pathLength="1" clip-path="url(#fl-tipzone)" d="M 160 296 C 112 300 86 340 114 365 C 150 394 252 394 320 373 C 352 363 373 341 377 306 C 379 292 377 281 371 272 C 364 300 344 322 310 334 C 262 350 200 348 176 326 C 168 318 162 306 160 296 Z" /></g><g clip-path="url(#fl-shape)"><g class="fl-shine"><rect x="-160" y="0" width="120" height="400" fill="url(#fl-shine)" transform="skewX(-18)" /></g></g></svg>
           </div>
           <div class="member-body">
             <p class="member-role">開発　アプリ・サイト</p>
@@ -1972,7 +1970,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /* ==========================================================
-       3. 2人: 札が下から開く。遠藤はアイコンが顔を出して音楽に乗り、宇野は狐がぴょこっと出る。英字の肩書きはほどけて揃う
+       3. 2人: 札が下から開く。遠藤はアイコンが顔を出して拍ごとにうなずき、宇野は狐のロゴが線から組み上がる。英字の肩書きはほどけて揃う
        ========================================================== */
     $$('.member').forEach(function (m) {
       var tile = $('.member-mark', m);
@@ -1983,12 +1981,35 @@ document.addEventListener('DOMContentLoaded', function () {
       // 遠藤: 札が開いたところへ、アイコンが下から顔を出す
       if (avatar) tl.fromTo(avatar, { yPercent: 45, opacity: 0 }, { yPercent: 0, opacity: 1, duration: .9, ease: 'back.out(1.5)' }, .45)
         .add(function () { avatar.classList.add('is-live'); }, 1.35);
-      // 宇野: 狐が下からぴょこっと出て、耳が立ち、尻尾が振られる。そのあとは瞬きと尻尾の揺れが続く
+      // 宇野: 狐ができあがっていく。輪郭の線が引かれ → 尻尾の付け根から色が広がり → 抜きが刻まれ
+      //       → 尻尾の先の白に縁取り → 後ろで輪が広がって、光がひと筋走る。叩くと、もう一度組み上がる
+      var foxForm = null;
       if (fox) {
-        tl.fromTo($('.fx-all', fox), { y: 150 }, { y: 0, duration: .8, ease: 'back.out(1.7)' }, .4)
-          .fromTo($$('.fx-ear', fox), { scaleY: .4, transformOrigin: '50% 100%' }, { scaleY: 1, duration: .55, stagger: .08, ease: 'back.out(3)' }, .75)
-          .fromTo($('.fx-tail', fox), { rotation: -40, transformOrigin: '8% 96%' }, { rotation: 0, duration: .9, ease: 'elastic.out(1, .45)' }, .8)
-          .add(function () { gsap.set($('.fx-tail', fox), { clearProps: 'transform' }); fox.classList.add('is-live'); }, 1.75);
+        var fLines = $$('.fl-line', fox), fReveal = $('.fl-reveal', fox), fGaps = $$('.fl-gap', fox), fEye = $('.fl-eye', fox);
+        var fTip = $$('.fl-tip-line', fox), fRing = $('.fl-ring', fox), fShine = $('.fl-shine', fox);
+        gsap.set(fLines.concat(fTip), { strokeDasharray: 1 });
+        var unform = function () {
+          fox.classList.remove('is-live');
+          gsap.set(fLines, { strokeDashoffset: 1, opacity: 1 });
+          gsap.set(fReveal, { attr: { r: 0 } });
+          gsap.set(fGaps.concat(fEye), { opacity: 0 });
+          gsap.set(fTip, { strokeDashoffset: 1 });
+          gsap.set(fRing, { opacity: 0, scale: .6, transformOrigin: '50% 50%' });
+          gsap.set(fShine, { x: 0, opacity: 0 });
+        };
+        foxForm = gsap.timeline({ paused: true, onStart: unform })
+          .to(fLines, { strokeDashoffset: 0, duration: 1.1, stagger: .14, ease: 'power2.inOut' }, 0)
+          .to(fReveal, { attr: { r: 520 }, duration: .9, ease: 'power2.in' }, .75)
+          .to(fLines, { opacity: 0, duration: .3 }, 1.55)
+          .to(fGaps, { opacity: 1, duration: .25, stagger: .1 }, 1.45)
+          .to(fEye, { opacity: 1, duration: .2 }, 1.7)
+          .to(fTip, { strokeDashoffset: 0, duration: .55, stagger: .1, ease: 'power2.out' }, 1.6)
+          .to(fRing, { opacity: .7, scale: 1, duration: .25, ease: 'power2.out' }, 1.95)
+          .to(fRing, { opacity: 0, scale: 1.35, duration: .7, ease: 'power2.out' }, 2.2)
+          .fromTo(fShine, { x: 0, opacity: 1 }, { x: 680, duration: .85, ease: 'power2.inOut' }, 2.05)
+          .add(function () { gsap.set(fShine, { clearProps: 'transform,opacity' }); fox.classList.add('is-live'); });
+        unform();
+        tl.add(function () { foxForm.restart(); }, .35);
       }
       tl.fromTo($('.member-role', m), { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: .4 }, .5)
         .fromTo(name, { yPercent: 90, opacity: 0, rotation: 10 }, { yPercent: 0, opacity: 1, rotation: 0, stagger: .06, duration: .6, ease: 'back.out(2.2)' }, .6)
@@ -1999,16 +2020,10 @@ document.addEventListener('DOMContentLoaded', function () {
         .add(function () { gsap.set(tile, { clearProps: 'clipPath' }); });
 
 
-      // 叩くと: 遠藤はノリノリになる(跳ねてテンポ2倍・キラッ) / 狐は首をかしげて尻尾を振る
+      // 叩くと: 遠藤はノリノリになる(跳ねてテンポ上げ・キラッ) / 狐はもう一度組み上がる
       tile.addEventListener('click', function () {
         if (fox) {
-          var head = $('.fx-head', fox);
-          if (gsap.isTweening(head)) return;
-          gsap.timeline()
-            .to(head, { rotation: 9, svgOrigin: '200 300', duration: .25, ease: 'power2.out' })
-            .to(head, { rotation: 0, svgOrigin: '200 300', duration: .7, ease: 'elastic.out(1, .4)' }, '+=.25');
-          fox.classList.add('is-wag');
-          clearTimeout(fox._t); fox._t = setTimeout(function () { fox.classList.remove('is-wag'); }, 1300);
+          if (!foxForm.isActive()) foxForm.restart();
           return;
         }
         if (avatar) {
