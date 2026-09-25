@@ -417,7 +417,7 @@
   .member.is-alt .member-mark { background: var(--bg-2); color: var(--ai); }
   /* 遠藤の札: 本人のアイコン(背景を抜いたもの)を真ん中に。下の弧は札の外に出して隠し、札の下辺でまっすぐ切れて見せる */
   /* 札は 4:3、絵は 650:800。絵の高さ = 札の高さ なので、幅は札の幅の 60.94%(= .8125 x .75) */
-  .av { position: absolute; left: 19.53%; bottom: -8%; width: 60.94%; height: 100%; perspective: 900px; }
+  .av { position: absolute; left: 19.53%; bottom: -8%; width: 60.94%; height: 100%; }
   .av-bob { position: absolute; inset: 0; transform-origin: 50% 100%; }
   .mark-avatar {
     position: absolute; inset: 0; width: 100%; height: 100%; max-width: none;
@@ -448,10 +448,10 @@
     background: linear-gradient(100deg, transparent 18%, rgba(255, 255, 255, .9) 30%, rgba(255, 255, 255, .9) 38%, rgba(255, 255, 255, .08) 46%, rgba(255, 255, 255, .75) 54%, rgba(255, 255, 255, .75) 58%, transparent 66%);
     transform: translateX(150%); opacity: 0;
   }
-  /* 動きがある時だけ: 拍ごとにうなずき(1拍 .55s)、音の波、音符、数秒おきにキラッ */
-  .av.is-live .av-bob { animation: av-nod .55s infinite; }
-  .av.is-live .av-wave { animation: av-wave 1.1s ease-out infinite; }
-  .av.is-live .av-wave.w1 { animation-delay: .55s; }
+  /* 動きがある時だけ: 拍ごとに小さくうなずき(1拍 .6s)、音の波、音符、数秒おきにキラッ */
+  .av.is-live .av-bob { animation: av-nod .6s infinite; }
+  .av.is-live .av-wave { animation: av-wave 1.2s ease-out infinite; }
+  .av.is-live .av-wave.w1 { animation-delay: .6s; }
   .av-wave.w2 { display: none; }
   .av.is-live .av-note { animation: av-note 2.6s ease-out infinite; }
   .av.is-live .av-note.n0 { --dx: -170%; --dy: -300%; --r: -14deg; }
@@ -459,16 +459,16 @@
   .av.is-live .av-note.n2 { --dx: -230%; --dy: -190%; --r: -22deg; animation-delay: 1.3s; }
   .av.is-live .av-note.n3 { --dx: -110%; --dy: -300%; --r: 16deg; animation-delay: 1.95s; }
   .av.is-live .av-glint::before { animation: av-glint 4.4s ease-in-out 1s infinite; }
-  .av.is-hype .av-bob { animation-duration: .36s; }
-  .av.is-hype .av-wave { animation-duration: .72s; }
-  .av.is-hype .av-wave.w1 { animation-delay: .36s; }
+  .av.is-hype .av-bob { animation-duration: .4s; }
+  .av.is-hype .av-wave { animation-duration: .8s; }
+  .av.is-hype .av-wave.w1 { animation-delay: .4s; }
   .av.is-hype .av-note { animation-duration: 1.3s; }
   .av.is-glint .av-glint::before { animation: av-glint-once .9s ease-in-out; }
-  /* 拍の頭で素早く首を前へ(上が手前に倒れて下がる)、あとはゆっくり戻る */
+  /* 拍の頭で少しだけ沈み、ゆっくり戻る。小さなうなずき(前へ倒す動きは、手前に来て大きく見える分と打ち消し合うので使わない) */
   @keyframes av-nod {
-    0% { transform: translateY(0) rotateX(0); animation-timing-function: cubic-bezier(.3, 0, .6, 1); }
-    28% { transform: translateY(2.6%) rotateX(-11deg) scaleY(.985); animation-timing-function: cubic-bezier(.3, .6, .4, 1); }
-    100% { transform: translateY(0) rotateX(0); }
+    0% { transform: translateY(0) scaleY(1); animation-timing-function: cubic-bezier(.3, 0, .6, 1); }
+    28% { transform: translateY(1.1%) scaleY(.994); animation-timing-function: cubic-bezier(.3, .6, .4, 1); }
+    100% { transform: translateY(0) scaleY(1); }
   }
   @keyframes av-wave { 0% { transform: scale(.55); opacity: 0; } 15% { opacity: .9; } 100% { transform: scale(1.7); opacity: 0; } }
   @keyframes av-note {
