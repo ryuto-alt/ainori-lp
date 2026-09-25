@@ -416,10 +416,75 @@
   }
   .member.is-alt .member-mark { background: var(--bg-2); color: var(--ai); }
   /* 遠藤の札: 本人のアイコン(背景を抜いたもの)を真ん中に。下の弧は札の外に出して隠し、札の下辺でまっすぐ切れて見せる */
+  /* 札は 4:3、絵は 650:800。絵の高さ = 札の高さ なので、幅は札の幅の 60.94%(= .8125 x .75) */
+  .av { position: absolute; left: 19.53%; bottom: -8%; width: 60.94%; height: 100%; }
+  .av-bob { position: absolute; inset: 0; transform-origin: 50% 100%; }
   .mark-avatar {
-    position: absolute; left: 0; right: 0; margin-inline: auto; bottom: -8%;
-    height: 100%; width: auto; max-width: none;
+    position: absolute; inset: 0; width: 100%; height: 100%; max-width: none;
     filter: drop-shadow(0 10px 18px rgba(0, 0, 0, .28));
+  }
+  /* 左のヘッドホンから出る音の波。「(」の形は、縦長の楕円の左の縁だけに色を付けて作る */
+  .av-wave {
+    position: absolute; left: 7.9%; top: 46.5%; width: 30%; aspect-ratio: .58;
+    margin: -25.9% 0 0 -15%;
+    border: 3px solid transparent; border-left-color: rgba(252, 245, 234, .8); border-radius: 50%;
+    opacity: 0; pointer-events: none;
+  }
+  /* 音符は、ヘッドホンのところから左上へ浮かんで消える */
+  .av-note { position: absolute; left: 2%; top: 38%; width: 12%; opacity: 0; pointer-events: none; }
+  .av-note svg { display: block; width: 100%; height: auto; fill: #fcf5ea; }
+  .av-note.n1 svg { fill: #f2a5ae; }
+  .av-note.n2 svg { fill: #a9c4e6; }
+  .av-note.n1, .av-note.n3 { width: 15%; }
+  /* サングラスの光: レンズの型(member-endo-lens.png)の中だけを、斜めの光の帯が横切る */
+  .av-glint {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+    -webkit-mask: url(/assets/about/member-endo-lens.png) center / 100% 100% no-repeat;
+    mask: url(/assets/about/member-endo-lens.png) center / 100% 100% no-repeat;
+  }
+  /* 光の帯(太い線と細い線の2本)。幅は絵の 22%。レンズは絵の左 40%〜84% にあるので、translateX 150% → 400% で端から端まで走る */
+  .av-glint::before {
+    content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 22%;
+    background: linear-gradient(100deg, transparent 18%, rgba(255, 255, 255, .9) 30%, rgba(255, 255, 255, .9) 38%, rgba(255, 255, 255, .08) 46%, rgba(255, 255, 255, .75) 54%, rgba(255, 255, 255, .75) 58%, transparent 66%);
+    transform: translateX(150%); opacity: 0;
+  }
+  /* 動きがある時だけ: 首でリズム(2拍で1往復)、拍ごとに音の波、音符、数秒おきにキラッ */
+  .av.is-live .av-bob { animation: av-nod 1.1s ease-in-out infinite; }
+  .av.is-live .av-wave { animation: av-wave 1.1s ease-out infinite; }
+  .av.is-live .av-wave.w1 { animation-delay: .366s; }
+  .av.is-live .av-wave.w2 { animation-delay: .733s; }
+  .av.is-live .av-note { animation: av-note 2.6s ease-out infinite; }
+  .av.is-live .av-note.n0 { --dx: -170%; --dy: -300%; --r: -14deg; }
+  .av.is-live .av-note.n1 { --dx: -60%; --dy: -330%; --r: 12deg; animation-delay: .65s; }
+  .av.is-live .av-note.n2 { --dx: -230%; --dy: -190%; --r: -22deg; animation-delay: 1.3s; }
+  .av.is-live .av-note.n3 { --dx: -110%; --dy: -300%; --r: 16deg; animation-delay: 1.95s; }
+  .av.is-live .av-glint::before { animation: av-glint 4.4s ease-in-out 1s infinite; }
+  .av.is-hype .av-bob { animation-duration: .55s; }
+  .av.is-hype .av-wave { animation-duration: .55s; }
+  .av.is-hype .av-note { animation-duration: 1.3s; }
+  .av.is-glint .av-glint::before { animation: av-glint-once .9s ease-in-out; }
+  @keyframes av-nod {
+    0%, 50%, 100% { transform: translateY(0) rotate(0); }
+    25% { transform: translateY(1.6%) rotate(-1.6deg); }
+    75% { transform: translateY(1.6%) rotate(1.6deg); }
+  }
+  @keyframes av-wave { 0% { transform: scale(.55); opacity: 0; } 15% { opacity: .9; } 100% { transform: scale(1.7); opacity: 0; } }
+  @keyframes av-note {
+    0% { transform: translate(0, 0) scale(.3) rotate(0); opacity: 0; }
+    14% { opacity: 1; }
+    70% { opacity: .9; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(1) rotate(var(--r)); opacity: 0; }
+  }
+  @keyframes av-glint {
+    0%, 64% { transform: translateX(150%); opacity: 0; }
+    66% { opacity: 1; }
+    80% { transform: translateX(400%); opacity: 1; }
+    82%, 100% { transform: translateX(400%); opacity: 0; }
+  }
+  @keyframes av-glint-once {
+    0% { transform: translateX(150%); opacity: 1; }
+    90% { transform: translateX(400%); opacity: 1; }
+    100% { transform: translateX(400%); opacity: 0; }
   }
 
   /* 宇野の札: 狐のアイコン(胸から上)。体の下は札の下辺で切れる */
@@ -1011,7 +1076,15 @@
 
         <article class="member">
           <div class="member-mark has-avatar" aria-hidden="true">
-            <img class="mark-avatar" src="/assets/about/member-endo.webp" width="650" height="800" alt="" decoding="async" />
+            <!-- 絵は1枚。上に音の波・音符・レンズの光を重ね、.av-bob ごと首でリズムを取らせる -->
+            <div class="av">
+              <div class="av-bob">
+                <span class="av-wave w0"></span><span class="av-wave w1"></span><span class="av-wave w2"></span>
+                <img class="mark-avatar" src="/assets/about/member-endo.webp" width="650" height="800" alt="" decoding="async" />
+                <span class="av-glint"></span>
+                <span class="av-note n0"><svg viewBox="0 0 24 32"><ellipse cx="8" cy="25" rx="7" ry="5.2" transform="rotate(-20 8 25)" /><path d="M13.4 23.5V3h2.6c.6 3.4 3 5.6 5.6 7.4-.9.9-1.7 1-2.6.6-1.3-.7-2.3-1.6-3-2.7v15.2z" /></svg></span><span class="av-note n1"><svg viewBox="0 0 32 32"><ellipse cx="7" cy="26" rx="6.2" ry="4.6" transform="rotate(-20 7 26)" /><ellipse cx="25" cy="22" rx="6.2" ry="4.6" transform="rotate(-20 25 22)" /><path d="M11.7 24.8V6.4L30 2v18.4h-2.4V8.3L14.1 11.5v13.3z" /></svg></span><span class="av-note n2"><svg viewBox="0 0 24 32"><ellipse cx="8" cy="25" rx="7" ry="5.2" transform="rotate(-20 8 25)" /><path d="M13.4 23.5V3h2.6c.6 3.4 3 5.6 5.6 7.4-.9.9-1.7 1-2.6.6-1.3-.7-2.3-1.6-3-2.7v15.2z" /></svg></span><span class="av-note n3"><svg viewBox="0 0 32 32"><ellipse cx="7" cy="26" rx="6.2" ry="4.6" transform="rotate(-20 7 26)" /><ellipse cx="25" cy="22" rx="6.2" ry="4.6" transform="rotate(-20 25 22)" /><path d="M11.7 24.8V6.4L30 2v18.4h-2.4V8.3L14.1 11.5v13.3z" /></svg></span>
+              </div>
+            </div>
           </div>
           <div class="member-body">
             <p class="member-role">代表　企画・運営</p>
@@ -1899,16 +1972,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /* ==========================================================
-       3. 2人: 札が下から開く。遠藤はアイコンが下から顔を出し、宇野は狐がぴょこっと出る。英字の肩書きはほどけて揃う
+       3. 2人: 札が下から開く。遠藤はアイコンが顔を出して音楽に乗り、宇野は狐がぴょこっと出る。英字の肩書きはほどけて揃う
        ========================================================== */
     $$('.member').forEach(function (m) {
       var tile = $('.member-mark', m);
-      var avatar = $('.mark-avatar', m), fox = $('.mark-fox', m);
+      var avatar = $('.av', m), fox = $('.mark-fox', m);
       var name = split($('.nm', m)), scr = $('.scr', m);
       var tl = gsap.timeline({ scrollTrigger: { trigger: m, start: 'top 80%', once: true } })
         .fromTo(tile, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: .8, ease: 'power4.out' });
       // 遠藤: 札が開いたところへ、アイコンが下から顔を出す
-      if (avatar) tl.fromTo(avatar, { yPercent: 45, opacity: 0 }, { yPercent: 0, opacity: 1, duration: .9, ease: 'back.out(1.5)' }, .45);
+      if (avatar) tl.fromTo(avatar, { yPercent: 45, opacity: 0 }, { yPercent: 0, opacity: 1, duration: .9, ease: 'back.out(1.5)' }, .45)
+        .add(function () { avatar.classList.add('is-live'); }, 1.35);
       // 宇野: 狐が下からぴょこっと出て、耳が立ち、尻尾が振られる。そのあとは瞬きと尻尾の揺れが続く
       if (fox) {
         tl.fromTo($('.fx-all', fox), { y: 150 }, { y: 0, duration: .8, ease: 'back.out(1.7)' }, .4)
@@ -1925,7 +1999,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .add(function () { gsap.set(tile, { clearProps: 'clipPath' }); });
 
 
-      // 叩くと: 遠藤のアイコンは弾む / 狐は首をかしげて尻尾を振る
+      // 叩くと: 遠藤はノリノリになる(跳ねてテンポ2倍・キラッ) / 狐は首をかしげて尻尾を振る
       tile.addEventListener('click', function () {
         if (fox) {
           var head = $('.fx-head', fox);
@@ -1937,8 +2011,13 @@ document.addEventListener('DOMContentLoaded', function () {
           clearTimeout(fox._t); fox._t = setTimeout(function () { fox.classList.remove('is-wag'); }, 1300);
           return;
         }
-        if (avatar && !gsap.isTweening(avatar)) {
-          gsap.fromTo(avatar, { y: 0 }, { y: -18, duration: .22, yoyo: true, repeat: 1, ease: 'power2.out' });
+        if (avatar) {
+          // ノリノリ: 一度跳ねて、しばらくテンポ2倍。サングラスはすぐにキラッ
+          if (!gsap.isTweening(avatar)) gsap.fromTo(avatar, { y: 0 }, { y: -18, duration: .22, yoyo: true, repeat: 1, ease: 'power2.out' });
+          avatar.classList.remove('is-glint'); void avatar.offsetWidth;   // 続けて叩いても、光は毎回走り直す
+          avatar.classList.add('is-hype', 'is-glint');
+          clearTimeout(avatar._t);
+          avatar._t = setTimeout(function () { avatar.classList.remove('is-hype', 'is-glint'); }, 2600);
         }
       });
 
