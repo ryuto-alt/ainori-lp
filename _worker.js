@@ -318,6 +318,7 @@ tr:last-child td{border-bottom:0}
     rawTotal - realTotal ? ` <i>(+自分/テスト ${rawTotal - realTotal})</i>` : ''
   }</span></div>
   <div class="kpi"><b>${fmtPct(total('lead'), top)}</b><span>CVR（計測ベース）</span></div>
+  <div class="kpi"><b>${total('meishi')}</b><span>名刺のQRから</span></div>
 </div>
 
 <h2>ファネル</h2>
@@ -689,6 +690,20 @@ export default {
           'cache-control': 'no-store',
           'x-robots-tag': 'noindex, nofollow',
         },
+      });
+    }
+
+    /* 名刺の QR の行き先 /meishi。運営メンバーの紹介 /about へ飛ばす。
+       /about には計測が無いので、名刺から何人来たかはここで数える(1回踏まれるごとに1件)。
+       記録は待たずに飛ばす(計測の失敗で名刺の QR を止めない)。
+       QR に焼いた URL は刷ったあと変えられないので、行き先を変えるときはここの location だけ直す */
+    if (url.pathname === '/meishi' || url.pathname === '/meishi/') {
+      if (request.method === 'GET') {
+        ctx.waitUntil(recordEvent(request, env, { name: 'meishi', sid: crypto.randomUUID(), src: 'meishi' }));
+      }
+      return new Response(null, {
+        status: 302,
+        headers: { location: new URL('/about', url).toString(), 'cache-control': 'no-store' },
       });
     }
 
