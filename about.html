@@ -22,7 +22,8 @@
   - 色: あいのりごはんの色(紙・墨・朱・焦げ茶)。ロゴの4色(--pl 朱の人 / --pr 砂色の人 / --bowl 器 / --steam 湯気)は元の PNG から拾った値。
   - 書体: 見出し = Dela Gothic One / 本文 = BIZ UDPゴシック。Dela は 30px 未満だと画数の多い漢字が潰れるので、小さい見出しは本文書体の太字。
   - 角はすべて直角。例外はスマホの枠だけ(画面ではなく「物」なので、実物どおり角が丸い)。
-  - 顔写真は載せない(Team Hub の方針)。名札は苗字の頭文字(E=遠藤 / U=宇野)。名前と英字の肩書きは名刺と同じ表記。
+  - 顔写真は載せない(Team Hub の方針)。名札: 遠藤 = 本人から届いたアイコン(assets/about/member-endo.webp、背景を抜いたもの)と頭文字 E。
+    宇野 = 「U」の字を配線にしたチップ(test/about/make_chip.py が書き出す SVG。本人の希望で遠藤のアイコンとは関係ない絵柄)。名前と英字の肩書きは名刺と同じ表記。
   - 動きは GSAP + ScrollTrigger(LP と同じ cdnjs 3.12.5)。<html> に .js が付いている間だけ「最初は隠す」「横に流す」等の CSS が効く。
       動きを減らす設定の人・GSAP が読めなかった人は .js が付かない/外れるので、全部が最初から見える静的ページになる。
   - 固定(pin)する節は 物語 → 制作実績 → 歩み の順に並ぶ。refreshPriority はこの並びで大きい順(12 → 10 → 8)にしておくこと(逆だと位置がずれる)。
@@ -426,6 +427,38 @@
     border: 3px solid currentColor; border-radius: 50%;
     opacity: 0; pointer-events: none;
   }
+  /* 遠藤の札: いただいたアイコン(背景を抜いたもの)。下の弧は札の外に出して隠し、札の下辺でまっすぐ切れて見せる */
+  .member-mark.has-avatar .mark-glyph { right: auto; left: 7cqi; }   /* 頭文字の縦棒が見えるよう E を左に、アイコンを右に */
+  .mark-avatar {
+    position: absolute; right: 3%; bottom: -8%;
+    height: 100%; width: auto; max-width: none;
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, .28));
+  }
+
+  /* 宇野の札: 「U」の字を配線にしたチップ。札を基板に見立てる */
+  .member-mark.has-chip { --chip-body: #251a16; --chip-edge: #251a16; --chip-u: #ff7a45; --chip-trace: var(--muted); }
+  @media (prefers-color-scheme: dark) {
+    .member-mark.has-chip { --chip-body: #2b1f18; --chip-edge: #57443a; --chip-u: #ff8a52; }
+  }
+  .mark-chip { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .mark-chip .pcb { fill: none; stroke: var(--chip-trace); stroke-opacity: .55; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .mark-chip .via { fill: var(--bg-2); stroke: var(--chip-trace); stroke-opacity: .8; stroke-width: 2.5; }
+  .mark-chip .sig { fill: none; stroke: var(--chip-u); stroke-width: 3.4; stroke-linecap: round; stroke-dasharray: .07 .93; stroke-dashoffset: 1; opacity: 0; }
+  .mark-chip .chip-pin { fill: var(--chip-trace); }
+  .mark-chip .chip-body { fill: var(--chip-body); stroke: var(--chip-edge); stroke-width: 2; }
+  .mark-chip .chip-die { fill: none; stroke: #fcf5ea; stroke-opacity: .16; stroke-width: 1.5; }
+  .mark-chip .chip-dot { fill: #fcf5ea; fill-opacity: .35; }
+  .mark-chip .chip-u, .mark-chip .chip-u-glow { fill: none; stroke: var(--chip-u); stroke-width: 11; stroke-linejoin: miter; }
+  .mark-chip .chip-u-glow { stroke-width: 18; opacity: .4; }
+  .mark-chip .chip-u2 { fill: none; stroke: var(--chip-u); stroke-width: 3; stroke-opacity: .7; }
+  .mark-chip .chip-pad { fill: var(--chip-u); }
+  .mark-chip .chip-hole { fill: var(--chip-body); }
+  /* 動きがある時だけ: 配線の上を信号が走り、「U」が息をするように光る */
+  .mark-chip.is-live .sig { opacity: 1; animation: chip-sig var(--d, 2.6s) linear var(--delay, 0s) infinite; }
+  .mark-chip.is-live .chip-u-glow { animation: chip-glow 2.8s ease-in-out infinite; }
+  .mark-chip.is-boot .sig { animation-duration: .7s; }
+  @keyframes chip-sig { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes chip-glow { 0%, 100% { opacity: .2; } 50% { opacity: .55; } }
   .member-body { margin-top: 20px; }
   .member-role { color: var(--ai); font-size: .84rem; font-weight: 700; letter-spacing: .08em; }
   .member-name {
@@ -991,9 +1024,10 @@
       <div class="member-list">
 
         <article class="member">
-          <div class="member-mark" aria-hidden="true">
+          <div class="member-mark has-avatar" aria-hidden="true">
             <span class="mark-ring"></span>
             <div class="mark-glyph"><span class="g-out">E</span><span class="g-fill">E</span></div>
+            <img class="mark-avatar" src="/assets/about/member-endo.webp" width="650" height="800" alt="" decoding="async" />
           </div>
           <div class="member-body">
             <p class="member-role">代表　企画・運営</p>
@@ -1015,9 +1049,9 @@
         </article>
 
         <article class="member is-alt">
-          <div class="member-mark" aria-hidden="true">
-            <span class="mark-ring"></span>
-            <div class="mark-glyph"><span class="g-out">U</span><span class="g-fill">U</span></div>
+          <!-- チップの形は test/about/make_chip.py が書き出す(手で書き換えない) -->
+          <div class="member-mark has-chip" aria-hidden="true">
+            <svg class="mark-chip" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><defs><filter id="chip-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" /></filter></defs><g class="pcb-g"><path class="pcb" pathLength="1" d="M150 68 L150 56 L75 -19 L75 -12" /><path class="pcb" pathLength="1" d="M170 68 L170 56 L125 11 L125 -12" /><path class="pcb" pathLength="1" d="M190 68 L190 56 L175 41 L175 -12" /><path class="pcb" pathLength="1" d="M210 68 L210 56 L225 41 L225 -12" /><path class="pcb" pathLength="1" d="M230 68 L230 56 L275 11 L275 -12" /><path class="pcb" pathLength="1" d="M250 68 L250 56 L325 -19 L325 -12" /><path class="pcb" pathLength="1" d="M150 232 L150 244 L75 319 L75 312" /><path class="pcb" pathLength="1" d="M170 232 L170 244 L125 289 L125 312" /><path class="pcb" pathLength="1" d="M190 232 L190 244 L175 259 L175 312" /><path class="pcb" pathLength="1" d="M210 232 L210 244 L225 259 L225 312" /><path class="pcb" pathLength="1" d="M230 232 L230 244 L275 289 L275 312" /><path class="pcb" pathLength="1" d="M250 232 L250 244 L325 319 L325 312" /><path class="pcb" pathLength="1" d="M118 100 L104 100 L39 35 L-12 35" /><path class="pcb" pathLength="1" d="M118 120 L104 120 L65 81 L35 81" /><path class="pcb" pathLength="1" d="M118 140 L104 140 L91 127 L-12 127" /><path class="pcb" pathLength="1" d="M118 160 L104 160 L91 173 L-12 173" /><path class="pcb" pathLength="1" d="M118 180 L104 180 L65 219 L-12 219" /><path class="pcb" pathLength="1" d="M118 200 L104 200 L39 265 L-12 265" /><path class="pcb" pathLength="1" d="M282 100 L296 100 L361 35 L412 35" /><path class="pcb" pathLength="1" d="M282 120 L296 120 L335 81 L412 81" /><path class="pcb" pathLength="1" d="M282 140 L296 140 L309 127 L412 127" /><path class="pcb" pathLength="1" d="M282 160 L296 160 L309 173 L412 173" /><path class="pcb" pathLength="1" d="M282 180 L296 180 L335 219 L365 219" /><path class="pcb" pathLength="1" d="M282 200 L296 200 L361 265 L412 265" /></g><g class="via-g"><circle class="via" cx="35" cy="81" r="4.5" /><circle class="via" cx="365" cy="219" r="4.5" /></g><g class="sig-g"><path class="sig" pathLength="1" style="--d:2.2s;--delay:0.00s" d="M170 68 L170 56 L125 11 L125 -12" /><path class="sig" pathLength="1" style="--d:2.6s;--delay:0.61s" d="M230 68 L230 56 L275 11 L275 -12" /><path class="sig" pathLength="1" style="--d:2.9s;--delay:1.22s" d="M150 232 L150 244 L75 319 L75 312" /><path class="sig" pathLength="1" style="--d:3.3s;--delay:1.83s" d="M210 232 L210 244 L225 259 L225 312" /><path class="sig" pathLength="1" style="--d:2.3s;--delay:0.04s" d="M118 100 L104 100 L39 35 L-12 35" /><path class="sig" pathLength="1" style="--d:2.7s;--delay:0.65s" d="M118 180 L104 180 L65 219 L-12 219" /><path class="sig" pathLength="1" style="--d:3.0s;--delay:1.26s" d="M282 120 L296 120 L335 81 L412 81" /><path class="sig" pathLength="1" style="--d:3.4s;--delay:1.87s" d="M282 200 L296 200 L361 265 L412 265" /></g><g class="chip-pins"><rect class="chip-pin" x="146" y="68" width="8" height="12" /><rect class="chip-pin" x="146" y="220" width="8" height="12" /><rect class="chip-pin" x="166" y="68" width="8" height="12" /><rect class="chip-pin" x="166" y="220" width="8" height="12" /><rect class="chip-pin" x="186" y="68" width="8" height="12" /><rect class="chip-pin" x="186" y="220" width="8" height="12" /><rect class="chip-pin" x="206" y="68" width="8" height="12" /><rect class="chip-pin" x="206" y="220" width="8" height="12" /><rect class="chip-pin" x="226" y="68" width="8" height="12" /><rect class="chip-pin" x="226" y="220" width="8" height="12" /><rect class="chip-pin" x="246" y="68" width="8" height="12" /><rect class="chip-pin" x="246" y="220" width="8" height="12" /><rect class="chip-pin" x="118" y="96" width="12" height="8" /><rect class="chip-pin" x="270" y="96" width="12" height="8" /><rect class="chip-pin" x="118" y="116" width="12" height="8" /><rect class="chip-pin" x="270" y="116" width="12" height="8" /><rect class="chip-pin" x="118" y="136" width="12" height="8" /><rect class="chip-pin" x="270" y="136" width="12" height="8" /><rect class="chip-pin" x="118" y="156" width="12" height="8" /><rect class="chip-pin" x="270" y="156" width="12" height="8" /><rect class="chip-pin" x="118" y="176" width="12" height="8" /><rect class="chip-pin" x="270" y="176" width="12" height="8" /><rect class="chip-pin" x="118" y="196" width="12" height="8" /><rect class="chip-pin" x="270" y="196" width="12" height="8" /></g><g class="chip-core"><rect class="chip-body" x="130" y="80" width="140" height="140" /><rect class="chip-die" x="142" y="92" width="116" height="116" /><circle class="chip-dot" cx="152" cy="102" r="4" /><path class="chip-u-glow" d="M168 110 L168 166 L186 184 L214 184 L232 166 L232 110" filter="url(#chip-glow)" /><path class="chip-u" pathLength="1" d="M168 110 L168 166 L186 184 L214 184 L232 166 L232 110" /><path class="chip-u2" pathLength="1" d="M183 118 L183 158 L193 168 L207 168 L217 158 L217 118" /><circle class="chip-pad" cx="168" cy="110" r="8" /><circle class="chip-hole" cx="168" cy="110" r="3" /><circle class="chip-pad" cx="232" cy="110" r="8" /><circle class="chip-hole" cx="232" cy="110" r="3" /></g></svg>
           </div>
           <div class="member-body">
             <p class="member-role">開発　アプリ・サイト</p>
@@ -1881,33 +1915,56 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /* ==========================================================
-       3. 2人: 札が下から開き、頭文字の輪郭が押され、下からインクが満ちる。英字の肩書きはほどけて揃う
+       3. 2人: 札が下から開く。遠藤は頭文字が押されてアイコンが顔を出し、宇野は配線が引かれてチップが通電する。英字の肩書きはほどけて揃う
        ========================================================== */
     $$('.member').forEach(function (m) {
-      var tile = $('.member-mark', m), glyphWrap = $('.mark-glyph', m), out = $('.g-out', m), fill = $('.g-fill', m), ring = $('.mark-ring', m);
+      var tile = $('.member-mark', m), glyphWrap = $('.mark-glyph', m), fill = $('.g-fill', m), ring = $('.mark-ring', m);
+      var avatar = $('.mark-avatar', m), chip = $('.mark-chip', m);
       var name = split($('.nm', m)), scr = $('.scr', m);
-      gsap.timeline({ scrollTrigger: { trigger: m, start: 'top 80%', once: true } })
-        .fromTo(tile, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: .8, ease: 'power4.out' })
-        .fromTo(glyphWrap, { scale: 2.2, rotation: -18, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: .6, ease: 'back.out(2.2)' }, '-=.35')
-        .fromTo(ring, { scale: .3, opacity: .9 }, { scale: 1.9, opacity: 0, duration: .7, ease: 'power2.out' }, '-=.28')
-        .fromTo(fill, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'power2.inOut' }, '-=.45')
-        .fromTo($('.member-role', m), { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: .4 }, .5)
+      var tl = gsap.timeline({ scrollTrigger: { trigger: m, start: 'top 80%', once: true } })
+        .fromTo(tile, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: .8, ease: 'power4.out' });
+      if (glyphWrap) {
+        tl.fromTo(glyphWrap, { scale: 2.2, rotation: -18, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: .6, ease: 'back.out(2.2)' }, .45)
+          .fromTo(ring, { scale: .3, opacity: .9 }, { scale: 1.9, opacity: 0, duration: .7, ease: 'power2.out' }, .77)
+          .fromTo(fill, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'power2.inOut' }, 1);
+      }
+      // 遠藤: 頭文字が押された後、アイコンが下から顔を出す
+      if (avatar) tl.fromTo(avatar, { yPercent: 45, opacity: 0 }, { yPercent: 0, opacity: 1, duration: .9, ease: 'back.out(1.5)' }, .9);
+      // 宇野: 配線が引かれ、ピンが立ち、チップが載って「U」が通電する。そのあと信号が流れ続ける
+      if (chip) {
+        var traces = $$('.pcb', chip), us = $$('.chip-u, .chip-u2', chip);
+        gsap.set(traces.concat(us), { strokeDasharray: 1 });
+        tl.fromTo(traces, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .9, stagger: { each: .015, from: 'random' }, ease: 'power2.out' }, .35)
+          .fromTo($$('.via', chip), { scale: 0, transformOrigin: '50% 50%' }, { scale: 1, duration: .35, ease: 'back.out(3)' }, 1)
+          .fromTo($$('.chip-pin', chip), { scale: 0, transformOrigin: '50% 50%' }, { scale: 1, duration: .3, stagger: .012, ease: 'back.out(2.5)' }, .6)
+          .fromTo($('.chip-core', chip), { scale: .55, opacity: 0, transformOrigin: '50% 50%' }, { scale: 1, opacity: 1, duration: .6, ease: 'back.out(2)' }, .55)
+          .fromTo(us, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .8, stagger: .12, ease: 'power2.inOut' }, 1)
+          .fromTo($$('.chip-pad', chip), { scale: 0, transformOrigin: '50% 50%' }, { scale: 1, duration: .35, ease: 'back.out(3)' }, 1.6)
+          .add(function () { chip.classList.add('is-live'); }, 1.7);
+      }
+      tl.fromTo($('.member-role', m), { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: .4 }, .5)
         .fromTo(name, { yPercent: 90, opacity: 0, rotation: 10 }, { yPercent: 0, opacity: 1, rotation: 0, stagger: .06, duration: .6, ease: 'back.out(2.2)' }, .6)
         .add(function () { scramble(scr, .9); }, .75)
         .fromTo($('.member-line', m), { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: .5 }, 1)
         .fromTo($$('.member-duty li', m), { scale: .4, opacity: 0 }, { scale: 1, opacity: 1, stagger: .06, duration: .45, ease: 'back.out(3)' }, 1.1)
         .fromTo($$('.member-hist li', m), { x: -14, opacity: 0 }, { x: 0, opacity: 1, stagger: .07, duration: .45 }, 1.3)
-        .add(function () { gsap.set([tile, fill], { clearProps: 'clipPath' }); });
+        .add(function () { gsap.set([tile, fill].filter(Boolean), { clearProps: 'clipPath' }); });
 
-      gsap.fromTo(glyphWrap, { yPercent: 10 }, { yPercent: -6, ease: 'none', scrollTrigger: { trigger: tile, start: 'top bottom', end: 'bottom top', scrub: true } });
+      if (glyphWrap) gsap.fromTo(glyphWrap, { yPercent: 10 }, { yPercent: -6, ease: 'none', scrollTrigger: { trigger: tile, start: 'top bottom', end: 'bottom top', scrub: true } });
 
-      // 叩くと、頭文字が跳ねて一回転する
+      // 叩くと: 頭文字が跳ねて一回転し、アイコンが弾む / チップは信号が一気に速く流れる
       tile.addEventListener('click', function () {
-        var g = $('.mark-glyph', tile);
-        if (gsap.isTweening(g)) return;
+        if (chip) {
+          chip.classList.add('is-boot');
+          gsap.fromTo($('.chip-core', chip), { scale: .94, transformOrigin: '50% 50%' }, { scale: 1, duration: .6, ease: 'elastic.out(1, .4)' });
+          clearTimeout(chip._t); chip._t = setTimeout(function () { chip.classList.remove('is-boot'); }, 2100);
+          return;
+        }
+        if (!glyphWrap || gsap.isTweening(glyphWrap)) return;
         gsap.timeline()
-          .to(g, { yPercent: '-=22', rotation: '+=360', duration: .55, ease: 'power2.out' })
-          .to(g, { yPercent: '+=22', duration: .5, ease: 'bounce.out' });
+          .to(glyphWrap, { yPercent: '-=22', rotation: '+=360', duration: .55, ease: 'power2.out' })
+          .to(glyphWrap, { yPercent: '+=22', duration: .5, ease: 'bounce.out' });
+        if (avatar) gsap.fromTo(avatar, { y: 0 }, { y: -18, duration: .22, yoyo: true, repeat: 1, ease: 'power2.out' });
       });
 
       if (fine) {
