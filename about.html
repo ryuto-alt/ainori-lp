@@ -15,7 +15,8 @@
   - 色: あいのりごはんの色(LP/pilot の紙・墨・朱・真鍮)に揃えた。暖簾などの布は茶(--noren)、リンク・ボタンは朱(--ai)。
   - 書体: 見出し = Dela Gothic One(看板の太ゴシック) / 本文 = BIZ UDPゴシック(読みやすさ優先のUD書体)。
   - 角はすべて直角。暖簾・短冊・名札が四角いので、ボタンも四角に揃える。
-  - 顔写真は載せない(Team Hub の方針)。名札は名前の頭文字(N/R)。Dela の「り」は単独だと「ら」に見えるので英字にした。
+  - 顔写真は載せない(Team Hub の方針)。名札は苗字の頭文字(E=遠藤 / U=宇野)。Dela の「り」は単独だと「ら」に見えるので英字にしてある。
+  - 名前と英字の肩書き(PRODUCER / ENGINEER)は名刺と同じ表記。名刺の QR(/meishi)からこのページに来る。
   - 動きは GSAP + ScrollTrigger(LP と同じ cdnjs 3.12.5 を読むのでキャッシュが効く)。
       <html> に .js が付いている間だけ「最初は隠す」「物語を舞台に重ねる」等の CSS が効く。
       動きを減らす設定の人・GSAP が読めなかった人は .js が付かない/外れるので、全部が最初から見える静的ページになる。
@@ -305,6 +306,7 @@
     display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px;
     font-size: clamp(2.1rem, 9vw, 3rem); line-height: 1.2;
   }
+  .nm-given { margin-left: .28em; }   /* 1字ずつ割る split() は空白を捨てるので、姓と名の間は余白で空ける */
   .member-name small { font-family: var(--body); color: var(--muted); font-size: .88rem; font-weight: 700; letter-spacing: .16em; }
   .member-line { margin-top: 12px; color: var(--ink-2); font-size: 1.02rem; }
   .member-duty { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; padding: 0; }
@@ -618,11 +620,11 @@
       <article class="member">
         <div class="member-mark" aria-hidden="true">
           <span class="mark-ring"></span>
-          <div class="mark-glyph"><span>N</span></div>
+          <div class="mark-glyph"><span>E</span></div>
         </div>
         <div class="member-body">
           <p class="member-role">代表　企画・運営</p>
-          <h2 class="member-name"><span class="nm" data-tbd>なぎ</span><small lang="en">Nagi</small></h2>
+          <h2 class="member-name"><span class="nm"><span>遠藤</span><span class="nm-given">優斗</span></span><small lang="en">PRODUCER</small></h2>
           <p class="member-line" data-tbd>ごはん会の中身を決める人。お店選びから、当日の進行まで。</p>
           <ul class="member-duty">
             <li>企画</li><li>お店の下見</li><li>当日の進行</li><li>お問い合わせ窓口</li>
@@ -633,11 +635,11 @@
       <article class="member is-alt">
         <div class="member-mark" aria-hidden="true">
           <span class="mark-ring"></span>
-          <div class="mark-glyph"><span>R</span></div>
+          <div class="mark-glyph"><span>U</span></div>
         </div>
         <div class="member-body">
           <p class="member-role">開発　アプリ・サイト</p>
-          <h2 class="member-name"><span class="nm" data-tbd>りゅうと</span><small lang="en">Ryuto</small></h2>
+          <h2 class="member-name"><span class="nm"><span>宇野</span><span class="nm-given">琉翔</span></span><small lang="en">ENGINEER</small></h2>
           <p class="member-line" data-tbd>サイトとアプリを作る人。通報とブロックは、最初の版から。</p>
           <ul class="member-duty">
             <li>アプリ開発</li><li>サイト・サーバー</li><li>安全の仕組み</li><li>当日のサポート</li>
