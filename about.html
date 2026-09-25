@@ -3,26 +3,29 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>運営メンバー｜あいのりごはん</title>
-<meta name="description" content="あいのりごはんを運営している2人と、2人でつくったもの(ロゴ、アプリ、名刺、お店の地図、このページ)の紹介です。" />
+<title>運営者紹介｜あいのりごはん</title>
+<meta name="description" content="あいのりごはんの運営者紹介。行きたいお店から一緒に食べに行く人を集めるサービスを、遠藤優斗と宇野琉翔の2人で企画・開発・運営しています。事業内容・実績・お問い合わせ先。" />
 <link rel="canonical" href="https://ainorigohan.com/about" />
 <meta name="theme-color" content="#fbf6ef" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#0f0907" media="(prefers-color-scheme: dark)" />
 
 <!--
-  運営メンバー紹介 v4「つくったもの」
-  - 名刺のQR(/meishi)から来る初対面の人が、スマホで数十秒見る前提。「この2人は、手を動かしてつくる人たちだ」が伝わるのが目的。
-    だから説明文ではなく、2人がつくった物そのものを動かして見せる。
-  - 構成: 冒頭(ロゴが組み上がる) → つくったもの(アプリ / 名刺 / のれん) → 開発の記録(書いた行数の積み上げ) → 2人 → 物語
-          → 今夜のお店ガチャ(実在24店) → 帯 → 短冊 → 年表 → 連絡先
-  - 載せるのは、あいのりごはんに関わる物だけ(2人の個人制作などは載せない)。
+  運営者紹介 v5
+  - 名刺のQR(/meishi)から来る初対面の人(お店の方・取材・一緒に何かしたい人)が、スマホで見る前提。
+    読む人が知りたいのは「誰が、何の事業を、なぜやっていて、頼んで大丈夫か、どう連絡するか」。個人事業主の紹介ページの型に沿って並べる。
+  - 構成: 冒頭(何をしている2人か + ロゴが組み上がる) → 物語(はじめた理由) → ごあいさつ → 事業内容 → 運営者(これまでに担当したこと)
+          → 制作実績(アプリ / 公式サイト / 名刺) → これまでの歩み(git の履歴) → 掲載しているお店(実在24店 + お店の方へ) → 帯
+          → 大切にしていること(短冊) → いまと、これから → お問い合わせ(用件別) + 運営者情報
+  - 載せるのは、あいのりごはんに関わる物と事実だけ。事実の出どころは ainori-team/docs(product-brief・decisions・pilot-event-operations)と3リポジトリの git 履歴。
+    提携の合意が無いので、掲載店を「提携店」「協力店」とは書かない(pilot-event-operations 3.3)。
   - 絵は描き足さない。使う形はロゴ(元の PNG の輪郭をなぞった SVG。test/about/trace_logo.py)と、実物(アプリの実機画面・名刺の入稿データ・git の履歴・実在24店のデータ)だけ。
   - 色: あいのりごはんの色(紙・墨・朱・焦げ茶)。ロゴの4色(--pl 朱の人 / --pr 砂色の人 / --bowl 器 / --steam 湯気)は元の PNG から拾った値。
   - 書体: 見出し = Dela Gothic One / 本文 = BIZ UDPゴシック。Dela は 30px 未満だと画数の多い漢字が潰れるので、小さい見出しは本文書体の太字。
   - 角はすべて直角。例外はスマホの枠だけ(画面ではなく「物」なので、実物どおり角が丸い)。
   - 顔写真は載せない(Team Hub の方針)。名札は苗字の頭文字(E=遠藤 / U=宇野)。名前と英字の肩書きは名刺と同じ表記。
   - 動きは GSAP + ScrollTrigger(LP と同じ cdnjs 3.12.5)。<html> に .js が付いている間だけ「最初は隠す」「横に流す」等の CSS が効く。
-      動きを減らす設定の人・GSAP が読めなかった人は .js が付かない/外れるので、全部が最初から見える静的ページになる(地図だけは JS で止め絵を描く)。
+      動きを減らす設定の人・GSAP が読めなかった人は .js が付かない/外れるので、全部が最初から見える静的ページになる。
+  - 固定(pin)する節は 物語 → 制作実績 → 歩み の順に並ぶ。refreshPriority はこの並びで大きい順(12 → 10 → 8)にしておくこと(逆だと位置がずれる)。
   - 本人確認が必要な文言には data-tbd を付けてある。grep data-tbd で全部出る。確定したら属性ごと消す。
 -->
 
@@ -30,13 +33,13 @@
 <meta property="og:site_name" content="あいのりごはん" />
 <meta property="og:locale" content="ja_JP" />
 <meta property="og:url" content="https://ainorigohan.com/about" />
-<meta property="og:title" content="つくっているのは、この2人です｜あいのりごはん" />
-<meta property="og:description" content="企画も、デザインも、アプリも。あいのりごはんを運営している2人と、2人でつくったものの紹介です。" />
+<meta property="og:title" content="運営者紹介｜あいのりごはん" />
+<meta property="og:description" content="行きたいお店に、一緒に行く人を。あいのりごはんを運営している2人と、事業内容・実績の紹介です。" />
 <meta property="og:image" content="https://ainorigohan.com/assets/pilot/shared-dishes.jpg" />
 <meta property="og:image:alt" content="食卓に並んだ料理と取り皿" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="つくっているのは、この2人です｜あいのりごはん" />
-<meta name="twitter:description" content="企画も、デザインも、アプリも。あいのりごはんを運営している2人と、2人でつくったものの紹介です。" />
+<meta name="twitter:title" content="運営者紹介｜あいのりごはん" />
+<meta name="twitter:description" content="行きたいお店に、一緒に行く人を。あいのりごはんを運営している2人と、事業内容・実績の紹介です。" />
 <meta name="twitter:image" content="https://ainorigohan.com/assets/pilot/shared-dishes.jpg" />
 
 <script>
@@ -609,15 +612,86 @@
   }
   .copy-btn:hover, .copy-btn.is-done { background: var(--noren-ink); color: var(--noren); }
   .contact-card :focus-visible { outline-color: var(--noren-ink); }
-  .contact-facts {
-    margin: clamp(36px, 6vw, 56px) 0 0; padding-top: 24px;
-    border-top: 1px solid rgba(252, 245, 234, .28);
-    display: grid; gap: 18px;
-  }
-  .contact-facts dt { font-size: .78rem; font-weight: 700; letter-spacing: .08em; color: rgba(252, 245, 234, .72); }
-  .contact-facts dd { margin: 2px 0 0; line-height: 1.7; }
+  .contact-facts { margin: 10px 0 0; max-width: 760px; border-top: 1px solid rgba(252, 245, 234, .3); }
+  .contact-facts div { display: grid; grid-template-columns: 6.4em minmax(0, 1fr); gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(252, 245, 234, .18); }
+  .contact-facts dt { font-size: .84rem; font-weight: 700; letter-spacing: .06em; color: rgba(252, 245, 234, .72); line-height: 1.7; }
+  .contact-facts dd { margin: 0; line-height: 1.7; }
   .contact-facts a, .contact-note a { text-underline-offset: 4px; }
   .contact-note { margin-top: 24px; font-size: .82rem; color: rgba(252, 245, 234, .78); }
+
+  /* 冒頭: 誰が運営しているか */
+  .hero-who { display: flex; flex-wrap: wrap; gap: 8px 30px; margin: 18px 0 0; }
+  .hero-who dt { color: var(--muted); font-size: .76rem; font-weight: 700; letter-spacing: .08em; }
+  .hero-who dd { margin: 0; font-weight: 700; font-size: 1.14rem; letter-spacing: .1em; }
+
+  /* ============================================================
+     ごあいさつ
+     ============================================================ */
+  .greeting { padding: clamp(72px, 12vw, 140px) 0 clamp(64px, 10vw, 120px); }
+  .greeting-grid { display: grid; gap: clamp(22px, 5vw, 40px); }
+  .greeting-body {
+    display: grid; gap: 1.05em; max-width: 34em;
+    padding-left: 20px; border-left: 3px solid var(--ai);
+    color: var(--ink-2); font-size: 1.05rem;
+  }
+  .greeting-sign { margin-top: .5em; display: grid; color: var(--ink); font-weight: 700; letter-spacing: .06em; }
+  .greeting-sign span:first-child { color: var(--muted); font-size: .8rem; letter-spacing: .12em; }
+
+  /* ============================================================
+     事業内容
+     ============================================================ */
+  .service { padding: 0 0 clamp(88px, 14vw, 160px); }
+  .service-lead { margin-top: 12px; color: var(--ink-2); }
+  .service-list { list-style: none; margin: clamp(28px, 5vw, 48px) 0 0; padding: 0; border-top: 2px solid var(--ink); }
+  .svc {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 18px;
+    padding: 26px 0 30px; border-bottom: 1px solid var(--line);
+  }
+  .svc-no { font-family: var(--display); font-size: clamp(2rem, 9vw, 3.6rem); line-height: 1; color: var(--ai); font-variant-numeric: tabular-nums; }
+  .svc-state {
+    display: inline-block; padding: 0 10px;
+    border: 1px solid currentColor; color: var(--ai);
+    font-size: .76rem; font-weight: 700; letter-spacing: .1em; line-height: 1.9;
+  }
+  .svc h3 { margin-top: 10px; font-family: var(--body); font-weight: 700; font-size: 1.3rem; line-height: 1.5; letter-spacing: .03em; }
+  .svc-main > p:not(.svc-state) { margin-top: 8px; color: var(--ink-2); }
+  .svc-facts { grid-column: 2; margin: 16px 0 0; display: grid; gap: 4px; }
+  .svc-facts div { display: grid; grid-template-columns: 4.6em minmax(0, 1fr); gap: 12px; font-size: .92rem; }
+  .svc-facts dt { color: var(--muted); font-weight: 700; }
+  .svc-facts dd { margin: 0; }
+
+  /* 運営者: これまでに担当したこと */
+  .member-hist { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .hist-label { color: var(--muted); font-size: .78rem; font-weight: 700; letter-spacing: .1em; }
+  .member-hist ol { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
+  .member-hist li { display: grid; grid-template-columns: 5.2em minmax(0, 1fr); gap: 12px; color: var(--ink-2); font-size: .92rem; line-height: 1.7; }
+  .member-hist time { color: var(--ai); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  /* 掲載しているお店の方へ */
+  .shop-note {
+    margin-top: clamp(40px, 7vw, 64px); max-width: 46em;
+    padding: clamp(22px, 4vw, 32px);
+    border: 2px solid var(--ink);
+    display: grid; gap: 10px; justify-items: start;
+  }
+  .shop-note h3 { font-family: var(--body); font-weight: 700; font-size: 1.15rem; letter-spacing: .04em; }
+  .shop-note p { color: var(--ink-2); font-size: .95rem; }
+  .shop-note .btn { margin-top: 8px; }
+
+  .rules-lead { margin-top: 12px; color: var(--ink-2); }
+
+  /* お問い合わせ: 用件ごとの入口 */
+  .contact-topics { list-style: none; margin: clamp(24px, 5vw, 36px) 0 0; padding: 0; border-top: 1px solid rgba(252, 245, 234, .3); }
+  .contact-topics a {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 16px; align-items: center;
+    padding: 16px 0; border-bottom: 1px solid rgba(252, 245, 234, .3);
+    text-decoration: none;
+  }
+  .ct-title { font-weight: 700; font-size: 1.1rem; letter-spacing: .04em; }
+  .ct-desc { grid-column: 1; font-size: .86rem; color: rgba(252, 245, 234, .78); }
+  .ct-arrow { grid-column: 2; grid-row: 1 / span 2; font-size: 1.4rem; transition: transform .25s var(--ease); }
+  .contact-topics a:hover .ct-arrow, .contact-topics a:focus-visible .ct-arrow { transform: translateX(6px); }
+  .facts-title { margin-top: clamp(40px, 7vw, 64px); font-family: var(--body); font-weight: 700; font-size: .86rem; letter-spacing: .14em; color: rgba(252, 245, 234, .72); }
 
   /* ============================================================
      フッター
@@ -667,7 +741,8 @@
     .step-node { top: 0; }
 
     .contact-card { margin-inline: 0; padding-inline: clamp(40px, 6vw, 88px); }
-    .contact-facts { grid-template-columns: 1.4fr 1fr 1fr; gap: 24px; }
+    .contact-facts div { grid-template-columns: 9em minmax(0, 1fr); padding: 14px 0; }
+    .contact-topics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 28px; }
 
     .footer-inner { grid-auto-flow: column; justify-content: space-between; align-items: center; }
   }
@@ -677,6 +752,9 @@
     .dl-chart, .dl-marks, .dl-legend { grid-column: 1 / -1; }
     .devlog-stats { justify-content: flex-end; }
     .gacha-body { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 48px; align-items: center; }
+    .greeting-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: start; column-gap: 48px; }
+    .svc { grid-template-columns: 130px minmax(0, 1.3fr) minmax(0, 1fr); column-gap: 40px; padding: 36px 0 40px; }
+    .svc-facts { grid-column: 3; margin-top: 34px; }
     .machine { --rh: 62px; padding: 22px; }
     .reels { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 2fr); }
     .reel-dish { grid-column: auto; }
@@ -796,7 +874,7 @@
       <img src="/assets/pilot/brand-logo.png" alt="あいのりごはん" width="1910" height="395" />
     </a>
     <!-- Cloudflare の Email Obfuscation を切る。既定のままだと /cdn-cgi/l/email-protection に化ける -->
-    <!--email_off--><a class="header-link" href="mailto:sns@ainorigohan.com">お問い合わせ</a><!--/email_off-->
+    <a class="header-link" href="#contact">お問い合わせ</a>
   </div>
 </header>
 
@@ -815,13 +893,151 @@
       </div>
 
       <div class="hero-copy">
-        <p class="hero-eyebrow">運営メンバー</p>
-        <h1 id="hero-title"><span class="ph">つくっているのは、</span><span class="ph">この2人です。</span></h1>
-        <p class="hero-lead"><span class="ph">企画も、</span><span class="ph">デザインも、</span><span class="ph">アプリも。</span><span class="ph">あいのりごはんは、</span><span class="ph">2人の手づくりです。</span></p>
+        <p class="hero-eyebrow">運営者紹介</p>
+        <h1 id="hero-title"><span class="ph">行きたいお店に、</span><span class="ph">一緒に行く人を。</span></h1>
+        <p class="hero-lead"><span class="ph">行きたいお店やメニューから、</span><span class="ph">一緒に食べに行く人を集める。</span><span class="ph">そのためのサービス</span><span class="ph">「あいのりごはん」を、</span><span class="ph">2人で運営しています。</span></p>
+        <dl class="hero-who">
+          <div><dt>代表・企画運営</dt><dd>遠藤 優斗</dd></div>
+          <div><dt>開発</dt><dd>宇野 琉翔</dd></div>
+        </dl>
         <div class="hero-actions">
-          <a class="btn" href="#works">つくったものを見る</a>
-          <!--email_off--><a class="btn is-ghost" href="mailto:sns@ainorigohan.com">お問い合わせ</a><!--/email_off-->
+          <a class="btn" href="#service">事業内容を見る</a>
+          <a class="btn is-ghost" href="#contact">お問い合わせ</a>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="story" aria-labelledby="story-title">
+    <div class="story-stage">
+      <div class="story-fill" aria-hidden="true"></div>
+      <h2 class="story-line l1" id="story-title">行きたい店はある。</h2>
+      <p class="story-line l2">相手がいない。</p>
+      <div class="story-end">
+        <svg class="story-bowl" viewBox="196 104 190 256" aria-hidden="true">
+          <g class="sb-steam"><use class="f-s" href="#lg-steam-0" /><use class="f-s" href="#lg-steam-1" /><use class="f-s" href="#lg-steam-2" /></g>
+          <use class="sb-bowl f-b" href="#lg-bowl" />
+        </svg>
+        <p class="story-big">目的は、飯。</p>
+      </div>
+      <p class="story-note">同じ店に行きたい人と、その日の一食だけ。</p>
+    </div>
+  </section>
+
+  <section class="greeting" id="greeting" aria-labelledby="greeting-title">
+    <div class="wrap greeting-grid">
+      <h2 class="section-title" id="greeting-title">ごあいさつ。</h2>
+      <div class="greeting-body" data-tbd>
+        <p>気になるお店はあるのに、一緒に行く相手と予定が合わない。ひとりでは入りにくいし、頼みたいコースは2名から。そんな日が、けっこうあります。</p>
+        <p>だったら、同じお店に行きたい人と、その日の一食だけ一緒に食べればいい。あいのりごはんは、そう考えて2026年6月にはじめました。</p>
+        <p>つくりたいのは、出会いの場ではなく、ごはんの場です。だから一対一では開かず、性別も聞きません。主役は、お店と料理です。</p>
+        <p>まだ小さなサービスですが、一回ずつ、ていねいに開いていきます。</p>
+        <p class="greeting-sign"><span>あいのりごはん</span><span>遠藤 優斗・宇野 琉翔</span></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="service" id="service" aria-labelledby="service-title">
+    <div class="wrap">
+      <h2 class="section-title" id="service-title">事業内容。</h2>
+      <p class="service-lead">いま、この3つに取り組んでいます。</p>
+      <ol class="service-list">
+        <li class="svc">
+          <p class="svc-no" aria-hidden="true">01</p>
+          <div class="svc-main">
+            <p class="svc-state">開発中</p>
+            <h3>ごはん会の募集アプリ</h3>
+            <p>お店を探して、みんなで食べたいメニューを選び、募集を出す。人数がそろったら、あとはお店で会うだけです。お店の予約は募集した人が、支払いはそれぞれがお店で行います。</p>
+          </div>
+          <dl class="svc-facts">
+            <div><dt>エリア</dt><dd>渋谷・恵比寿・新宿・池袋</dd></div>
+            <div><dt>掲載店</dt><dd>24店</dd></div>
+            <div><dt>開発</dt><dd>2026年7月から</dd></div>
+          </dl>
+        </li>
+        <li class="svc">
+          <p class="svc-no" aria-hidden="true">02</p>
+          <div class="svc-main">
+            <p class="svc-state">準備中</p>
+            <h3>ごはん会の開催・運営</h3>
+            <p>事前登録してくれた人から参加者を募り、4人のごはん会を開きます。運営の1人が同じ席に着き、解散まで一緒にいます。</p>
+          </div>
+          <dl class="svc-facts">
+            <div><dt>人数</dt><dd>4人(運営1人と参加者3人)</dd></div>
+            <div><dt>参加費</dt><dd>無料(飲食代は各自、お店で)</dd></div>
+            <div><dt>対象</dt><dd>20歳以上の事前登録者</dd></div>
+          </dl>
+        </li>
+        <li class="svc">
+          <p class="svc-no" aria-hidden="true">03</p>
+          <div class="svc-main">
+            <p class="svc-state">受付中</p>
+            <h3>公式サイトと事前登録</h3>
+            <p>サービスの案内と、事前登録の受付。登録してくれた人には、ごはん会の案内をメールでお届けしています。</p>
+            <a class="step-link" href="/#register">事前登録する</a>
+          </div>
+          <dl class="svc-facts">
+            <div><dt>公開</dt><dd>2026年6月</dd></div>
+            <div><dt>登録</dt><dd>無料・30秒</dd></div>
+          </dl>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="members" id="members" aria-labelledby="members-title">
+    <div class="wrap">
+      <h2 class="section-title" id="members-title">運営者。</h2>
+      <div class="member-list">
+
+        <article class="member">
+          <div class="member-mark" aria-hidden="true">
+            <span class="mark-ring"></span>
+            <div class="mark-glyph"><span class="g-out">E</span><span class="g-fill">E</span></div>
+          </div>
+          <div class="member-body">
+            <p class="member-role">代表　企画・運営</p>
+            <h3 class="member-name"><span class="nm"><span>遠藤</span><span class="nm-given">優斗</span></span><small lang="en"><span class="sr-only">PRODUCER</span><span class="scr" aria-hidden="true">PRODUCER</span></small></h3>
+            <p class="member-line" data-tbd>サービスの企画と、ごはん会の運営を担当しています。お店選びや下見、当日の進行、お問い合わせの窓口も。</p>
+            <ul class="member-duty">
+              <li>企画</li><li>運営計画</li><li>お店選び</li><li>お問い合わせ窓口</li>
+            </ul>
+            <div class="member-hist">
+              <p class="hist-label">これまでに担当したこと</p>
+              <ol>
+                <li><time datetime="2026-06">2026.06</time><span>サービスの方針を決め、企画をはじめる</span></li>
+                <li><time datetime="2026-06">2026.06</time><span>アプリの画面の流れを設計(探す・募集をつくる・連絡)</span></li>
+                <li><time datetime="2026-09">2026.09</time><span>初回ごはん会の運営計画と、運営マニュアル</span></li>
+                <li><time datetime="2026-09">2026.09</time><span>事前登録者への希望調査と、ごはん会の案内</span></li>
+              </ol>
+            </div>
+          </div>
+        </article>
+
+        <article class="member is-alt">
+          <div class="member-mark" aria-hidden="true">
+            <span class="mark-ring"></span>
+            <div class="mark-glyph"><span class="g-out">U</span><span class="g-fill">U</span></div>
+          </div>
+          <div class="member-body">
+            <p class="member-role">開発　アプリ・サイト</p>
+            <h3 class="member-name"><span class="nm"><span>宇野</span><span class="nm-given">琉翔</span></span><small lang="en"><span class="sr-only">ENGINEER</span><span class="scr" aria-hidden="true">ENGINEER</span></small></h3>
+            <p class="member-line" data-tbd>アプリとサイト、それを支えるサーバーをつくっています。通報とブロックは、最初の版から入れました。</p>
+            <ul class="member-duty">
+              <li>アプリ開発</li><li>サイト・サーバー</li><li>安全の仕組み</li><li>当日のサポート</li>
+            </ul>
+            <div class="member-hist">
+              <p class="hist-label">これまでに担当したこと</p>
+              <ol>
+                <li><time datetime="2026-06">2026.06</time><span>事前登録のページを公開</span></li>
+                <li><time datetime="2026-07">2026.07</time><span>アプリの開発をはじめる</span></li>
+                <li><time datetime="2026-09">2026.09</time><span>案内メールを届ける仕組み</span></li>
+                <li><time datetime="2026-09">2026.09</time><span>実在の24店をアプリに掲載</span></li>
+              </ol>
+            </div>
+          </div>
+        </article>
+
       </div>
     </div>
   </section>
@@ -830,8 +1046,8 @@
     <div class="works-pin">
       <div class="works-track">
         <header class="works-head">
-          <h2 class="section-title" id="works-title">つくったもの。</h2>
-          <p class="works-lead">アプリも、名刺も、このページも。全部、自分たちの手で。</p>
+          <h2 class="section-title" id="works-title">制作実績。</h2>
+          <p class="works-lead">サービスに要るものは、画面の設計からコードまで、2人でつくっています。</p>
         </header>
 
         <ol class="works-list">
@@ -851,8 +1067,29 @@
             </div>
             <div class="work-cap">
               <h3>アプリ</h3>
-              <p>お店探しから、募集の公開まで。いま開発中です。</p>
-              <p class="work-tag">Flutter</p>
+              <p>お店探しから、募集の公開まで。2026年7月から開発しています。</p>
+              <p class="work-tag">画面設計 遠藤 / 開発 宇野 / Flutter</p>
+            </div>
+          </li>
+
+          <li class="work work-noren" data-work="noren">
+            <div class="work-stage">
+              <div class="noren" aria-hidden="true">
+                <div class="noren-static">
+                  <div class="noren-band"><span class="noren-sub">AINORI</span><span class="noren-crest">飯</span><span class="noren-sub">GOHAN</span></div>
+                  <div class="noren-panels">
+                    <div class="noren-cloth"><span class="noren-word">あいのり</span></div>
+                    <div class="noren-cloth"><span class="noren-word">ごはん</span></div>
+                  </div>
+                </div>
+                <div class="noren-rod"></div>
+                <div class="noren-loops"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              </div>
+            </div>
+            <div class="work-cap">
+              <h3>公式サイト</h3>
+              <p>サービスの案内と、事前登録の受付。このページののれんも、布を計算して揺らしています。なでてみてください。</p>
+              <p class="work-tag">2026.6 公開 / WebGL</p>
             </div>
           </li>
 
@@ -873,8 +1110,46 @@
             </div>
             <div class="work-cap">
               <h3>名刺</h3>
-              <p>ふたり分。写真選びから、入稿データまで。</p>
-              <p class="work-tag">91×55mm</p>
+              <p>運営2人分。QRコードから、このページが開きます。</p>
+              <p class="work-tag">2026.9 / 91×55mm</p>
+            </div>
+          </li>
+        </ol>
+              <div class="phone">
+                <div class="phone-screen">
+                  <img src="/assets/about/app-map.webp" width="720" height="1397" loading="lazy" decoding="async" alt="アプリの「探す」画面。東京の地図に、お店のあるエリアが出ている" />
+                  <img src="/assets/about/app-shop.webp" width="720" height="1397" loading="lazy" decoding="async" alt="お店の情報。住所、営業時間、予算、予約、電話、席" />
+                  <img src="/assets/about/app-menu.webp" width="720" height="1397" loading="lazy" decoding="async" alt="募集をつくる画面。そのお店のメニューから、みんなで食べる一品を選ぶ" />
+                  <img src="/assets/about/app-done.webp" width="720" height="1397" loading="lazy" decoding="async" alt="募集を公開した画面。招待コードとリンクのコピー" />
+                </div>
+              </div>
+            </div>
+            <div class="work-cap">
+              <h3>アプリ</h3>
+              <p>お店探しから、募集の公開まで。2026年7月から開発しています。</p>
+              <p class="work-tag">画面設計 遠藤 / 開発 宇野 / Flutter</p>
+            </div>
+          </li>
+
+          <li class="work work-card" data-work="card">
+            <div class="work-stage">
+              <div class="cards-tilt">
+                <div class="cards">
+                  <div class="card3d c2">
+                    <div class="face front"><img src="/assets/about/card-front-engineer.webp" width="1092" height="660" loading="lazy" decoding="async" alt="宇野 琉翔の名刺の表" /></div>
+                    <div class="face back"><img src="/assets/about/card-back.webp" width="1092" height="660" loading="lazy" decoding="async" alt="" /></div>
+                  </div>
+                  <div class="card3d c1">
+                    <div class="face front"><img src="/assets/about/card-front-producer.webp" width="1092" height="660" loading="lazy" decoding="async" alt="遠藤 優斗の名刺の表。ステーキの写真、ロゴ、名前と肩書き、QRコード" /></div>
+                    <div class="face back"><img src="/assets/about/card-back.webp" width="1092" height="660" loading="lazy" decoding="async" alt="名刺の裏。暗いステーキの写真にロゴ" /></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="work-cap">
+              <h3>名刺</h3>
+              <p>運営2人分。QRコードから、このページが開きます。</p>
+              <p class="work-tag">2026.9 / 91×55mm</p>
             </div>
           </li>
 
@@ -893,9 +1168,9 @@
               </div>
             </div>
             <div class="work-cap">
-              <h3>のれん</h3>
-              <p>布を点と線で計算して揺らしています。なでてみてください。</p>
-              <p class="work-tag">WebGL</p>
+              <h3>公式サイト</h3>
+              <p>サービスの案内と、事前登録の受付。このページののれんも、布を計算して揺らしています。なでてみてください。</p>
+              <p class="work-tag">2026.6 公開 / WebGL</p>
             </div>
           </li>
         </ol>
@@ -907,13 +1182,14 @@
     <div class="devlog-stage">
       <div class="wrap devlog-inner">
         <div class="devlog-head">
-          <h2 class="devlog-title" id="devlog-title"><span class="ph">書いてきた、</span><span class="ph"><span class="dl-num" data-dl="lines">80,921</span>行。</span></h2>
-          <p class="devlog-lead">アプリ、サイト、企画の資料。3つのリポジトリに残っている、実際の履歴です。</p>
+          <h2 class="devlog-title" id="devlog-title">これまでの歩み。</h2>
+          <p class="devlog-lead">2026年6月11日に企画をはじめてから、9月25日までの記録です。グラフは、アプリ・サイト・企画の資料に書いてきた行数の積み上げ。</p>
         </div>
         <dl class="devlog-stats">
-          <div><dt>コミット</dt><dd data-dl="commits">143</dd></div>
-          <div><dt>日数</dt><dd><span data-dl="days">107</span><small>日</small></dd></div>
           <div><dt>日付</dt><dd data-dl="date">9/25</dd></div>
+          <div><dt>日数</dt><dd><span data-dl="days">107</span><small>日</small></dd></div>
+          <div><dt>書いた量</dt><dd><span class="dl-num" data-dl="lines">80,921</span><small>行</small></dd></div>
+          <div><dt>更新</dt><dd><span data-dl="commits">143</span><small>回</small></dd></div>
         </dl>
         <figure class="dl-chart">
           <div class="dl-plot">
@@ -944,65 +1220,10 @@
     </div>
   </section>
 
-  <section class="members" aria-labelledby="members-title">
-    <div class="wrap">
-      <h2 class="section-title" id="members-title">ふたりの持ち場。</h2>
-      <div class="member-list">
-
-        <article class="member">
-          <div class="member-mark" aria-hidden="true">
-            <span class="mark-ring"></span>
-            <div class="mark-glyph"><span class="g-out">E</span><span class="g-fill">E</span></div>
-          </div>
-          <div class="member-body">
-            <p class="member-role">代表　企画・運営</p>
-            <h2 class="member-name"><span class="nm"><span>遠藤</span><span class="nm-given">優斗</span></span><small lang="en"><span class="sr-only">PRODUCER</span><span class="scr" aria-hidden="true">PRODUCER</span></small></h2>
-            <p class="member-line" data-tbd>ごはん会の中身を決める人。お店選びから、当日の進行まで。</p>
-            <ul class="member-duty">
-              <li>企画</li><li>お店の下見</li><li>当日の進行</li><li>お問い合わせ窓口</li>
-            </ul>
-          </div>
-        </article>
-
-        <article class="member is-alt">
-          <div class="member-mark" aria-hidden="true">
-            <span class="mark-ring"></span>
-            <div class="mark-glyph"><span class="g-out">U</span><span class="g-fill">U</span></div>
-          </div>
-          <div class="member-body">
-            <p class="member-role">開発　アプリ・サイト</p>
-            <h2 class="member-name"><span class="nm"><span>宇野</span><span class="nm-given">琉翔</span></span><small lang="en"><span class="sr-only">ENGINEER</span><span class="scr" aria-hidden="true">ENGINEER</span></small></h2>
-            <p class="member-line" data-tbd>サイトとアプリを作る人。通報とブロックは、最初の版から。</p>
-            <ul class="member-duty">
-              <li>アプリ開発</li><li>サイト・サーバー</li><li>安全の仕組み</li><li>当日のサポート</li>
-            </ul>
-          </div>
-        </article>
-
-      </div>
-    </div>
-  </section>
-
-  <section class="story" aria-labelledby="story-title">
-    <div class="story-stage">
-      <div class="story-fill" aria-hidden="true"></div>
-      <h2 class="story-line l1" id="story-title">行きたい店はある。</h2>
-      <p class="story-line l2">相手がいない。</p>
-      <div class="story-end">
-        <svg class="story-bowl" viewBox="196 104 190 256" aria-hidden="true">
-          <g class="sb-steam"><use class="f-s" href="#lg-steam-0" /><use class="f-s" href="#lg-steam-1" /><use class="f-s" href="#lg-steam-2" /></g>
-          <use class="sb-bowl f-b" href="#lg-bowl" />
-        </svg>
-        <p class="story-big">目的は、飯。</p>
-      </div>
-      <p class="story-note">同じ店に行きたい人と、その日の一食だけ。</p>
-    </div>
-  </section>
-
   <section class="gacha" aria-labelledby="gacha-title">
     <div class="wrap">
-      <h2 class="section-title" id="gacha-title"><span class="ph">今夜、</span><span class="ph">どこで食べる？</span></h2>
-      <p class="gacha-lead">あいのりごはんに載っている、実在の24店から1店。</p>
+      <h2 class="section-title" id="gacha-title"><span class="ph">掲載している</span><span class="ph">お店。</span></h2>
+      <p class="gacha-lead">渋谷・恵比寿・新宿・池袋の24店を、アプリに載せています。回すと、そのうちの1店が出ます。</p>
       <div class="gacha-body">
         <div class="machine">
           <div class="reels" aria-hidden="true">
@@ -1022,6 +1243,12 @@
           </div>
         </div>
       </div>
+      <aside class="shop-note" aria-labelledby="shop-note-title">
+        <h3 id="shop-note-title">掲載しているお店の方へ</h3>
+        <p>営業時間や予算、看板メニューは、公開されている情報をもとに載せています。内容の訂正や、掲載の取り下げをご希望の場合は、メールでお知らせください。確認のうえ、対応します。</p>
+        <p>ごはん会でお店を使うときは、先に趣旨をご説明し、了承をいただいてから伺います。</p>
+        <!--email_off--><a class="btn is-ghost" href="mailto:sns@ainorigohan.com?subject=%E3%80%90%E6%8E%B2%E8%BC%89%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%80%91&body=%E5%BA%97%E5%90%8D%EF%BC%9A%0A%E3%81%94%E6%8B%85%E5%BD%93%E8%80%85%E5%90%8D%EF%BC%9A%0A%E3%81%94%E7%94%A8%E4%BB%B6%EF%BC%9A%0A">掲載について連絡する</a><!--/email_off-->
+      </aside>
       <p class="gacha-nojs">渋谷・恵比寿・新宿・池袋の24店は、アプリで見られます。</p>
     </div>
   </section>
@@ -1037,7 +1264,8 @@
 
   <section class="rules" aria-labelledby="rules-title">
     <div class="wrap">
-      <h2 class="section-title" id="rules-title"><span class="ph">先に、</span><span class="ph">決めていること。</span></h2>
+      <h2 class="section-title" id="rules-title"><span class="ph">大切に</span><span class="ph">していること。</span></h2>
+      <p class="rules-lead">知らない人と食べる場所だから、決まりを先に作りました。</p>
       <!-- 札は JS が role=button を付けて「めくれる」ようにする。JS が無ければ題と説明が並んだ普通の札 -->
       <ul class="rule-wall">
         <li class="rule"><div class="rule-card">
@@ -1070,7 +1298,7 @@
 
   <section class="status" aria-labelledby="status-title">
     <div class="wrap">
-      <h2 class="section-title" id="status-title">いま、ここ。</h2>
+      <h2 class="section-title" id="status-title"><span class="ph">いまと、</span><span class="ph">これから。</span></h2>
       <div class="steps-wrap">
         <span class="steps-line" aria-hidden="true"></span>
         <ol class="steps">
@@ -1088,7 +1316,7 @@
             <div class="step-body">
               <p class="step-state">準備中</p>
               <h3>初回ごはん会</h3>
-              <p class="step-note">4人で、最初の一回。</p>
+              <p class="step-note">事前登録者から、4人で最初の一回。日程は登録メールでご案内します。</p>
             </div>
           </li>
           <li class="step">
@@ -1096,7 +1324,7 @@
             <div class="step-body">
               <p class="step-state">開発中</p>
               <h3>アプリ</h3>
-              <p class="step-note">いま、つくっています。</p>
+              <p class="step-note">公開の時期は、決まりしだいお知らせします。</p>
             </div>
           </li>
         </ol>
@@ -1104,29 +1332,31 @@
     </div>
   </section>
 
-  <section class="contact" aria-labelledby="contact-title">
+  <section class="contact" id="contact" aria-labelledby="contact-title">
     <div class="wrap">
       <div class="contact-card">
-        <h2 class="section-title" id="contact-title">ご連絡は、こちらへ。</h2>
-        <p class="contact-lead">取材、出店のご相談、ご意見。なんでもどうぞ。</p>
+        <h2 class="section-title" id="contact-title">お問い合わせ。</h2>
+        <p class="contact-lead">ご用件に近いものを選ぶと、件名の入ったメールが開きます。</p>
+        <!--email_off--><ul class="contact-topics">
+          <li><a href="mailto:sns@ainorigohan.com?subject=%E3%80%90%E3%81%8A%E5%BA%97%E3%80%91&body=%E5%BA%97%E5%90%8D%EF%BC%9A%0A%E3%81%94%E6%8B%85%E5%BD%93%E8%80%85%E5%90%8D%EF%BC%9A%0A%E3%81%94%E7%94%A8%E4%BB%B6%EF%BC%9A%0A"><span class="ct-title">お店の方</span><span class="ct-desc">掲載の訂正・取り下げ、ごはん会のご相談</span><span class="ct-arrow" aria-hidden="true">→</span></a></li>
+          <li><a href="mailto:sns@ainorigohan.com?subject=%E3%80%90%E5%8F%96%E6%9D%90%E3%83%BB%E5%8D%94%E6%A5%AD%E3%80%91&body=%E3%81%8A%E5%90%8D%E5%89%8D%E3%83%BB%E3%81%94%E6%89%80%E5%B1%9E%EF%BC%9A%0A%E3%81%94%E7%94%A8%E4%BB%B6%EF%BC%9A%0A"><span class="ct-title">取材・協業のご相談</span><span class="ct-desc">取材、イベント、一緒にできることのお話</span><span class="ct-arrow" aria-hidden="true">→</span></a></li>
+          <li><a href="mailto:sns@ainorigohan.com?subject=%E3%80%90%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B%E3%80%91"><span class="ct-title">参加・その他</span><span class="ct-desc">ごはん会への参加、ご意見、そのほか</span><span class="ct-arrow" aria-hidden="true">→</span></a></li>
+        </ul><!--/email_off-->
         <div class="contact-mail-row">
           <!-- data-copy の中のアドレスも Cloudflare の Email Obfuscation に書き換えられないよう、ボタンごと email_off で囲む -->
           <!--email_off--><a class="contact-mail" href="mailto:sns@ainorigohan.com">sns@ainorigohan.com</a>
           <button class="copy-btn" type="button" data-copy="sns@ainorigohan.com"><span class="copy-label" aria-live="polite">コピー</span></button><!--/email_off-->
         </div>
+        <h3 class="facts-title">運営者情報</h3>
         <dl class="contact-facts">
-          <div>
-            <dt>運営</dt>
-            <dd>あいのりごはん運営チーム<br />大学生を含む個人開発・2名</dd>
-          </div>
-          <div>
-            <dt>公式X</dt>
-            <dd><a href="https://x.com/Ainorigohan" target="_blank" rel="noopener">@Ainorigohan</a></dd>
-          </div>
-          <div>
-            <dt>サイト</dt>
-            <dd><a href="/">ainorigohan.com</a></dd>
-          </div>
+          <div><dt>名称</dt><dd>あいのりごはん</dd></div>
+          <div><dt>運営</dt><dd>遠藤 優斗(代表)<br />宇野 琉翔(開発)</dd></div>
+          <div><dt>事業内容</dt><dd>ごはん会の募集サービスの企画・開発・運営</dd></div>
+          <div><dt>活動開始</dt><dd>2026年6月</dd></div>
+          <div><dt>活動エリア</dt><dd>東京(渋谷・恵比寿・新宿・池袋)</dd></div>
+          <div><dt>体制</dt><dd>2名(大学生を含む個人開発)</dd></div>
+          <div><dt>公式X</dt><dd><a href="https://x.com/Ainorigohan" target="_blank" rel="noopener">@Ainorigohan</a></dd></div>
+          <div><dt>サイト</dt><dd><a href="/">ainorigohan.com</a></dd></div>
         </dl>
         <p class="contact-note">個人情報の取り扱いは、<a href="/privacy">プライバシーポリシー</a>へ。</p>
       </div>
@@ -1529,6 +1759,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .fromTo('.hero-eyebrow', { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: .5 }, .3)
         .fromTo(h1Chars, { yPercent: 80, opacity: 0, rotation: 12 }, { yPercent: 0, opacity: 1, rotation: 0, stagger: .035, duration: .7, ease: 'back.out(1.9)' }, .45)
         .fromTo('.hero-lead', { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: .6 }, 1)
+        .fromTo('.hero-who > div', { y: 14, opacity: 0 }, { y: 0, opacity: 1, stagger: .08, duration: .5 }, 1.05)
         .fromTo('.hero-actions .btn', { y: 18, opacity: 0 }, { y: 0, opacity: 1, stagger: .08, duration: .6 }, 1.1);
 
       try { cloth = createCloth($('.noren'), $('.work-noren .work-stage')); }
@@ -1665,6 +1896,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .add(function () { scramble(scr, .9); }, .75)
         .fromTo($('.member-line', m), { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: .5 }, 1)
         .fromTo($$('.member-duty li', m), { scale: .4, opacity: 0 }, { scale: 1, opacity: 1, stagger: .06, duration: .45, ease: 'back.out(3)' }, 1.1)
+        .fromTo($$('.member-hist li', m), { x: -14, opacity: 0 }, { x: 0, opacity: 1, stagger: .07, duration: .45 }, 1.3)
         .add(function () { gsap.set([tile, fill], { clearProps: 'clipPath' }); });
 
       gsap.fromTo(glyphWrap, { yPercent: 10 }, { yPercent: -6, ease: 'none', scrollTrigger: { trigger: tile, start: 'top bottom', end: 'bottom top', scrub: true } });
@@ -1703,7 +1935,7 @@ document.addEventListener('DOMContentLoaded', function () {
       gsap.timeline({
         defaults: { ease: 'power2.out' },
         scrollTrigger: {
-          trigger: '.story', start: 'top top', pin: true, scrub: .7, anticipatePin: 1, invalidateOnRefresh: true, refreshPriority: 5,
+          trigger: '.story', start: 'top top', pin: true, scrub: .7, anticipatePin: 1, invalidateOnRefresh: true, refreshPriority: 12,
           end: function () { return '+=' + Math.round(innerHeight * (small ? 2.2 : 2.6)); }
         }
       })
@@ -1718,6 +1950,30 @@ document.addEventListener('DOMContentLoaded', function () {
         .fromTo('.story-note', { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: .35 }, '-=.1')
         .to({}, { duration: .5 });
     });
+
+    /* ==========================================================
+       ごあいさつ: 朱の線ごと上から開き、段落が1つずつ出る。最後に署名
+       ========================================================== */
+    gsap.timeline({ scrollTrigger: { trigger: '.greeting-body', start: 'top 80%', once: true } })
+      .fromTo('.greeting-body', { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 1.1, ease: 'power2.inOut' }, 0)
+      .fromTo('.greeting-body > p', { y: 18, opacity: 0 }, { y: 0, opacity: 1, stagger: .16, duration: .6, ease: 'power3.out' }, .15)
+      .add(function () { gsap.set('.greeting-body', { clearProps: 'clipPath' }); });
+
+    /* ==========================================================
+       事業内容: 番号がせり上がり、状態の札が押され、中身が続く
+       ========================================================== */
+    $$('.svc').forEach(function (li) {
+      var no = $('.svc-no', li);
+      gsap.timeline({ defaults: { ease: 'power3.out' }, scrollTrigger: { trigger: li, start: 'top 84%', once: true } })
+        .fromTo(no, { yPercent: 100, clipPath: 'inset(0 0 100% 0)' }, { yPercent: 0, clipPath: 'inset(0 0 0% 0)', duration: .7 })
+        .fromTo($('.svc-state', li), { scale: 1.8, opacity: 0 }, { scale: 1, opacity: 1, duration: .45, ease: 'back.out(2.6)' }, .15)
+        .fromTo([$('.svc h3', li)].concat($$('.svc-main > p:not(.svc-state), .svc-main > a', li)), { y: 16, opacity: 0 }, { y: 0, opacity: 1, stagger: .08, duration: .55 }, .25)
+        .fromTo($$('.svc-facts div', li), { x: 18, opacity: 0 }, { x: 0, opacity: 1, stagger: .07, duration: .45 }, .4)
+        .add(function () { gsap.set(no, { clearProps: 'clipPath' }); });
+    });
+
+    gsap.fromTo('.shop-note', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: .7, ease: 'power3.out',
+      scrollTrigger: { trigger: '.shop-note', start: 'top 86%', once: true } });
 
     /* ==========================================================
        5. 流れる帯: スクロールの向きで流れる向きが変わり、速く回すと速く流れる
@@ -1814,7 +2070,7 @@ document.addEventListener('DOMContentLoaded', function () {
       gsap.to(mailChars, { yPercent: -28, duration: .18, yoyo: true, repeat: 1, stagger: .025, ease: 'power2.out' });
     };
     mail.addEventListener('pointerenter', wave);
-    gsap.fromTo(['.contact-lead', '.contact-mail-row', '.contact-facts', '.contact-note'], { y: 24, opacity: 0 },
+    gsap.fromTo(['.contact-lead', '.contact-topics', '.contact-mail-row', '.facts-title', '.contact-facts', '.contact-note'], { y: 24, opacity: 0 },
       { y: 0, opacity: 1, stagger: .1, duration: .6, ease: 'power3.out',
         scrollTrigger: { trigger: '.contact-card', start: 'top 75%', once: true },
         onComplete: wave });
