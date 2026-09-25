@@ -23,7 +23,7 @@
   - 書体: 見出し = Dela Gothic One / 本文 = BIZ UDPゴシック。Dela は 30px 未満だと画数の多い漢字が潰れるので、小さい見出しは本文書体の太字。
   - 角はすべて直角。例外はスマホの枠だけ(画面ではなく「物」なので、実物どおり角が丸い)。
   - 顔写真は載せない(Team Hub の方針)。名札: 遠藤 = 本人から届いたアイコン(assets/about/member-endo.webp、背景を抜いたもの)。頭文字は載せない(本人の判断)。
-    宇野 = 一色のシルエットの狐のロゴ(test/about/make_fox.py が書き出す SVG。本人の希望: 狐が好き、遠藤のアイコンとは関係ない絵柄、形ができあがっていく動き)。名前と英字の肩書きは名刺と同じ表記。
+    宇野 = ちびっこ体型のかわいい狐(test/about/make_fox.py が書き出す SVG。本人の希望: 狐が好き、遠藤のアイコンとは関係ない絵柄、形ができあがっていく動き、中二病っぽくなくかわいく)。名前と英字の肩書きは名刺と同じ表記。
   - 動きは GSAP + ScrollTrigger(LP と同じ cdnjs 3.12.5)。<html> に .js が付いている間だけ「最初は隠す」「横に流す」等の CSS が効く。
       動きを減らす設定の人・GSAP が読めなかった人は .js が付かない/外れるので、全部が最初から見える静的ページになる。
   - 固定(pin)する節は 物語 → 制作実績 → 歩み の順に並ぶ。refreshPriority はこの並びで大きい順(12 → 10 → 8)にしておくこと(逆だと位置がずれる)。
@@ -489,25 +489,35 @@
     100% { transform: translateX(400%); opacity: 0; }
   }
 
-  /* 宇野の札: 一色のシルエットの狐(右向きに座り、尻尾を前に巻く)。できあがっていく動きは JS */
+  /* 宇野の札: ちびっこ体型の狐(一色のシルエット系。右向きにお座り、尻尾は背中側に巻き上げる)。できあがっていく動きは JS */
   .mark-fox { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-  .mark-fox .fl-o { fill: #f0602a; }
-  .mark-fox .fl-tip { fill: #fff8ef; }
-  .mark-fox .fl-tip-line { fill: none; stroke: #f0602a; stroke-width: 6; stroke-linejoin: round; }
-  .mark-fox .fl-tip-edge { stroke-width: 12; }
-  .mark-fox .fl-line { fill: none; stroke: #f0602a; stroke-width: 2.5; stroke-linejoin: round; opacity: 0; }
-  .mark-fox .fl-ring { fill: none; stroke: #f0602a; stroke-width: 2; opacity: 0; }
-  .mark-fox .fl-shine { opacity: 0; }
-  /* できあがった後: ときどき耳がぴくっと動き、瞬きし、光が走る */
-  .mark-fox .fl-ear, .mark-fox .fl-eye { transform-box: fill-box; }
-  .mark-fox .fl-ear { transform-origin: 30% 100%; }
-  .mark-fox .fl-eye { transform-origin: 50% 50%; }
-  .mark-fox.is-live .fl-ear { animation: fl-ear 5.2s ease-in-out 1s infinite; }
-  .mark-fox.is-live .fl-eye { animation: fl-blink 4.3s 2s infinite; }
-  .mark-fox.is-live .fl-shine { animation: fl-shine 6s ease-in-out 3s infinite; }
-  @keyframes fl-ear { 0%, 78%, 90%, 100% { transform: rotate(0); } 82% { transform: rotate(10deg); } 86% { transform: rotate(-3deg); } }
+  .mark-fox .fl-o { fill: #f36b2c; }
+  .mark-fox .fl-o2 { fill: #e2561f; }
+  .mark-fox .fl-c { fill: #fff4e6; }
+  .mark-fox .fl-in { fill: #ffd9c4; }
+  .mark-fox .fl-ink { fill: #3b2418; }
+  .mark-fox .fl-hi { fill: #fff; }
+  .mark-fox .fl-blush { fill: #ff9d8f; opacity: .7; }
+  .mark-fox .fl-tip-edge { fill: none; stroke: #e2561f; stroke-width: 7; }
+  .mark-fox .fl-line { fill: none; stroke: #f36b2c; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+  .mark-fox .fl-heart { opacity: 0; }
+  .mark-fox .fl-heart path { fill: #ff7d8a; }
+  /* できあがった後: 尻尾をふりふり、ときどき耳がぴくっ、瞬き、たまに小首をかしげる */
+  /* fill-box は できあがった後(CSS の動き)だけ。組み上がる途中に効かせると GSAP の回転の中心がずれて、尻尾や目が飛ぶ */
+  .mark-fox.is-live .fl-tail, .mark-fox.is-live .fl-ear, .mark-fox.is-live .fl-eye, .mark-fox.is-live .fl-head { transform-box: fill-box; }
+  .mark-fox.is-live .fl-tail { transform-origin: 80% 96%; }
+  .mark-fox.is-live .fl-ear { transform-origin: 40% 100%; }
+  .mark-fox.is-live .fl-eye { transform-origin: 50% 50%; }
+  .mark-fox.is-live .fl-head { transform-origin: 45% 100%; }
+  .mark-fox.is-live .fl-tail { animation: fl-wag 2.6s ease-in-out infinite; }
+  .mark-fox.is-live .fl-ear { animation: fl-ear 5s ease-in-out 1s infinite; }
+  .mark-fox.is-live .fl-eye { animation: fl-blink 4.2s 1.6s infinite; }
+  .mark-fox.is-live .fl-head { animation: fl-tilt 7s ease-in-out 2.5s infinite; }
+  .mark-fox.is-wag .fl-tail { animation-duration: .45s; }
+  @keyframes fl-wag { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(5deg); } }
+  @keyframes fl-ear { 0%, 80%, 90%, 100% { transform: rotate(0); } 84% { transform: rotate(-12deg); } 87% { transform: rotate(4deg); } }
   @keyframes fl-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
-  @keyframes fl-shine { 0%, 80% { transform: translateX(0); opacity: 0; } 82% { opacity: 1; } 96% { transform: translateX(680px); opacity: 1; } 100% { transform: translateX(680px); opacity: 0; } }
+  @keyframes fl-tilt { 0%, 62%, 86%, 100% { transform: rotate(0); } 68%, 80% { transform: rotate(-7deg); } }
   .member-body { margin-top: 20px; }
   .member-role { color: var(--ai); font-size: .84rem; font-weight: 700; letter-spacing: .08em; }
   .member-name {
@@ -1106,7 +1116,7 @@
         <article class="member is-alt">
           <!-- 狐の形は test/about/make_fox.py が書き出す(手で書き換えない) -->
           <div class="member-mark has-fox" aria-hidden="true">
-            <svg class="mark-fox" viewBox="-20 22 500 375" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><defs><clipPath id="fl-tail"><path d="M 160 296 C 112 300 86 340 114 365 C 150 394 252 394 320 373 C 352 363 373 341 377 306 C 379 292 377 281 371 272 C 364 300 344 322 310 334 C 262 350 200 348 176 326 C 168 318 162 306 160 296 Z" /></clipPath><clipPath id="fl-tipzone"><path d="M 318 250 L 420 250 L 420 420 L 314 420 C 322 402 331 388 331 374 C 323 369 317 363 313 355 C 325 357 335 355 343 351 C 335 345 329 337 327 327 C 337 331 347 331 357 326 Z" /></clipPath><mask id="fl-cut" maskUnits="userSpaceOnUse" x="-100" y="-100" width="600" height="600"><rect x="-100" y="-100" width="600" height="600" fill="#fff" /><path class="fl-gap" d="M 166 312 C 192 344 262 352 322 331 C 262 356 190 352 166 312 Z" fill="#000" /><path class="fl-gap" d="M 234 246 C 253 272 259 306 254 346 C 250 346 248 346 246 346 C 251 306 248 274 234 246 Z" fill="#000" /><path class="fl-gap" d="M 271 86 C 271 70 273 56 278 44 C 283 56 286 70 286 88 C 281 84 276 84 271 86 Z" fill="#000" /><path class="fl-eye" d="M 296 114 C 302 109 311 108 317 112 C 311 117 302 118 296 114 Z" fill="#000" /></mask><mask id="fl-reveal" maskUnits="userSpaceOnUse" x="-100" y="-100" width="600" height="600"><circle class="fl-reveal" cx="170" cy="330" r="520" fill="#fff" /></mask><clipPath id="fl-shape"><path d="M 346 122 C 332 116 314 106 300 99 C 294 92 286 86 276 86 C 256 86 240 94 230 108 C 218 126 214 150 206 172 C 190 206 168 236 160 280 C 152 316 166 346 198 354 L 296 354 C 294 322 292 286 298 252 C 304 226 314 206 312 186 C 310 168 306 158 314 148 C 322 141 338 133 346 122 Z" /><path d="M 238 100 C 236 80 240 60 248 42 C 258 58 264 76 266 90 Z" /><path d="M 262 90 C 262 68 266 48 276 28 C 290 46 298 70 298 101 C 290 95 282 91 262 90 Z" /><path d="M 160 296 C 112 300 86 340 114 365 C 150 394 252 394 320 373 C 352 363 373 341 377 306 C 379 292 377 281 371 272 C 364 300 344 322 310 334 C 262 350 200 348 176 326 C 168 318 162 306 160 296 Z" /></clipPath><linearGradient id="fl-shine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset=".5" stop-color="#fff" stop-opacity=".55" /><stop offset="1" stop-color="#fff" stop-opacity="0" /></linearGradient></defs><circle class="fl-ring" cx="256" cy="224" r="150" /><g class="fl-lines"><path class="fl-line" pathLength="1" d="M 346 122 C 332 116 314 106 300 99 C 294 92 286 86 276 86 C 256 86 240 94 230 108 C 218 126 214 150 206 172 C 190 206 168 236 160 280 C 152 316 166 346 198 354 L 296 354 C 294 322 292 286 298 252 C 304 226 314 206 312 186 C 310 168 306 158 314 148 C 322 141 338 133 346 122 Z" /><path class="fl-line" pathLength="1" d="M 238 100 C 236 80 240 60 248 42 C 258 58 264 76 266 90 Z" /><path class="fl-line" pathLength="1" d="M 262 90 C 262 68 266 48 276 28 C 290 46 298 70 298 101 C 290 95 282 91 262 90 Z" /><path class="fl-line" pathLength="1" d="M 160 296 C 112 300 86 340 114 365 C 150 394 252 394 320 373 C 352 363 373 341 377 306 C 379 292 377 281 371 272 C 364 300 344 322 310 334 C 262 350 200 348 176 326 C 168 318 162 306 160 296 Z" /></g><g mask="url(#fl-reveal)"><g class="fl-fill" mask="url(#fl-cut)"><g class="fl-tail"><path class="fl-o" d="M 160 296 C 112 300 86 340 114 365 C 150 394 252 394 320 373 C 352 363 373 341 377 306 C 379 292 377 281 371 272 C 364 300 344 322 310 334 C 262 350 200 348 176 326 C 168 318 162 306 160 296 Z" /><path class="fl-tip" clip-path="url(#fl-tail)" d="M 318 250 L 420 250 L 420 420 L 314 420 C 322 402 331 388 331 374 C 323 369 317 363 313 355 C 325 357 335 355 343 351 C 335 345 329 337 327 327 C 337 331 347 331 357 326 Z" /></g><path class="fl-o" d="M 346 122 C 332 116 314 106 300 99 C 294 92 286 86 276 86 C 256 86 240 94 230 108 C 218 126 214 150 206 172 C 190 206 168 236 160 280 C 152 316 166 346 198 354 L 296 354 C 294 322 292 286 298 252 C 304 226 314 206 312 186 C 310 168 306 158 314 148 C 322 141 338 133 346 122 Z" /><path class="fl-o" d="M 238 100 C 236 80 240 60 248 42 C 258 58 264 76 266 90 Z" /><path class="fl-o fl-ear" d="M 262 90 C 262 68 266 48 276 28 C 290 46 298 70 298 101 C 290 95 282 91 262 90 Z" /></g></g><g class="fl-tip-lines"><path class="fl-tip-line" pathLength="1" clip-path="url(#fl-tail)" d="M 318 250 L 420 250 L 420 420 L 314 420 C 322 402 331 388 331 374 C 323 369 317 363 313 355 C 325 357 335 355 343 351 C 335 345 329 337 327 327 C 337 331 347 331 357 326 Z" /><path class="fl-tip-line fl-tip-edge" pathLength="1" clip-path="url(#fl-tipzone)" d="M 160 296 C 112 300 86 340 114 365 C 150 394 252 394 320 373 C 352 363 373 341 377 306 C 379 292 377 281 371 272 C 364 300 344 322 310 334 C 262 350 200 348 176 326 C 168 318 162 306 160 296 Z" /></g><g clip-path="url(#fl-shape)"><g class="fl-shine"><rect x="-160" y="0" width="120" height="400" fill="url(#fl-shine)" transform="skewX(-18)" /></g></g></svg>
+            <svg class="mark-fox" viewBox="-20 22 500 375" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false"><defs><clipPath id="fl-tail"><path d="M 196 346 C 134 356 98 316 100 262 C 102 216 130 184 166 182 C 178 181 184 190 178 198 C 154 212 144 234 146 256 C 150 290 172 318 204 326 Z" /></clipPath><clipPath id="fl-tipzone"><path d="M 40 130 L 230 130 L 230 200 L 168 206 C 164 216 156 222 146 222 C 144 232 136 238 126 238 C 122 246 112 250 100 248 L 40 250 Z" /></clipPath><clipPath id="fl-hb"><path d="M 240 94 C 288 94 312 124 316 158 C 330 162 346 170 348 184 C 350 197 338 205 322 206 C 310 232 280 248 240 248 C 196 248 162 222 162 172 C 162 126 196 94 240 94 Z" /><path d="M 196 226 C 170 262 162 318 184 348 C 198 366 262 368 292 354 C 310 346 310 322 303 300 C 296 276 290 252 280 236 Z" /></clipPath><mask id="fl-fill" maskUnits="userSpaceOnUse" x="-120" y="-120" width="700" height="760"><g class="fl-liquid" transform="translate(0 -40)"><path d="M -120 0 Q -107 -9 -95 0 T -70 0 Q -57 -9 -45 0 T -20 0 Q -7 -9 5 0 T 30 0 Q 42 -9 55 0 T 80 0 Q 92 -9 105 0 T 130 0 Q 142 -9 155 0 T 180 0 Q 192 -9 205 0 T 230 0 Q 242 -9 255 0 T 280 0 Q 292 -9 305 0 T 330 0 Q 342 -9 355 0 T 380 0 Q 392 -9 405 0 T 430 0 Q 442 -9 455 0 T 480 0 Q 492 -9 505 0 T 530 0 Q 542 -9 555 0 T 580 0 Q 592 -9 605 0 T 630 0 Q 642 -9 655 0 T 680 0 V 640 H -120 Z" fill="#fff" /></g></mask></defs><g class="fl-lines"><path class="fl-line" pathLength="1" d="M 196 346 C 134 356 98 316 100 262 C 102 216 130 184 166 182 C 178 181 184 190 178 198 C 154 212 144 234 146 256 C 150 290 172 318 204 326 Z" /><path class="fl-line" pathLength="1" d="M 196 226 C 170 262 162 318 184 348 C 198 366 262 368 292 354 C 310 346 310 322 303 300 C 296 276 290 252 280 236 Z" /><path class="fl-line" pathLength="1" d="M 240 94 C 288 94 312 124 316 158 C 330 162 346 170 348 184 C 350 197 338 205 322 206 C 310 232 280 248 240 248 C 196 248 162 222 162 172 C 162 126 196 94 240 94 Z" /><path class="fl-line" pathLength="1" d="M 178 126 C 171 100 173 76 183 59 C 187 52 194 52 198 57 C 210 71 220 89 224 104 Z" /><path class="fl-line" pathLength="1" d="M 236 100 C 240 81 250 63 264 49 C 269 44 276 46 277 52 C 282 71 284 91 283 112 Z" /></g><g mask="url(#fl-fill)"><g class="fl-all"><g class="fl-tail"><path class="fl-o2" d="M 196 346 C 134 356 98 316 100 262 C 102 216 130 184 166 182 C 178 181 184 190 178 198 C 154 212 144 234 146 256 C 150 290 172 318 204 326 Z" /><path class="fl-c" clip-path="url(#fl-tail)" d="M 40 130 L 230 130 L 230 200 L 168 206 C 164 216 156 222 146 222 C 144 232 136 238 126 238 C 122 246 112 250 100 248 L 40 250 Z" /><path class="fl-tip-edge" clip-path="url(#fl-tipzone)" d="M 196 346 C 134 356 98 316 100 262 C 102 216 130 184 166 182 C 178 181 184 190 178 198 C 154 212 144 234 146 256 C 150 290 172 318 204 326 Z" /></g><path class="fl-o" d="M 196 226 C 170 262 162 318 184 348 C 198 366 262 368 292 354 C 310 346 310 322 303 300 C 296 276 290 252 280 236 Z" /><ellipse class="fl-o" cx="262" cy="356" rx="17" ry="10" /><ellipse class="fl-o" cx="298" cy="352" rx="15" ry="10" /><g class="fl-head"><g class="fl-ear-b"><path class="fl-o" d="M 178 126 C 171 100 173 76 183 59 C 187 52 194 52 198 57 C 210 71 220 89 224 104 Z" /><path class="fl-in" d="M 188 112 C 185 96 186 82 191 72 C 199 82 206 94 210 106 Z" /></g><g class="fl-ear"><path class="fl-o" d="M 236 100 C 240 81 250 63 264 49 C 269 44 276 46 277 52 C 282 71 284 91 283 112 Z" /><path class="fl-in" d="M 248 100 C 252 86 258 74 266 64 C 270 78 272 92 271 106 Z" /></g><path class="fl-o" d="M 240 94 C 288 94 312 124 316 158 C 330 162 346 170 348 184 C 350 197 338 205 322 206 C 310 232 280 248 240 248 C 196 248 162 222 162 172 C 162 126 196 94 240 94 Z" /><path class="fl-c" clip-path="url(#fl-hb)" d="M 352 188 C 322 204 296 214 268 221 C 255 240 259 288 280 316 C 292 330 306 318 306 300 C 306 270 330 238 362 198 Z" /><ellipse class="fl-blush" cx="284" cy="200" rx="13" ry="7" /><g class="fl-eye"><ellipse class="fl-ink" cx="288" cy="164" rx="12" ry="13.5" /><circle class="fl-hi" cx="292" cy="159" r="4.4" /><circle class="fl-hi" cx="284" cy="169" r="2" /></g><ellipse class="fl-ink" cx="345" cy="184" rx="7" ry="6" /></g></g></g><g class="fl-heart" transform="translate(318 96)"><path d="M 0 6 C -9 -3 -18 -12 -10 -19 C -5 -23 0 -20 0 -15 C 0 -20 5 -23 10 -19 C 18 -12 9 -3 0 6 Z" /></g></svg>
           </div>
           <div class="member-body">
             <p class="member-role">開発　アプリ・サイト</p>
@@ -1970,7 +1980,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /* ==========================================================
-       3. 2人: 札が下から開く。遠藤はアイコンが顔を出して拍ごとにうなずき、宇野は狐のロゴが線から組み上がる。英字の肩書きはほどけて揃う
+       3. 2人: 札が下から開く。遠藤はアイコンが顔を出して拍ごとにうなずき、宇野は狐が線から組み上がってぷにっと弾む。英字の肩書きはほどけて揃う
        ========================================================== */
     $$('.member').forEach(function (m) {
       var tile = $('.member-mark', m);
@@ -1981,33 +1991,51 @@ document.addEventListener('DOMContentLoaded', function () {
       // 遠藤: 札が開いたところへ、アイコンが下から顔を出す
       if (avatar) tl.fromTo(avatar, { yPercent: 45, opacity: 0 }, { yPercent: 0, opacity: 1, duration: .9, ease: 'back.out(1.5)' }, .45)
         .add(function () { avatar.classList.add('is-live'); }, 1.35);
-      // 宇野: 狐ができあがっていく。輪郭の線が引かれ → 尻尾の付け根から色が広がり → 抜きが刻まれ
-      //       → 尻尾の先の白に縁取り → 後ろで輪が広がって、光がひと筋走る。叩くと、もう一度組み上がる
-      var foxForm = null;
+      // 宇野: 狐ができあがっていく。輪郭の線が引かれ → 下から色が水のように満ち → ぷにっと弾んで
+      //       → 耳がぴょこん・尻尾ふりふり・目がぱちっ → ハートがひとつ浮かぶ。叩くと、跳ねてハート
+      var foxForm = null, foxHappy = null;
       if (fox) {
-        var fLines = $$('.fl-line', fox), fReveal = $('.fl-reveal', fox), fGaps = $$('.fl-gap', fox), fEye = $('.fl-eye', fox);
-        var fTip = $$('.fl-tip-line', fox), fRing = $('.fl-ring', fox), fShine = $('.fl-shine', fox);
-        gsap.set(fLines.concat(fTip), { strokeDasharray: 1 });
+        var fLines = $$('.fl-line', fox), fLiquid = $('.fl-liquid', fox), fAll = $('.fl-all', fox);
+        var fEars = $$('.fl-ear, .fl-ear-b', fox), fTail = $('.fl-tail', fox), fEye = $('.fl-eye', fox);
+        var fBlush = $('.fl-blush', fox), fHeart = $('.fl-heart', fox);
+        var heartPop = function (t) {
+          return gsap.timeline()
+            .fromTo(fHeart, { x: 318, y: 96, scale: 0, opacity: 1, transformOrigin: '50% 100%' }, { scale: 1, duration: .35, ease: 'back.out(3)' })
+            .to(fHeart, { y: '-=38', opacity: 0, duration: .9, ease: 'power1.in' }, '+=.25');
+        };
+        gsap.set(fLines, { strokeDasharray: 1 });
         var unform = function () {
           fox.classList.remove('is-live');
           gsap.set(fLines, { strokeDashoffset: 1, opacity: 1 });
-          gsap.set(fReveal, { attr: { r: 0 } });
-          gsap.set(fGaps.concat(fEye), { opacity: 0 });
-          gsap.set(fTip, { strokeDashoffset: 1 });
-          gsap.set(fRing, { opacity: 0, scale: .6, transformOrigin: '50% 50%' });
-          gsap.set(fShine, { x: 0, opacity: 0 });
+          gsap.set(fLiquid, { x: 0, y: 440 });
+          gsap.set(fEye, { scaleY: .1, transformOrigin: '50% 50%' });
+          gsap.set(fBlush, { opacity: 0 });
+          gsap.set(fHeart, { opacity: 0 });
         };
         foxForm = gsap.timeline({ paused: true, onStart: unform })
-          .to(fLines, { strokeDashoffset: 0, duration: 1.1, stagger: .14, ease: 'power2.inOut' }, 0)
-          .to(fReveal, { attr: { r: 520 }, duration: .9, ease: 'power2.in' }, .75)
-          .to(fLines, { opacity: 0, duration: .3 }, 1.55)
-          .to(fGaps, { opacity: 1, duration: .25, stagger: .1 }, 1.45)
-          .to(fEye, { opacity: 1, duration: .2 }, 1.7)
-          .to(fTip, { strokeDashoffset: 0, duration: .55, stagger: .1, ease: 'power2.out' }, 1.6)
-          .to(fRing, { opacity: .7, scale: 1, duration: .25, ease: 'power2.out' }, 1.95)
-          .to(fRing, { opacity: 0, scale: 1.35, duration: .7, ease: 'power2.out' }, 2.2)
-          .fromTo(fShine, { x: 0, opacity: 1 }, { x: 680, duration: .85, ease: 'power2.inOut' }, 2.05)
-          .add(function () { gsap.set(fShine, { clearProps: 'transform,opacity' }); fox.classList.add('is-live'); });
+          .to(fLines, { strokeDashoffset: 0, duration: 1, stagger: .1, ease: 'power2.inOut' }, 0)
+          .to(fLiquid, { y: -30, duration: 1.1, ease: 'power1.inOut' }, .7)
+          .to(fLiquid, { x: -100, duration: 1.1, ease: 'none' }, .7)
+          .to(fLines, { opacity: 0, duration: .3 }, 1.6)
+          .to(fAll, { scaleX: 1.08, scaleY: .88, svgOrigin: '240 366', duration: .12, ease: 'power2.out' }, 1.72)
+          .to(fAll, { scaleX: .96, scaleY: 1.06, svgOrigin: '240 366', duration: .15, ease: 'power2.out' }, 1.84)
+          .to(fAll, { scaleX: 1, scaleY: 1, svgOrigin: '240 366', duration: .6, ease: 'elastic.out(1, .4)' }, 1.99)
+          .fromTo(fEars, { scaleY: .3, transformOrigin: '50% 100%' }, { scaleY: 1, duration: .7, stagger: .07, ease: 'elastic.out(1, .4)' }, 1.86)
+          .to(fTail, { rotation: -22, svgOrigin: '196 340', duration: .16, ease: 'power2.out' }, 1.9)
+          .to(fTail, { rotation: 0, svgOrigin: '196 340', duration: 1, ease: 'elastic.out(1, .35)' }, 2.06)
+          .to(fEye, { scaleY: 1, duration: .18, ease: 'power2.out' }, 2.05)
+          .to(fBlush, { opacity: .7, duration: .3 }, 2.1)
+          .add(function () { heartPop(); }, 2.2)
+          .add(function () { gsap.set(fEars.concat(fTail, fEye), { clearProps: 'transform,transformOrigin' }); fox.classList.add('is-live'); }, 3);
+        foxHappy = function () {
+          gsap.timeline()
+            .to(fAll, { scaleX: 1.08, scaleY: .9, svgOrigin: '240 366', duration: .1 })
+            .to(fAll, { y: -26, scaleX: .96, scaleY: 1.06, svgOrigin: '240 366', duration: .22, ease: 'power2.out' })
+            .to(fAll, { y: 0, scaleX: 1, scaleY: 1, svgOrigin: '240 366', duration: .5, ease: 'bounce.out' });
+          heartPop();
+          fox.classList.add('is-wag');
+          clearTimeout(fox._t); fox._t = setTimeout(function () { fox.classList.remove('is-wag'); }, 1400);
+        };
         unform();
         tl.add(function () { foxForm.restart(); }, .35);
       }
@@ -2020,10 +2048,10 @@ document.addEventListener('DOMContentLoaded', function () {
         .add(function () { gsap.set(tile, { clearProps: 'clipPath' }); });
 
 
-      // 叩くと: 遠藤はノリノリになる(跳ねてテンポ上げ・キラッ) / 狐はもう一度組み上がる
+      // 叩くと: 遠藤はノリノリになる(跳ねてテンポ上げ・キラッ) / 狐は跳ねてハート、尻尾を速く振る
       tile.addEventListener('click', function () {
         if (fox) {
-          if (!foxForm.isActive()) foxForm.restart();
+          if (!foxForm.isActive()) foxHappy();
           return;
         }
         if (avatar) {
