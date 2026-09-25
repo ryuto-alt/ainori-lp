@@ -13,8 +13,10 @@
   運営メンバー紹介 v4「つくったもの」
   - 名刺のQR(/meishi)から来る初対面の人が、スマホで数十秒見る前提。「この2人は、手を動かしてつくる人たちだ」が伝わるのが目的。
     だから説明文ではなく、2人がつくった物そのものを動かして見せる。
-  - 構成: 冒頭(ロゴが組み上がる) → つくったもの(ロゴの分解図 / アプリ / 名刺 / お店の地図 / のれん) → 2人 → 物語 → 帯 → 短冊 → 年表 → 連絡先
-  - 絵は描き足さない。使う形はロゴ(元の PNG の輪郭をなぞった SVG。test/about/trace_logo.py)と、実物(アプリの実機画面・名刺の入稿データ・実在24店の座標)だけ。
+  - 構成: 冒頭(ロゴが組み上がる) → つくったもの(アプリ / 名刺 / のれん) → 開発の記録(書いた行数の積み上げ) → 2人 → 物語
+          → 今夜のお店ガチャ(実在24店) → 帯 → 短冊 → 年表 → 連絡先
+  - 載せるのは、あいのりごはんに関わる物だけ(2人の個人制作などは載せない)。
+  - 絵は描き足さない。使う形はロゴ(元の PNG の輪郭をなぞった SVG。test/about/trace_logo.py)と、実物(アプリの実機画面・名刺の入稿データ・git の履歴・実在24店のデータ)だけ。
   - 色: あいのりごはんの色(紙・墨・朱・焦げ茶)。ロゴの4色(--pl 朱の人 / --pr 砂色の人 / --bowl 器 / --steam 湯気)は元の PNG から拾った値。
   - 書体: 見出し = Dela Gothic One / 本文 = BIZ UDPゴシック。Dela は 30px 未満だと画数の多い漢字が潰れるので、小さい見出しは本文書体の太字。
   - 角はすべて直角。例外はスマホの枠だけ(画面ではなく「物」なので、実物どおり角が丸い)。
@@ -87,10 +89,10 @@
     --bowl:  #ad3e2c;
     --steam: #c7a67c;
 
-    /* 地図の夜の地。明るい画面でもここだけは夜(画面の中の画面として扱う) */
-    --night:     #1d130d;
-    --night-ink: #f6ecdd;
-    --night-ai:  #ff8a52;
+    /* 開発の記録の3本(企画の資料 / サイト / アプリ) */
+    --c-team: #8b5a3c;
+    --c-site: #c4a174;
+    --c-app:  #b9361b;
 
     --display: "Dela Gothic One", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
     --body:    "BIZ UDPGothic", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
@@ -126,7 +128,9 @@
       --bowl:  #c94b33;
       --steam: #d4b286;
 
-      --night: #070403;
+      --c-team: #b07a52;
+      --c-site: #d4b286;
+      --c-app:  #ff8a52;
     }
   }
 
@@ -248,13 +252,6 @@
   .work-cap p { color: var(--ink-2); max-width: 26em; }
   .work-tag { color: var(--muted); font-size: .8rem; font-weight: 700; letter-spacing: .08em; }
 
-  /* ---- ロゴの分解図 ---- */
-  .work-logo .work-stage { aspect-ratio: 1 / 1; display: grid; place-items: center; }
-  .xmark { width: 96%; height: 96%; overflow: visible; }
-  .xmark .guide { fill: none; stroke: var(--ai); stroke-width: 1.4px; stroke-dasharray: 5 5; vector-effect: non-scaling-stroke; opacity: .9; }
-  .xmark .lead { stroke: var(--ink-2); stroke-width: 1.2px; vector-effect: non-scaling-stroke; }
-  .xmark .x-label { font-family: var(--body); font-weight: 700; font-size: 34px; fill: var(--ink); letter-spacing: .06em; }
-
   /* ---- アプリ ---- */
   .work-app .work-stage {
     background: var(--noren); color: var(--noren-ink);
@@ -295,15 +292,6 @@
   .card3d .back { transform: rotateY(180deg); }
   .card3d.c2 { transform: translate(18%, 22%) rotate(5deg); }   /* 静止版: 2枚目を斜め下にずらして重ねる */
   .card3d.c1 { transform: translate(-8%, -10%) rotate(-3deg); }
-
-  /* ---- お店の地図 ---- */
-  .work-map .work-stage { background: var(--night); color: var(--night-ink); }
-  .map-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-  .map-legend { position: absolute; z-index: 1; left: 20px; top: 16px; pointer-events: none; }
-  .map-num { font-family: var(--display); font-size: clamp(4rem, 22vw, 7.5rem); line-height: 1; letter-spacing: 0; }
-  .map-unit { margin-top: 4px; font-weight: 700; font-size: .95rem; letter-spacing: .06em; }
-  .map-areas { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 2px; font-size: .84rem; font-weight: 700; opacity: .75; }
-  .map-stage.is-drawn .map-areas { display: none; }   /* 絵が描けたら地図の上に駅名が出るので、文字の一覧はしまう */
 
   /* ---- のれん(WebGL の布) ----
      本体は JS の createCloth。点の網を竿から吊るして重力で解き、光と影で襞を出す。
@@ -374,6 +362,44 @@
   .noren.gl-on .noren-static { visibility: hidden; }
 
   /* ============================================================
+     開発の記録
+     3つのリポジトリ(アプリ・サイト・企画の資料)の実際の履歴。書いた行数(追加した行の合計)を日付に沿って積む。
+     JS なし: 数字・グラフ・節目の一覧を積むだけ。JS あり: 1画面に止め、日付を送りながらグラフを伸ばし、節目を1つずつ出す
+     ============================================================ */
+  .devlog { padding: clamp(40px, 8vw, 80px) 0 clamp(88px, 14vw, 140px); border-top: 1px solid var(--line); }
+  .devlog-inner { display: grid; gap: 16px; }
+  .devlog-title { font-size: clamp(1.95rem, 8.6vw, 3.6rem); line-height: 1.25; }
+  .dl-num { color: var(--ai); }
+  .devlog-lead { margin-top: 10px; color: var(--ink-2); max-width: 30em; }
+  .devlog-stats { display: flex; flex-wrap: wrap; gap: 6px 28px; margin: 0; }
+  .devlog-stats div { display: grid; }
+  .devlog-stats dt { color: var(--muted); font-size: .78rem; font-weight: 700; letter-spacing: .08em; }
+  .devlog-stats dd { margin: 0; font-family: var(--display); font-size: clamp(1.9rem, 7vw, 2.6rem); line-height: 1.15; }
+  .devlog-stats dd small { font-family: var(--body); font-size: .9rem; font-weight: 700; margin-left: 3px; }
+  .dl-chart { margin: 4px 0 0; }
+  .dl-plot { position: relative; height: clamp(190px, 32svh, 380px); }
+  .dl-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .dl-grid line { stroke: var(--line); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+  .dl-area.team { fill: var(--c-team); }
+  .dl-area.site { fill: var(--c-site); }
+  .dl-area.app  { fill: var(--c-app); }
+  .dl-cursor { stroke: var(--ink); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+  .dl-ylabels span { position: absolute; left: 0; transform: translateY(-125%); color: var(--muted); font-size: .72rem; font-weight: 700; }
+  .dl-ticks { position: relative; height: 22px; margin-top: 6px; border-top: 2px solid var(--ink-2); color: var(--muted); font-size: .76rem; font-weight: 700; }
+  .dl-ticks span { position: absolute; top: 4px; transform: translateX(-50%); white-space: nowrap; }
+  .dl-ticks span:first-child { transform: none; }
+  .dl-ticks span:last-child { transform: translateX(-100%); }
+  .dl-marks { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 4px; }
+  .dl-marks li { display: grid; grid-template-columns: 3.6em 1fr; gap: 10px; align-items: baseline; color: var(--ink-2); }
+  .dl-marks time { color: var(--ai); font-weight: 700; }
+  .dl-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 18px; color: var(--ink-2); font-size: .82rem; font-weight: 700; }
+  .dl-legend li { display: flex; align-items: center; gap: 7px; }
+  .dl-legend i { width: 12px; height: 12px; }
+  .dl-legend .app i  { background: var(--c-app); }
+  .dl-legend .site i { background: var(--c-site); }
+  .dl-legend .team i { background: var(--c-team); }
+
+  /* ============================================================
      2人
      ============================================================ */
   .members { padding: 0 0 clamp(88px, 14vw, 160px); }
@@ -427,6 +453,57 @@
   .story-bowl { width: clamp(96px, 24vw, 170px); height: auto; overflow: visible; }
   .story-big { font-family: var(--display); font-size: clamp(3.2rem, 17vw, 9rem); line-height: 1.1; color: var(--ai); }
   .story-note { color: var(--ink-2); font-size: 1.02rem; }
+
+  /* ============================================================
+     今夜のお店ガチャ
+     実在24店は「4つの街 × 6ジャンル」に1店ずつなので、街とジャンルが揃えば店が1つに決まる。3本目は、その店の看板料理
+     JS なし: 回せないので、案内の一文だけ出す
+     ============================================================ */
+  .gacha { padding: clamp(80px, 12vw, 140px) 0 clamp(40px, 8vw, 80px); }
+  .gacha-lead { margin-top: 12px; color: var(--ink-2); }
+  .gacha-body { display: grid; gap: 24px; margin-top: clamp(28px, 5vw, 44px); }
+  .machine { --rh: 54px; padding: 16px; background: var(--noren); color: var(--noren-ink); display: grid; gap: 14px; }
+  .reels { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 10px; }
+  .reel-dish { grid-column: 1 / -1; }
+  .reel-label { margin-bottom: 6px; font-size: .76rem; font-weight: 700; letter-spacing: .12em; opacity: .85; }
+  .reel-win {
+    position: relative; height: calc(var(--rh) * 3); overflow: hidden;
+    background: var(--surface); color: var(--ink);
+    -webkit-mask-image: linear-gradient(transparent, #000 28%, #000 72%, transparent);
+            mask-image: linear-gradient(transparent, #000 28%, #000 72%, transparent);
+  }
+  .reel-win::after {   /* 当たりの段。上下の線で示す */
+    content: ""; position: absolute; left: 0; right: 0; top: var(--rh); height: var(--rh);
+    border-top: 2px solid var(--ai); border-bottom: 2px solid var(--ai); pointer-events: none;
+  }
+  .reel-strip { list-style: none; margin: 0; padding: 0; will-change: transform; }
+  .reel-strip li {
+    height: var(--rh); display: grid; place-items: center; padding: 0 10px; text-align: center;
+    font-family: var(--display); font-size: 1.9rem; line-height: 1; white-space: nowrap;   /* 30px 以上(Dela の画数の多い字が潰れない大きさ) */
+  }
+  .reel-dish .reel-strip li { font-family: var(--body); font-weight: 700; font-size: .95rem; line-height: 1.35; white-space: normal; }
+  .reel-dish .reel-strip li span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+  .reel.is-spinning .reel-strip { filter: blur(1.4px); }
+  .spin-btn {
+    appearance: none; cursor: pointer; min-height: 60px;
+    border: 0; background: var(--ai); color: var(--on-ai);
+    font: 700 1.1rem/1 var(--body); letter-spacing: .24em;
+    transition: background-color .2s var(--ease), transform .12s var(--ease);
+  }
+  .spin-btn:hover { background: var(--ai-hover); }
+  .spin-btn:active { transform: translateY(1px); }
+  .spin-btn:disabled { cursor: default; opacity: .7; }
+  .machine :focus-visible { outline-color: var(--noren-ink); }
+  .gacha-result { display: grid; gap: 6px; align-content: center; }
+  .gacha:not(.is-shown) .gacha-result { visibility: hidden; }
+  .res-meta { color: var(--ai); font-size: .9rem; font-weight: 700; letter-spacing: .04em; }
+  .res-name { font-family: var(--display); font-size: clamp(2rem, 8vw, 3rem); line-height: 1.25; word-break: keep-all; overflow-wrap: anywhere; }   /* 店名は空白の所で折る。入り切らない時だけ途中で折る */
+  .res-dish { color: var(--ink-2); font-size: 1.02rem; }
+  .res-dish b { color: var(--ink); }
+  .res-cta { margin-top: 16px; display: grid; gap: 12px; justify-items: start; color: var(--ink-2); font-size: .92rem; }
+  .gacha-nojs { display: none; margin-top: 20px; color: var(--ink-2); }
+  .no-js .gacha-body { display: none; }
+  .no-js .gacha-nojs { display: block; }
 
   /* ============================================================
      流れる帯
@@ -567,8 +644,7 @@
     .brand { width: 170px; }
 
     .work-stage { aspect-ratio: 16 / 10; }
-    .work-logo .work-stage, .work-card .work-stage { aspect-ratio: 16 / 10; }
-    .xmark .x-label { font-size: 21px; }
+    .work-card .work-stage { aspect-ratio: 16 / 10; }
     .work-app .work-stage { grid-template-rows: none; grid-template-columns: minmax(0, 1fr) auto; padding: 28px 8%; column-gap: 6%; }
     .flow { display: grid; gap: 10px; padding: 0; justify-content: start; }
     .flow li { font-family: var(--display); font-weight: 400; font-size: clamp(1.9rem, 3.2vw, 2.6rem); line-height: 1.2; }
@@ -597,6 +673,15 @@
   }
 
   @media (min-width: 900px) {
+    .devlog-inner { grid-template-columns: minmax(0, 1fr) auto; column-gap: 48px; align-items: end; }
+    .dl-chart, .dl-marks, .dl-legend { grid-column: 1 / -1; }
+    .devlog-stats { justify-content: flex-end; }
+    .gacha-body { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 48px; align-items: center; }
+    .machine { --rh: 62px; padding: 22px; }
+    .reels { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 2fr); }
+    .reel-dish { grid-column: auto; }
+    .reel-strip li { font-size: 2.1rem; }
+    .reel-dish .reel-strip li { font-size: 1rem; }
     .hero { min-height: calc(100svh - 72px); display: grid; align-items: center; padding-bottom: 48px; }
     .hero-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: center; gap: 48px; }
     .hero-mark { order: 2; height: min(calc(100svh - 240px), 560px); min-height: 360px; }
@@ -633,6 +718,13 @@
     .js .work-cap { grid-template-columns: auto 1fr; align-items: baseline; column-gap: 24px; }
     .js .work-cap h3 { grid-row: span 2; }
   }
+
+  /* 開発の記録: 1画面に止める。節目は同じ場所に重ね、いまの1つだけを出す */
+  .js .devlog { padding: 0; }
+  .js .devlog-stage { height: 100vh; height: 100svh; display: grid; align-items: center; overflow: hidden; }
+  .js .dl-marks { position: relative; display: block; height: 2.2em; font-size: 1.15rem; }
+  .js .dl-marks li { position: absolute; left: 0; right: 0; top: 0; opacity: 0; transform: translateY(10px); transition: opacity .3s var(--ease), transform .3s var(--ease); }
+  .js .dl-marks li.is-on { opacity: 1; transform: none; }
 
   /* 物語: 1画面の舞台。行と一言と器を同じマスに重ね、JS が順に出し入れする */
   .js .story { padding: 0; }
@@ -739,41 +831,10 @@
       <div class="works-track">
         <header class="works-head">
           <h2 class="section-title" id="works-title">つくったもの。</h2>
-          <p class="works-lead">ロゴから、アプリ、名刺、このページまで。全部、自分たちの手で。</p>
+          <p class="works-lead">アプリも、名刺も、このページも。全部、自分たちの手で。</p>
         </header>
 
         <ol class="works-list">
-          <li class="work work-logo" data-work="logo">
-            <div class="work-stage">
-              <!-- 静止版は「ほどけた」状態(transform 属性)で描いておく。JS は組んだ状態から動かし直す -->
-              <svg class="xmark" viewBox="-150 -90 900 580" aria-hidden="true">
-                <line class="guide axis" x1="291.5" y1="-70" x2="291.5" y2="470" />
-                <g class="x-s" transform="translate(0 -34)"><use class="f-s" href="#lg-steam-0" /><use class="f-s" href="#lg-steam-1" /><use class="f-s" href="#lg-steam-2" /></g>
-                <g class="x-l" transform="translate(-46 0)">
-                  <use class="f-l" href="#lg-body-l" /><use class="f-l" href="#lg-head-l" />
-                  <circle class="guide ring" cx="124.05" cy="69.5" r="58" />
-                </g>
-                <g class="x-r" transform="translate(46 0)">
-                  <use class="f-r" href="#lg-body-r" /><use class="f-r" href="#lg-head-r" />
-                  <circle class="guide ring" cx="457.59" cy="69.31" r="58" />
-                </g>
-                <g class="x-b" transform="translate(0 34)"><use class="f-b" href="#lg-bowl" /></g>
-                <line class="lead" x1="37" y1="28" x2="-8" y2="-22" />
-                <text class="x-label" x="-14" y="-34" text-anchor="end">ひとり</text>
-                <line class="lead" x1="545" y1="28" x2="590" y2="-22" />
-                <text class="x-label" x="596" y="-34">もうひとり</text>
-                <line class="lead" x1="303" y1="78" x2="336" y2="30" />
-                <text class="x-label" x="340" y="20">湯気</text>
-                <line class="lead" x1="291.5" y1="392" x2="291.5" y2="424" />
-                <text class="x-label" x="291.5" y="462" text-anchor="middle">ひとつの器</text>
-              </svg>
-            </div>
-            <div class="work-cap">
-              <h3>ロゴ</h3>
-              <p>ひとつの器を、ふたりで囲む形。</p>
-            </div>
-          </li>
-
           <li class="work work-app" data-work="app">
             <div class="work-stage">
               <ol class="flow" aria-label="アプリの流れ">
@@ -817,22 +878,6 @@
             </div>
           </li>
 
-          <li class="work work-map" data-work="map">
-            <div class="work-stage map-stage">
-              <canvas class="map-canvas" aria-hidden="true"></canvas>
-              <div class="map-legend">
-                <p class="map-num">24</p>
-                <p class="map-unit">店・4つの街</p>
-                <ul class="map-areas"><li>池袋 6店</li><li>新宿 6店</li><li>渋谷 6店</li><li>恵比寿 6店</li></ul>
-              </div>
-            </div>
-            <div class="work-cap">
-              <h3>お店の地図</h3>
-              <p>山手線の西側、4つの街の24店。すべて実在のお店です。</p>
-              <p class="work-tag">池袋・新宿・渋谷・恵比寿</p>
-            </div>
-          </li>
-
           <li class="work work-noren" data-work="noren">
             <div class="work-stage">
               <div class="noren" aria-hidden="true">
@@ -854,6 +899,47 @@
             </div>
           </li>
         </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="devlog" aria-labelledby="devlog-title">
+    <div class="devlog-stage">
+      <div class="wrap devlog-inner">
+        <div class="devlog-head">
+          <h2 class="devlog-title" id="devlog-title"><span class="ph">書いてきた、</span><span class="ph"><span class="dl-num" data-dl="lines">80,921</span>行。</span></h2>
+          <p class="devlog-lead">アプリ、サイト、企画の資料。3つのリポジトリに残っている、実際の履歴です。</p>
+        </div>
+        <dl class="devlog-stats">
+          <div><dt>コミット</dt><dd data-dl="commits">143</dd></div>
+          <div><dt>日数</dt><dd><span data-dl="days">107</span><small>日</small></dd></div>
+          <div><dt>日付</dt><dd data-dl="date">9/25</dd></div>
+        </dl>
+        <figure class="dl-chart">
+          <div class="dl-plot">
+            <svg class="dl-svg" viewBox="0 0 1000 400" preserveAspectRatio="none" aria-hidden="true"></svg>
+            <div class="dl-ylabels" aria-hidden="true"></div>
+          </div>
+          <div class="dl-ticks" aria-hidden="true"><span style="left:0%">6/11</span><span style="left:18.69%">7月</span><span style="left:47.66%">8月</span><span style="left:76.64%">9月</span><span style="left:100%">9/25</span></div>
+          <figcaption class="sr-only">2026年6月11日から9月25日までに書いた行数の累計。アプリ55,676行、サイト7,036行、企画・運営の資料18,209行。</figcaption>
+        </figure>
+        <ol class="dl-marks">
+          <li data-day="0"><time datetime="2026-06-11">6/11</time><span>企画の資料を書きはじめる</span></li>
+          <li data-day="4"><time datetime="2026-06-15">6/15</time><span>事前登録のページを公開</span></li>
+          <li data-day="26"><time datetime="2026-07-07">7/7</time><span>アプリを書きはじめる</span></li>
+          <li data-day="32"><time datetime="2026-07-13">7/13</time><span>サーバーとデータベースをつなぐ</span></li>
+          <li data-day="35"><time datetime="2026-07-16">7/16</time><span>投稿をAIが確かめる仕組み</span></li>
+          <li data-day="82"><time datetime="2026-09-01">9/1</time><span>初回ごはん会の運営計画</span></li>
+          <li data-day="94"><time datetime="2026-09-13">9/13</time><span>初回ごはん会のページを公開</span></li>
+          <li data-day="96"><time datetime="2026-09-15">9/15</time><span>検索と、招待リンク</span></li>
+          <li data-day="104"><time datetime="2026-09-23">9/23</time><span>実在の24店を載せる</span></li>
+          <li data-day="106"><time datetime="2026-09-25">9/25</time><span>名刺と、このページ</span></li>
+        </ol>
+        <ul class="dl-legend">
+          <li class="app"><i></i>アプリ 55,676行</li>
+          <li class="site"><i></i>サイト 7,036行</li>
+          <li class="team"><i></i>企画・運営の資料 18,209行</li>
+        </ul>
       </div>
     </div>
   </section>
@@ -910,6 +996,33 @@
         <p class="story-big">目的は、飯。</p>
       </div>
       <p class="story-note">同じ店に行きたい人と、その日の一食だけ。</p>
+    </div>
+  </section>
+
+  <section class="gacha" aria-labelledby="gacha-title">
+    <div class="wrap">
+      <h2 class="section-title" id="gacha-title"><span class="ph">今夜、</span><span class="ph">どこで食べる？</span></h2>
+      <p class="gacha-lead">あいのりごはんに載っている、実在の24店から1店。</p>
+      <div class="gacha-body">
+        <div class="machine">
+          <div class="reels" aria-hidden="true">
+            <div class="reel reel-area"><p class="reel-label">街</p><div class="reel-win"><ul class="reel-strip"></ul></div></div>
+            <div class="reel reel-genre"><p class="reel-label">ジャンル</p><div class="reel-win"><ul class="reel-strip"></ul></div></div>
+            <div class="reel reel-dish"><p class="reel-label">頼む一品</p><div class="reel-win"><ul class="reel-strip"></ul></div></div>
+          </div>
+          <button class="spin-btn" type="button">回す</button>
+        </div>
+        <div class="gacha-result" aria-live="polite">
+          <p class="res-meta"></p>
+          <p class="res-name"></p>
+          <p class="res-dish"></p>
+          <div class="res-cta">
+            <p>アプリができたら、この店に一緒に行く人を集められます。まずは事前登録から。</p>
+            <a class="btn" href="/#register">登録する</a>
+          </div>
+        </div>
+      </div>
+      <p class="gacha-nojs">渋谷・恵比寿・新宿・池袋の24店は、アプリで見られます。</p>
     </div>
   </section>
 
@@ -1077,282 +1190,212 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /* ==========================================================
-     お店の地図(canvas)
-     山手線の駅を曲線でつないだ輪を描き、実在24店を座標どおりに置く。
-     人(点)は輪の上の駅から電車のように線路を伝い、降りる駅から店まで歩く。
-     1つの店に4人そろうと輪が広がって、しばらくして解散する。
-     動きを減らす設定でも、止め絵(何組かが座っている所)は描く
+     開発の記録(SVG)
+     3つのリポジトリの git log から数えた、日ごとの「追加した行数」と「コミット数」。
+     数え方: git log --all --no-merges --numstat。画像・json・lock などの生成物は除いた(2026-09-25 時点)。
+     日付は 2026-06-11 を 0 日目とした日番号。[日番号, 行数, コミット数]
      ========================================================== */
-  function createMap(stage) {
-    var canvas = $('.map-canvas', stage);
-    var g = canvas && canvas.getContext && canvas.getContext('2d');
-    if (!g) return null;
+  function createDevlog(root) {
+    var svg = root && $('.dl-svg', root);
+    if (!svg) return null;
+    var N = 107, W = 1000, H = 400, MAX = 90000;
+    var DATA = {
+      team: [[0, 2092, 7], [1, 1221, 10], [2, 305, 1], [4, 8388, 4], [6, 264, 2], [28, 59, 1], [81, 659, 2], [82, 1182, 4], [83, 1303, 3], [85, 888, 3], [86, 691, 1], [87, 263, 1], [88, 294, 3], [89, 0, 2], [93, 391, 5], [95, 16, 2], [101, 193, 2]],
+      site: [[4, 914, 1], [60, 235, 1], [75, 1947, 6], [76, 81, 1], [94, 693, 1], [96, 190, 1], [104, 1501, 1], [106, 1475, 3]],
+      app: [[26, 114, 1], [27, 2570, 1], [28, 1198, 2], [32, 3675, 4], [35, 633, 5], [96, 22893, 36], [99, 1057, 8], [104, 23536, 18]]
+    };
+    var ORDER = ['team', 'site', 'app'];   // 下から積む順(早く始まったものが下)
+    var cumL = {}, total = [], totalC = [], i;
+    for (i = 0; i < N; i++) { total.push(0); totalC.push(0); }
+    ORDER.forEach(function (k) {
+      var l = [], c = [];
+      for (var d = 0; d < N; d++) { l.push(0); c.push(0); }
+      DATA[k].forEach(function (e) { l[e[0]] += e[1]; c[e[0]] += e[2]; });
+      for (d = 1; d < N; d++) { l[d] += l[d - 1]; c[d] += c[d - 1]; }
+      for (d = 0; d < N; d++) { total[d] += l[d]; totalC[d] += c[d]; }
+      cumL[k] = l;
+    });
+    var X = function (d) { return d / N * W; }, Y = function (v) { return H - v / MAX * H; };
+    var NS = 'http://www.w3.org/2000/svg';
+    var mk = function (tag, at) { var e = document.createElementNS(NS, tag); for (var a in at) e.setAttribute(a, at[a]); return e; };
 
-    // 山手線 30駅(東京から時計回り)。緯度・経度
-    var ST = [
-      [35.6812, 139.7671], [35.6918, 139.7709], [35.6984, 139.7731], [35.7075, 139.7748], [35.7138, 139.7773],
-      [35.7215, 139.7780], [35.7281, 139.7710], [35.7320, 139.7668], [35.7381, 139.7608], [35.7365, 139.7470],
-      [35.7334, 139.7393], [35.7318, 139.7286], [35.7295, 139.7109], [35.7212, 139.7066], [35.7128, 139.7038],
-      [35.7012, 139.7000], [35.6896, 139.7006], [35.6831, 139.7020], [35.6702, 139.7027], [35.6580, 139.7016],
-      [35.6467, 139.7101], [35.6339, 139.7157], [35.6262, 139.7236], [35.6197, 139.7286], [35.6285, 139.7388],
-      [35.6355, 139.7407], [35.6457, 139.7475], [35.6555, 139.7571], [35.6663, 139.7583], [35.6750, 139.7630]
-    ];
-    var AREAS = [['池袋', 12], ['新宿', 16], ['渋谷', 19], ['恵比寿', 20]];
-    // 実在24店(ainori backend/data/shops.json の座標)。[街, 緯度, 経度]
-    var SHOPS = [
-      ['渋谷', 35.66148, 139.69798], ['渋谷', 35.65747, 139.70285], ['渋谷', 35.66328, 139.69911], ['渋谷', 35.6577, 139.69492], ['渋谷', 35.66164, 139.69684], ['渋谷', 35.65725, 139.69449],
-      ['恵比寿', 35.64568, 139.70717], ['恵比寿', 35.64639, 139.71194], ['恵比寿', 35.64619, 139.71121], ['恵比寿', 35.64545, 139.71477], ['恵比寿', 35.64595, 139.70682], ['恵比寿', 35.64791, 139.7128],
-      ['新宿', 35.69188, 139.7067], ['新宿', 35.6945, 139.69823], ['新宿', 35.68957, 139.70796], ['新宿', 35.69517, 139.6981], ['新宿', 35.69299, 139.70599], ['新宿', 35.69265, 139.70425],
-      ['池袋', 35.73273, 139.71066], ['池袋', 35.72794, 139.71361], ['池袋', 35.73205, 139.70937], ['池袋', 35.72801, 139.71349], ['池袋', 35.72701, 139.71426], ['池袋', 35.72838, 139.71352]
-    ];
-    var SEG = 16;
-    var W = 0, H = 0, dpr = 1, km = 30, loop = [], cum = [], total = 0, stXY = [], shops = [];
-    var intro = 0, running = false, people = [], pulses = [], spawnT = 0, onDraw = null;
-    var cs = getComputedStyle(stage);
-    var INK = cs.getPropertyValue('--night-ink').trim() || '#f6ecdd';
-    var AI = cs.getPropertyValue('--night-ai').trim() || '#ff8a52';
-    var ink = function (a) { return hexA(INK, a); };
-    function hexA(hex, a) {
-      var n = parseInt(hex.replace('#', ''), 16);
-      return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + a + ')';
-    }
+    var grid = mk('g', { 'class': 'dl-grid' }), ylab = $('.dl-ylabels', root);
+    [20000, 40000, 60000, 80000].forEach(function (v) {
+      grid.appendChild(mk('line', { x1: 0, x2: W, y1: Y(v), y2: Y(v) }));
+      var sp = document.createElement('span');
+      sp.textContent = (v / 10000) + '万行'; sp.style.top = (Y(v) / H * 100) + '%';
+      ylab.appendChild(sp);
+    });
+    svg.appendChild(grid);
+    var defs = mk('defs', {}), clip = mk('clipPath', { id: 'dl-clip' }), rect = mk('rect', { x: -1, y: -40, width: W + 2, height: H + 80 });
+    clip.appendChild(rect); defs.appendChild(clip); svg.appendChild(defs);
+    // 積み上げ。その日にコミットがあると段が上がる(階段)。1日 = 横に W/N
+    var areas = mk('g', { 'clip-path': 'url(#dl-clip)' }), base = total.map(function () { return 0; });
+    ORDER.forEach(function (k) {
+      var up = base.map(function (b, d) { return b + cumL[k][d]; }), dd = 'M0 ' + Y(base[0]);
+      for (var d = 0; d < N; d++) dd += 'L' + X(d) + ' ' + Y(up[d]) + 'L' + X(d + 1) + ' ' + Y(up[d]);
+      for (d = N - 1; d >= 0; d--) dd += 'L' + X(d + 1) + ' ' + Y(base[d]) + 'L' + X(d) + ' ' + Y(base[d]);
+      areas.appendChild(mk('path', { 'class': 'dl-area ' + k, d: dd + 'Z' }));
+      base = up;
+    });
+    svg.appendChild(areas);
+    var cursor = mk('line', { 'class': 'dl-cursor', x1: W, x2: W, y1: 0, y2: H });
+    svg.appendChild(cursor);
 
-    function layout() {
-      W = stage.clientWidth; H = stage.clientHeight;
-      if (!W || !H) return false;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
-      var wide = W / H > 1.15;
-      var kx = Math.cos(35.69 * Math.PI / 180);
-      // 見せたい範囲: 24店が入る西側。広い舞台では輪がもう少し東まで見えるよう広げる
-      var lat0 = 35.639, lat1 = 35.737, lng0 = 139.690, lng1 = wide ? 139.782 : 139.723;
-      var bw = (lng1 - lng0) * kx, bh = lat1 - lat0;
-      var aw = wide ? W * .52 : W * .6, ah = H * .84;
-      var s = Math.min(aw / bw, ah / bh);
-      var ox = wide ? W * .42 + (W * .52 - bw * s) / 2 : W - bw * s - W * .07;
-      var oy = (H - bh * s) / 2 + (wide ? 0 : H * .03);
-      var P = function (lat, lng) { return [ox + (lng - lng0) * kx * s, oy + (lat1 - lat) * s]; };
-      km = s * .009;
-
-      stXY = ST.map(function (p) { return P(p[0], p[1]); });
-      // 駅を通る閉じた Catmull-Rom を細かく刻んで線路にする
-      loop = [];
-      var n = stXY.length;
-      for (var i = 0; i < n; i++) {
-        var p0 = stXY[(i - 1 + n) % n], p1 = stXY[i], p2 = stXY[(i + 1) % n], p3 = stXY[(i + 2) % n];
-        for (var k = 0; k < SEG; k++) {
-          var t = k / SEG, t2 = t * t, t3 = t2 * t;
-          loop.push([
-            .5 * (2 * p1[0] + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3),
-            .5 * (2 * p1[1] + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3)
-          ]);
-        }
-      }
-      cum = [0];
-      for (i = 1; i <= loop.length; i++) {
-        var a = loop[i - 1], b = loop[i % loop.length];
-        cum.push(cum[i - 1] + Math.hypot(b[0] - a[0], b[1] - a[1]));
-      }
-      total = cum[loop.length];
-
-      var rs = Math.max(4.5, km * .16);
-      shops = SHOPS.map(function (sh, idx) {
-        var xy = P(sh[1], sh[2]);
-        var st = AREAS.filter(function (a) { return a[0] === sh[0]; })[0][1];
-        return {
-          x: xy[0], y: xy[1], area: sh[0], st: st, order: idx,
-          slots: [45, 135, 225, 315].map(function (d) { var r = d * Math.PI / 180; return [xy[0] + Math.cos(r) * rs, xy[1] + Math.sin(r) * rs]; }),
-          want: 0, here: 0, state: 'idle', t: 0, cool: Math.random() * 2
-        };
-      });
-      people = []; pulses = [];
-      return true;
-    }
-
-    // 線路上の2駅の間を、短い向きに進む点列
-    function route(fromSt, toSt) {
-      var N = loop.length, a = fromSt * SEG, b = toSt * SEG;
-      var fwd = (b - a + N) % N, back = (a - b + N) % N, dir = fwd <= back ? 1 : -1, steps = Math.min(fwd, back);
-      var pts = [];
-      for (var i = 0; i <= steps; i++) pts.push(loop[(a + dir * i + N) % N]);
-      return pts;
-    }
-    function pathLen(pts) {
-      var c = [0];
-      for (var i = 1; i < pts.length; i++) c.push(c[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
-      return c;
-    }
-    function at(pts, c, d) {
-      if (d <= 0) return pts[0];
-      var L = c[c.length - 1];
-      if (d >= L) return pts[pts.length - 1];
-      var lo = 0, hi = c.length - 1;
-      while (hi - lo > 1) { var m = (lo + hi) >> 1; if (c[m] < d) lo = m; else hi = m; }
-      var f = (d - c[lo]) / (c[hi] - c[lo] || 1);
-      return [pts[lo][0] + (pts[hi][0] - pts[lo][0]) * f, pts[lo][1] + (pts[hi][1] - pts[lo][1]) * f];
-    }
-
-    function spawn() {
-      var gathering = shops.filter(function (s) { return s.state === 'gather' && s.want < 4; });
-      var idle = shops.filter(function (s) { return s.state === 'idle' && s.cool <= 0; });
-      var active = shops.filter(function (s) { return s.state === 'gather'; }).length;
-      var shop = null;
-      if (gathering.length && (Math.random() < .75 || !idle.length || active >= 5)) shop = gathering[Math.random() * gathering.length | 0];
-      else if (idle.length && active < 5) { shop = idle[Math.random() * idle.length | 0]; shop.state = 'gather'; }
-      if (!shop) return;
-      var slot = shop.slots[shop.want++];
-      var from; do { from = Math.random() * ST.length | 0; } while (from === shop.st);
-      var pts = route(from, shop.st);
-      var last = pts[pts.length - 1];
-      // 駅から店へ歩く所は、少し曲げて足す
-      var mx = (last[0] + slot[0]) / 2 + (Math.random() - .5) * km * .3, my = (last[1] + slot[1]) / 2 + (Math.random() - .5) * km * .3;
-      for (var i = 1; i <= 8; i++) {
-        var t = i / 8, u = 1 - t;
-        pts.push([u * u * last[0] + 2 * u * t * mx + t * t * slot[0], u * u * last[1] + 2 * u * t * my + t * t * slot[1]]);
-      }
-      var c = pathLen(pts);
-      people.push({ pts: pts, c: c, d: 0, L: c[c.length - 1], v: total / (8 + Math.random() * 3), shop: shop, seated: false, a: 1, trail: [] });
-    }
-
-    function update(dt) {
-      spawnT -= dt;
-      if (intro >= .9 && spawnT <= 0 && people.length < 40) { spawn(); spawnT = .16 + Math.random() * .22; }
-      shops.forEach(function (s) {
-        if (s.state === 'idle') s.cool -= dt;
-        if (s.state === 'formed') { s.t += dt; if (s.t > 2.4) { s.state = 'leave'; s.t = 0; } }
-        if (s.state === 'leave') { s.t += dt; if (s.t > .9) { s.state = 'idle'; s.want = 0; s.here = 0; s.cool = 1 + Math.random() * 3; } }
-      });
-      for (var i = people.length - 1; i >= 0; i--) {
-        var p = people[i];
-        if (!p.seated) {
-          // 降りる駅の手前で減速、歩く所はゆっくり
-          var left = p.L - p.d, slow = left < km * 1.2 ? .35 + .65 * left / (km * 1.2) : 1;
-          p.d += p.v * slow * dt;
-          var xy = at(p.pts, p.c, p.d);
-          p.trail.unshift(xy); if (p.trail.length > 7) p.trail.pop();
-          p.x = xy[0]; p.y = xy[1];
-          if (p.d >= p.L) {
-            p.seated = true; p.trail.length = 0;
-            p.shop.here++;
-            if (p.shop.here === 4) { p.shop.state = 'formed'; p.shop.t = 0; pulses.push({ x: p.shop.x, y: p.shop.y, t: 0 }); }
-          }
-        } else if (p.shop.state === 'leave') {
-          p.a -= dt * 1.4;
-          if (p.a <= 0) people.splice(i, 1);
-        }
-      }
-      for (i = pulses.length - 1; i >= 0; i--) { pulses[i].t += dt; if (pulses[i].t > 1.2) pulses.splice(i, 1); }
-    }
-
-    function ease(t) { t = Math.max(0, Math.min(1, t)); return t * t * (3 - 2 * t); }
-    function draw() {
-      g.setTransform(dpr, 0, 0, dpr, 0, 0);
-      g.clearRect(0, 0, W, H);
-      var lp = ease(intro / .45), upto = lp * total;
-      // 線路
-      if (lp > 0) {
-        g.beginPath();
-        g.moveTo(loop[0][0], loop[0][1]);
-        for (var i = 1; i <= loop.length && cum[i] <= upto; i++) { var q = loop[i % loop.length]; g.lineTo(q[0], q[1]); }
-        g.strokeStyle = ink(.22); g.lineWidth = Math.max(1.6, km * .06); g.lineJoin = 'round'; g.stroke();
-      }
-      // 駅
-      stXY.forEach(function (p, i) {
-        if (cum[i * SEG] > upto) return;
-        g.fillStyle = ink(.4); g.beginPath(); g.arc(p[0], p[1], Math.max(1.6, km * .05), 0, Math.PI * 2); g.fill();
-      });
-      // 4つの街の駅と名前
-      var ap = ease((intro - .35) / .2);
-      if (ap > 0) {
-        var fs = Math.round(Math.max(12, Math.min(16, km * .42)));
-        g.font = '700 ' + fs + 'px "BIZ UDPGothic", sans-serif';
-        g.textAlign = 'right'; g.textBaseline = 'middle';
-        AREAS.forEach(function (a, k) {
-          var e = ease((intro - .35 - k * .03) / .15), p = stXY[a[1]], sz = Math.max(6, km * .2) * e;
-          g.fillStyle = ink(e); g.fillRect(p[0] - sz / 2, p[1] - sz / 2, sz, sz);
-          g.fillStyle = ink(.92 * e);
-          g.fillText(a[0], p[0] - Math.max(14, km * .5), p[1]);
-        });
-      }
-      // 店
-      var sp = (intro - .5) / .35;
-      shops.forEach(function (s) {
-        var areaK = ['池袋', '新宿', '渋谷', '恵比寿'].indexOf(s.area);
-        var e = ease((sp - areaK * .18 - (s.order % 6) * .025) / .22);
-        if (e <= 0) return;
-        var formed = s.state === 'formed' || s.state === 'leave';
-        var r = Math.max(2.4, km * .075) * (formed ? 1.45 : 1) * (e < 1 ? 1 + Math.sin(e * Math.PI) * .6 : 1);
-        g.fillStyle = hexA(AI, formed ? 1 : .88);
-        g.beginPath(); g.arc(s.x, s.y, r, 0, Math.PI * 2); g.fill();
-      });
-      // 人
-      people.forEach(function (p) {
-        if (p.x === undefined) return;
-        if (p.trail.length > 1) {
-          g.beginPath(); g.moveTo(p.trail[0][0], p.trail[0][1]);
-          for (var k = 1; k < p.trail.length; k++) g.lineTo(p.trail[k][0], p.trail[k][1]);
-          g.strokeStyle = ink(.28 * p.a); g.lineWidth = Math.max(1.4, km * .05); g.lineCap = 'round'; g.stroke();
-        }
-        g.fillStyle = ink(p.a);
-        g.beginPath(); g.arc(p.x, p.y, Math.max(1.9, km * .058), 0, Math.PI * 2); g.fill();
-      });
-      // 4人そろった合図
-      pulses.forEach(function (u) {
-        var t = u.t / 1.2;
-        g.strokeStyle = hexA(AI, (1 - t) * .9); g.lineWidth = 1.5;
-        g.beginPath(); g.arc(u.x, u.y, Math.max(4, km * .1) + t * km * .9, 0, Math.PI * 2); g.stroke();
-      });
-      if (onDraw) onDraw();
-    }
-
-    // 止め絵: 全部出して、何店かに4人座らせておく
-    function still() {
-      intro = 1; people = []; pulses = [];
-      [2, 8, 13, 20].forEach(function (i) {
-        var s = shops[i]; if (!s) return;
-        s.state = 'formed'; s.want = s.here = 4;
-        s.slots.forEach(function (xy) { people.push({ x: xy[0], y: xy[1], seated: true, a: 1, trail: [], shop: s }); });
-      });
-      draw();
-    }
-
-    var lastT = 0;
-    function tick() {
-      var now = performance.now(), dt = Math.min(.05, (now - lastT) / 1000 || 0);
-      lastT = now;
-      if (!running) return;
-      update(dt); draw();
-      requestAnimationFrame(tick);
-    }
-
-    if (!layout()) return null;
-    var ro = new ResizeObserver(function () { if (layout()) { if (!running) draw(); } });
-    ro.observe(stage);
-
+    var q = function (k) { return $('[data-dl="' + k + '"]', root); };
+    var numL = q('lines'), numC = q('commits'), numD = q('days'), numT = q('date');
+    var marks = $$('.dl-marks li', root), mdays = marks.map(function (li) { return +li.getAttribute('data-day'); });
+    var fmt = function (n) { return n.toLocaleString('ja-JP'); };
+    var dateOf = function (d) { var t = new Date(2026, 5, 11 + d); return (t.getMonth() + 1) + '/' + t.getDate(); };
+    var last = -1;
     return {
-      setIntro: function (p) { intro = p; if (!running) draw(); },
-      run: function (on) {
-        if (on === running) return;
-        running = on;
-        if (on) { lastT = performance.now(); requestAnimationFrame(tick); }
-      },
-      still: still,
-      draw: draw,
-      onDraw: function (f) { onDraw = f; }
+      set: function (p) {
+        p = Math.max(0, Math.min(1, p));
+        var x = p * W;
+        rect.setAttribute('width', x + 1);
+        cursor.setAttribute('x1', x); cursor.setAttribute('x2', x);
+        var d = Math.min(N - 1, Math.floor(p * N));
+        if (d === last) return;
+        last = d;
+        numL.textContent = fmt(total[d]); numC.textContent = fmt(totalC[d]); numD.textContent = d + 1; numT.textContent = dateOf(d);
+        var on = -1;
+        mdays.forEach(function (md, k) { if (md <= d) on = k; });
+        marks.forEach(function (li, k) { li.classList.toggle('is-on', k === on); });
+      }
     };
   }
+  function stillDevlog() { var dl = createDevlog($('.devlog')); if (dl) dl.set(1); }
 
-  /* 動きを減らす設定などで .js が無い時も、地図は止め絵で描く */
-  var mapStage = $('.map-stage');
-  function drawStillMap() {
-    fontsReady.then(function () {
-      var m = createMap(mapStage);
-      if (m) { m.still(); mapStage.classList.add('is-drawn'); }
-    });
+  /* ==========================================================
+     今夜のお店ガチャ
+     24店は「4つの街 × 6ジャンル」に1店ずつ。店を先に1つ引き、街とジャンルと一品のリールをそこへ止める。
+     リールは GSAP を使わず自前の rAF で回す(CDN が落ちていても、動きを減らす設定でも使えるように)。
+     店の中身は ainori backend/data/shops.json(2026-09-24 に本番へ載せたもの)から。[店名, 街, ジャンル, 種類, 夜の予算, [[料理, 円], ...]]
+     ========================================================== */
+  function createGacha(root) {
+    if (!root) return;
+    var SHOPS = [
+      ['茶茶 このか', '渋谷', '和食', '日本料理・海鮮', 5000, [['とれたて鮮魚盛合せ', 2420], ['前菜５種 盛り合せ', 2500], ['黒毛和牛の牛鍋 1人前', 2980]]],
+      ['Pizza&Italian Leo', '渋谷', 'イタリアン', 'イタリアン・ピザ', 4000, [['クラシックマルゲリータ', 1859], ['濃厚卵と生ハムのトリュフビスマルク', 2860], ['天使の海老のアヒージョ', 1320]]],
+      ['座・撒椒 渋谷店', '渋谷', '中華', '四川料理', 2000, [['石鍋麻婆豆腐', 1518], ['よだれ鶏', 1408], ['四川風和牛炒め', 1958]]],
+      ['渋谷焼肉 ニクノヒ', '渋谷', '肉', '焼肉・ホルモン', 5000, [['国産特選ハラミ', 2980], ['上タン塩', 1980], ['厳選和牛の炙りユッケ', 1780]]],
+      ['宇田川カフェ"Suite"', '渋谷', 'カフェ', 'カフェ・イタリアン', 3000, [['マルゲリータピザ', 1210], ['生ハムの盛り合わせ', 1210], ['魚介のアヒージョ', 1100]]],
+      ['ビストロ ビンゴ', '渋谷', '洋食', 'ビストロ・オイスターバー', 5000, [['生牡蠣本日の食べ比べ', 1540], ['ムール貝とあさりの白ワイン蒸し', 1650], ['塩とおろしポン酢で食べる肉汁ハンバーグ', 1320]]],
+      ['酒場 シナトラ 恵比寿店', '恵比寿', '和食', '日本料理・海鮮', 5000, [['肉豆腐', 980], ['和牛のすき焼き', 1880], ['越の鶏の唐揚げ', 880]]],
+      ['トラットリア ヴィヴァーチェ 恵比寿', '恵比寿', 'イタリアン', 'トラットリア', 4000, [['6時間煮込んだボロネーゼソース スパゲッティ', 1540], ['鶏もも肉とモッツァレラチーズのオーブン焼き"ピッツァイオーラ"', 2199], ['豚肩ロース肉のロースト', 2199]]],
+      ['京鼎樓 恵比寿本店', '恵比寿', '中華', '小籠包・台湾点心', 5000, [['京鼎小籠包(6個)', 1150], ['小籠包3種盛り', 1580], ['油淋鶏', 1480]]],
+      ['BeefGarden 恵比寿', '恵比寿', '肉', '焼肉', 5000, [['一頭盛り（全9部位）', 2420], ['牛盛り(5部位200g)', 2640], ['BeefGarden全部盛り（450g以上/2～3人前）', 6111]]],
+      ['cafe&dining nurikabe', '恵比寿', 'カフェ', 'カフェダイニング', 3000, [['トリュフ香る＂白い＂オムライス', 1750], ['モッツァレラチーズのマルゲリータ', 1390], ['香るチーズケーキ-オリジナル-', 790]]],
+      ['恵比寿ビストロ 猫も杓子も', '恵比寿', '洋食', 'ビストロ', 4000, [['前菜盛り合わせ', 2750], ['黒毛和牛ランプステーキ', 4290], ['マグレ鴨とフォアグラのココット飯', 3520]]],
+      ['ぼんや', '新宿', '和食', '新潟の郷土料理', 4000, [['新潟糸魚川直送お造り盛合せ 6点盛り', 3200], ['へぎそば 2～3人盛り', 2100], ['越後名物！栃尾油揚げ 葱味噌焼き', 550]]],
+      ['トラットリア クアルト 西新宿', '新宿', 'イタリアン', 'トラットリア', 5000, [['いろいろお肉の盛り合わせ', 1540], ['鮮魚のカルパッチョ', 1210], ['自家製パンチェッタのカルボナーラ', 1320]]],
+      ['随園別館 新宿店', '新宿', '中華', '北京料理', 3000, []],
+      ['新宿焼肉 ホルモンいのうえ', '新宿', '肉', '焼肉・ホルモン', 4000, [['いのうえホルモンミックス【塩・味噌】', 1210], ['角刈りレバー', 1650], ['キムチ盛り合わせ', 880]]],
+      ['コトカフェ （coto cafe）', '新宿', 'カフェ', 'カフェ・ダイニング', 3000, [['前菜盛り合わせ３種', 1790], ['極み！ブッラータと生ハムのトマトピザ', 2090], ['肉厚！ジューシーハンバーグ', 1820]]],
+      ['グリル満天星 麻布十番 新宿店', '新宿', '洋食', '洋食', 2000, [['名物オムレツライス デミグラス', 1870], ['和牛×南の島豚使用！ハンバーグステーキ デミグラス', 1980], ['ビーフシチュー', 3960]]],
+      ['ねぎま 三ぞう 池袋西口店', '池袋', '和食', '焼き鳥・海鮮', 3000, [['串焼き盛り合わせ（塩・タレ）', 1639], ['名物 上タンねぎ塩レモン', 1099], ['中トロ入り本マグロぶつ刺し', 979]]],
+      ['トラットリア クアルト 池袋', '池袋', 'イタリアン', 'トラットリア', 4000, [['３種お肉の盛り合せ～カルネミスト～', 3300], ['いろいろ肉前菜の盛り合わせ', 990], ['ボロネーゼ スパゲッティ', 1430]]],
+      ['聚福楼', '池袋', '中華', '中華料理・ジンギスカン', 3000, [['羊の背中の焼き物', 4280], ['ハルビン酢豚', 1380], ['水餃子（10個）', 780]]],
+      ['焼肉 牛山道 池袋本店', '池袋', '肉', '焼肉・韓国料理', 3000, [['極上5点盛り合わせ', 5478], ['ホルモン9点盛り合わせ', 1958], ['厚切り特上タン', 2508]]],
+      ['ラシーヌ ファーム トゥー パーク', '池袋', 'カフェ', '公園カフェ', 3000, [['炭焼きローストチキン（1/2羽）', 1500], ['牛肩バラ肉のスモーク ブリスケット（150g）', 1800], ['自家製ミートボール チリコンカン（6P）', 1500]]],
+      ['ルコックロティ', '池袋', '洋食', 'ビストロ(ロティサリーチキン)', 4000, [['ロティサリーチキン 8ピース（4〜6人前）', 3190], ['お肉盛り合わせS', 2750], ['本日の前菜5種盛り合わせ（3人前）', 1980]]]
+    ];
+    var AREAS = ['池袋', '新宿', '渋谷', '恵比寿'], GENRES = ['和食', 'イタリアン', '中華', '肉', 'カフェ', '洋食'];
+    var NO_DISH = 'メニューは当日決める';   // アプリの募集づくりにある選び方と同じ言葉
+    var still = !html.classList.contains('js');
+    var btn = $('.spin-btn', root), result = $('.gacha-result', root);
+    var resMeta = $('.res-meta', root), resName = $('.res-name', root), resDish = $('.res-dish', root);
+
+    // 一品のリールは全店の料理を混ぜて並べる(同じ店の料理が続かないよう、決まった種で混ぜる)
+    var dishes = [];
+    SHOPS.forEach(function (sh) { sh[5].forEach(function (m) { dishes.push(m[0]); }); });
+    dishes.push(NO_DISH);
+    var seed = 11;
+    var rnd = function () { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    for (var i = dishes.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)), t = dishes[i]; dishes[i] = dishes[j]; dishes[j] = t; }
+
+    function makeReel(sel, items, copies) {
+      var strip = $(sel + ' .reel-strip', root);
+      for (var c = 0; c < copies; c++) items.forEach(function (text) {
+        var li = document.createElement('li'), sp = document.createElement('span');
+        sp.textContent = text; li.appendChild(sp); strip.appendChild(li);
+      });
+      return { strip: strip, win: strip.parentNode, reel: strip.parentNode.parentNode, items: items, copies: copies, idx: 0, y: 0 };
+    }
+    var R = [makeReel('.reel-area', AREAS, 10), makeReel('.reel-genre', GENRES, 8), makeReel('.reel-dish', dishes, 3)];
+    function rowH(r) { return r.win.clientHeight / 3; }
+    function place(r, index) {   // index 番目を真ん中の段に置く
+      r.idx = index; r.y = -(index - 1) * rowH(r);
+      r.strip.style.transform = 'translate3d(0,' + r.y + 'px,0)';
+    }
+    R.forEach(function (r) { place(r, r.items.length + 1); });
+    window.addEventListener('resize', function () { R.forEach(function (r) { place(r, r.idx); }); });
+
+    function outBack(t) { var c1 = 1.1, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); }
+    function roll(r, target, dur, done) {
+      var n = r.items.length;
+      place(r, r.idx % n + n);            // 見えている字のまま1周目へ戻してから、長く回す
+      if (!dur) { place(r, target); done(); return; }
+      var y0 = r.y, y1 = -(target - 1) * rowH(r), t0 = performance.now();
+      r.reel.classList.add('is-spinning');
+      requestAnimationFrame(function step(now) {
+        var t = Math.min(1, (now - t0) / dur);
+        r.y = y0 + (y1 - y0) * outBack(t);
+        r.strip.style.transform = 'translate3d(0,' + r.y + 'px,0)';
+        if (t > .72) r.reel.classList.remove('is-spinning');
+        if (t < 1) requestAnimationFrame(step); else { r.idx = target; done(); }
+      });
+    }
+
+    var last = -1, busy = false;
+    function spin() {
+      if (busy) return;
+      busy = true; btn.disabled = true;
+      var k; do { k = Math.floor(Math.random() * SHOPS.length); } while (k === last);
+      last = k;
+      var sh = SHOPS[k], menu = sh[5].length ? sh[5][Math.floor(Math.random() * sh[5].length)] : null;
+      var dishText = menu ? menu[0] : NO_DISH;
+      var targets = [
+        (R[0].copies - 2) * AREAS.length + AREAS.indexOf(sh[1]),
+        (R[1].copies - 2) * GENRES.length + GENRES.indexOf(sh[2]),
+        (R[2].copies - 2) * dishes.length + dishes.indexOf(dishText)
+      ];
+      var left = 3;
+      var finish = function () {
+        if (--left) return;
+        resMeta.textContent = sh[1] + '・' + sh[3] + '・夜 ' + sh[4].toLocaleString('ja-JP') + '円〜';
+        resName.textContent = sh[0];
+        resDish.textContent = '';
+        if (menu) {
+          var b = document.createElement('b'); b.textContent = '「' + menu[0] + '」';
+          resDish.appendChild(document.createTextNode('頼むなら'));
+          resDish.appendChild(b);
+          resDish.appendChild(document.createTextNode(menu[1].toLocaleString('ja-JP') + '円'));
+        } else resDish.textContent = '頼む一品は、当日お店で決めます。';
+        root.classList.add('is-shown');
+        if (!still && window.gsap) {
+          gsap.fromTo(resName, { scale: 1.35, rotation: -4, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: .6, ease: 'back.out(2.4)', transformOrigin: '0% 50%' });
+          gsap.fromTo([resMeta, resDish, $('.res-cta', root)], { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: .5, stagger: .07, ease: 'power3.out', delay: .12 });
+        }
+        btn.textContent = 'もう一回';
+        busy = false; btn.disabled = false;
+      };
+      R.forEach(function (r, n) { roll(r, targets[n], still ? 0 : 1300 + n * 450, finish); });
+    }
+    btn.addEventListener('click', spin);
+
+    // 初めて画面に入った時に、1回だけ勝手に回す(回せる物だと見せる)。動きを減らす設定なら、すぐ結果を出す
+    if (still || !('IntersectionObserver' in window)) { spin(); return; }
+    var io = new IntersectionObserver(function (es) {
+      if (!es[0].isIntersecting) return;
+      io.disconnect(); setTimeout(spin, 250);
+    }, { threshold: .6 });
+    io.observe($('.machine', root));
   }
+  createGacha($('.gacha'));
 
-  if (!html.classList.contains('js')) { drawStillMap(); return; }   // 動きを減らす設定 / 4秒の保険が発動済み
-  if (!window.gsap || !window.ScrollTrigger) { html.classList.remove('js'); drawStillMap(); return; }
+  if (!html.classList.contains('js')) { stillDevlog(); return; }   // 動きを減らす設定 / 4秒の保険が発動済み
+  if (!window.gsap || !window.ScrollTrigger) { html.classList.remove('js'); stillDevlog(); return; }
   window.__aboutAnim = true;
 
   try { run(); }
@@ -1363,7 +1406,7 @@ document.addEventListener('DOMContentLoaded', function () {
     gsap.globalTimeline.clear();
     html.classList.remove('js');
     gsap.set($$('main *'), { clearProps: 'all' });
-    drawStillMap();
+    stillDevlog();
   }
 
   function run() {
@@ -1460,7 +1503,7 @@ document.addEventListener('DOMContentLoaded', function () {
       hero.addEventListener('pointerleave', function () { lx.forEach(function (f) { f(0); }); ly.forEach(function (f) { f(0); }); ry(0); rx(0); });
     }
 
-    // スクロールで少しほどける(2人が離れ、器が沈み、湯気が消える)。「つくったもの」のロゴの分解図につなぐ
+    // スクロールで少しほどける(2人が離れ、器が沈み、湯気が消える)
     gsap.timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
       .to('.mk-l', { x: -44, ease: 'none' }, 0)
       .to('.mk-r', { x: 44, ease: 'none' }, 0)
@@ -1503,9 +1546,6 @@ document.addEventListener('DOMContentLoaded', function () {
           それぞれの舞台に「進み具合 0→1」で動く時間軸を1本ずつ作り、
           広い画面では横の流れ(containerAnimation)、スマホでは縦のスクロールに結びつける
        ========================================================== */
-    var map = createMap(mapStage);
-    if (map) mapStage.classList.add('is-drawn');
-
     var norenIn = false;
     function norenIntro() {
       if (norenIn) return;
@@ -1521,27 +1561,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     var build = {
-      logo: function (w) {
-        var svg = $('.xmark', w);
-        var L = $('.x-l', svg), R = $('.x-r', svg), B = $('.x-b', svg), S = $('.x-s', svg);
-        var guides = $$('.guide', svg), labels = $$('.x-label', svg), leads = $$('.lead', svg);
-        var ends = leads.map(function (l) { return [+l.getAttribute('x2'), +l.getAttribute('y2')]; });
-        var tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' } })
-          .fromTo(L, { x: 0 }, { x: -46, duration: .28 }, 0)
-          .fromTo(R, { x: 0 }, { x: 46, duration: .28 }, 0)
-          .fromTo(B, { y: 0 }, { y: 34, duration: .28 }, 0)
-          .fromTo(S, { y: 0 }, { y: -34, duration: .28 }, 0)
-          .fromTo(guides, { opacity: 0 }, { opacity: .9, duration: .12, stagger: .03 }, .12);
-        leads.forEach(function (l, i) {
-          tl.fromTo(l, { attr: { x2: +l.getAttribute('x1'), y2: +l.getAttribute('y1') } }, { attr: { x2: ends[i][0], y2: ends[i][1] }, duration: .1, ease: 'power2.out' }, .2 + i * .03);
-        });
-        tl.fromTo(labels, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .1, stagger: .03, ease: 'power2.out' }, .26)
-          .to({}, { duration: .3 })
-          .to([labels, leads, guides], { opacity: 0, duration: .1 }, .74)
-          .to([L, R], { x: 0, duration: .24 }, .76)
-          .to([B, S], { y: 0, duration: .24 }, .76);
-        return { tl: tl };
-      },
       app: function (w) {
         var imgs = $$('.phone-screen img', w), flow = $$('.flow li', w), phone = $('.phone', w);
         var tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' } })
@@ -1575,15 +1594,6 @@ document.addEventListener('DOMContentLoaded', function () {
           w.addEventListener('pointerleave', function () { ty(0); tx(0); });
         }
         return { tl: tl };
-      },
-      map: function () {
-        if (!map) return { tl: null };
-        var o = { p: 0 };
-        var tl = gsap.timeline({ paused: true })
-          .to(o, { p: 1, duration: .55, ease: 'none', onUpdate: function () { map.setIntro(o.p); } }, 0)
-          .to({}, { duration: .45 });
-        map.setIntro(0);
-        return { tl: tl, toggle: function (on) { map.run(on); } };
       },
       noren: function () {
         return {
@@ -1619,6 +1629,25 @@ document.addEventListener('DOMContentLoaded', function () {
         ScrollTrigger.create(cfg);
       });
     });
+
+    /* ==========================================================
+       2.5 開発の記録: 画面を止め、6/11 から 9/25 まで日付を送りながら、書いた行数の積み上げを伸ばす
+       ========================================================== */
+    var devlog = createDevlog($('.devlog'));
+    if (devlog) {
+      var dp = { p: 0 };
+      devlog.set(0);
+      gsap.fromTo(['.devlog-head', '.devlog-stats', '.dl-chart', '.dl-marks', '.dl-legend'], { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, stagger: .08, duration: .7, ease: 'power3.out', scrollTrigger: { trigger: '.devlog', start: 'top 72%', once: true } });
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: '.devlog', start: 'top top', pin: true, scrub: .6, anticipatePin: 1, invalidateOnRefresh: true, refreshPriority: 8,
+          end: function () { return '+=' + Math.round(innerHeight * 1.8); }
+        }
+      })
+        .to(dp, { p: 1, duration: 1, ease: 'none', onUpdate: function () { devlog.set(dp.p); } })
+        .to({}, { duration: .12 });
+    }
 
     /* ==========================================================
        3. 2人: 札が下から開き、頭文字の輪郭が押され、下からインクが満ちる。英字の肩書きはほどけて揃う
